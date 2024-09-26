@@ -1,5 +1,4 @@
-import { createApp } from "vue";
-import App from "./app.vue";
+
 import {
     Plugin,
     showMessage,
@@ -49,7 +48,6 @@ import { SettingUtils } from "./libs/setting-utils";
 
 const STORAGE_NAME = "menu-config";
 const TAB_TYPE = "custom_tab";
-const DOCK_TYPE = "dock_tab";//之后列出目标服务笔记列表 done！
 
 
 export let currentDocId: string | null = null;
@@ -127,24 +125,12 @@ export default class SiYuanLink extends Plugin {
 
         //添加图标
         this.addTopBar({
-            icon: "iconTransfer",
-            title: "数据传输",
-            position: "right",
-            callback: () => {
-                // if(this.isMobile)
-                let rect = document.querySelector("#barPlugins").getBoundingClientRect();
-                this.addMenu(rect);
-                // showMessage("处理中...");
-
-            }
-        });
-        this.addTopBar({
             icon: "iconCloudUpload",
             title: "全量备份到alist",
             position: "left",
             callback: () => {
                 // console.log(await getCurrentNotePathById(currentDocId));
-                let rect = document.querySelector("#plugin_siyuan-link_1").getBoundingClientRect();
+                let rect = document.querySelector("#plugin_siyuan-alist_0").getBoundingClientRect();
                 this.addMenu2(rect);
                 // this.runbackup();
                 // showMessage("处理中...");
@@ -240,134 +226,107 @@ export default class SiYuanLink extends Plugin {
         });
 
 
-        this.addDock({
-            config: {
-                position: "RightTop",
-                size: { width: 250, height: 0 },
-                icon: "icon-deepseek-chat",
-                title: "deepseek-chat",
-            },
-            data: null,
-            type: "deepseek-dock",
-            resize() {
+        // this.addDock({
+        //     config: {
+        //         position: "RightTop",
+        //         size: { width: 250, height: 0 },
+        //         icon: "icon-deepseek-chat",
+        //         title: "deepseek-chat",
+        //     },
+        //     data: null,
+        //     type: "deepseek-dock",
+        //     resize() {
 
-            },
-            update() {
-                // this.element.innerHTML = `<div id="alist-dock" style="height: 100% ; width: 100%;">
-                // <iframe 
-                // allow="clipboard-read; clipboard-write"
-                // sandbox="allow-forms allow-presentation allow-same-origin allow-scripts allow-modals allow-popups" 
-                // src="${targetURL}" 
-                // data-src="" 
-                // border="0" 
-                // frameborder="no" 
-                // framespacing="0" 
-                // allowfullscreen="true" 
-                // style="height: 99% ; width: 100%;"
-                // >
-                // </iframe>
-                // </div>`;
-            },
-            init: (dock) => {
-                // this.alistdock = dock;//将dock赋值给全局变量，以便在其它地方进行后续操作
-                dock.element.innerHTML = `<div id="alist-dock" style="height: 100% ; width: 100%;">
-                <iframe 
-                allow="clipboard-read; clipboard-write"
-                sandbox="allow-forms allow-presentation allow-same-origin allow-scripts allow-modals allow-popups" 
-                src="https://chat.deepseek.com/" 
-                data-src="" 
-                border="0" 
-                frameborder="no" 
-                framespacing="0" 
-                allowfullscreen="true" 
-                style="height: 99% ; width: 100%;"
-                >
-                </iframe>
-                </div>`;
-            },
-            destroy() {
-                console.log("destroy dock:", "alist-dock");
-            }
-        });
-
-
-        this.addDock({
-            config: {
-                position: "RightTop",
-                size: { width: 250, height: 0 },
-                icon: "iconChat",
-                title: "kimi-chat",
-            },
-            data: null,
-            type: "kimi-dock",
-            resize() {
-
-            },
-            update() {
-                // this.element.innerHTML = `<div id="alist-dock" style="height: 100% ; width: 100%;">
-                // <iframe 
-                // allow="clipboard-read; clipboard-write"
-                // sandbox="allow-forms allow-presentation allow-same-origin allow-scripts allow-modals allow-popups" 
-                // src="${targetURL}" 
-                // data-src="" 
-                // border="0" 
-                // frameborder="no" 
-                // framespacing="0" 
-                // allowfullscreen="true" 
-                // style="height: 99% ; width: 100%;"
-                // >
-                // </iframe>
-                // </div>`;
-            },
-            init: (dock) => {
-                // this.alistdock = dock;//将dock赋值给全局变量，以便在其它地方进行后续操作
-                dock.element.innerHTML = `<div id="alist-dock" style="height: 100% ; width: 100%;">
-                <iframe 
-                allow="clipboard-read; clipboard-write"
-                sandbox="allow-forms allow-presentation allow-same-origin allow-scripts allow-modals allow-popups" 
-                src="https://kimi.moonshot.cn/" 
-                data-src="" 
-                border="0" 
-                frameborder="no" 
-                framespacing="0" 
-                allowfullscreen="true" 
-                style="height: 99% ; width: 100%;"
-                >
-                </iframe>
-                </div>`;
-            },
-            destroy() {
-                console.log("destroy dock:", "alist-dock");
-            }
-        });
+        //     },
+        //     update() {
+        //         // this.element.innerHTML = `<div id="alist-dock" style="height: 100% ; width: 100%;">
+        //         // <iframe 
+        //         // allow="clipboard-read; clipboard-write"
+        //         // sandbox="allow-forms allow-presentation allow-same-origin allow-scripts allow-modals allow-popups" 
+        //         // src="${targetURL}" 
+        //         // data-src="" 
+        //         // border="0" 
+        //         // frameborder="no" 
+        //         // framespacing="0" 
+        //         // allowfullscreen="true" 
+        //         // style="height: 99% ; width: 100%;"
+        //         // >
+        //         // </iframe>
+        //         // </div>`;
+        //     },
+        //     init: (dock) => {
+        //         // this.alistdock = dock;//将dock赋值给全局变量，以便在其它地方进行后续操作
+        //         dock.element.innerHTML = `<div id="alist-dock" style="height: 100% ; width: 100%;">
+        //         <iframe 
+        //         allow="clipboard-read; clipboard-write"
+        //         sandbox="allow-forms allow-presentation allow-same-origin allow-scripts allow-modals allow-popups" 
+        //         src="https://chat.deepseek.com/" 
+        //         data-src="" 
+        //         border="0" 
+        //         frameborder="no" 
+        //         framespacing="0" 
+        //         allowfullscreen="true" 
+        //         style="height: 99% ; width: 100%;"
+        //         >
+        //         </iframe>
+        //         </div>`;
+        //     },
+        //     destroy() {
+        //         console.log("destroy dock:", "alist-dock");
+        //     }
+        // });
 
 
-        this.addDock({
-            config: {
-                position: "RightTop",
-                size: { width: 300, height: 0 },
-                icon: "iconSaving",
-                title: "目标源笔记",
-            },
-            data: null,
-            type: DOCK_TYPE,
-            resize() {
-                console.log(DOCK_TYPE + " resize");
-            },
-            update() {
-                console.log(DOCK_TYPE + " update");
+        // this.addDock({
+        //     config: {
+        //         position: "RightTop",
+        //         size: { width: 250, height: 0 },
+        //         icon: "iconChat",
+        //         title: "kimi-chat",
+        //     },
+        //     data: null,
+        //     type: "kimi-dock",
+        //     resize() {
 
-            },
-            init: (dock) => {
-                dock.element.innerHTML = `<div id="siyuan-link-dock" style="height: 100% ; width: 100%;"></div>`;
-                const app = createApp(App, { plugin: this });
-                // app.config.globalProperties.$selectedFileIds=[];
-                app.mount("#siyuan-link-dock");
-            },
-            destroy() {
-                console.log("destroy dock:", DOCK_TYPE);
-            }
-        });
+        //     },
+        //     update() {
+        //         // this.element.innerHTML = `<div id="alist-dock" style="height: 100% ; width: 100%;">
+        //         // <iframe 
+        //         // allow="clipboard-read; clipboard-write"
+        //         // sandbox="allow-forms allow-presentation allow-same-origin allow-scripts allow-modals allow-popups" 
+        //         // src="${targetURL}" 
+        //         // data-src="" 
+        //         // border="0" 
+        //         // frameborder="no" 
+        //         // framespacing="0" 
+        //         // allowfullscreen="true" 
+        //         // style="height: 99% ; width: 100%;"
+        //         // >
+        //         // </iframe>
+        //         // </div>`;
+        //     },
+        //     init: (dock) => {
+        //         // this.alistdock = dock;//将dock赋值给全局变量，以便在其它地方进行后续操作
+        //         dock.element.innerHTML = `<div id="alist-dock" style="height: 100% ; width: 100%;">
+        //         <iframe 
+        //         allow="clipboard-read; clipboard-write"
+        //         sandbox="allow-forms allow-presentation allow-same-origin allow-scripts allow-modals allow-popups" 
+        //         src="https://kimi.moonshot.cn/" 
+        //         data-src="" 
+        //         border="0" 
+        //         frameborder="no" 
+        //         framespacing="0" 
+        //         allowfullscreen="true" 
+        //         style="height: 99% ; width: 100%;"
+        //         >
+        //         </iframe>
+        //         </div>`;
+        //     },
+        //     destroy() {
+        //         console.log("destroy dock:", "alist-dock");
+        //     }
+        // });
+
 
 
         //命令面板选项相关设置
@@ -388,141 +347,24 @@ export default class SiYuanLink extends Plugin {
         this.settingUtils = new SettingUtils({
             plugin: this, name: STORAGE_NAME
         });
-        this.settingUtils.addItem({
-            key: "sykey",
-            value: "",
-            type: "textinput",
-            title: "目标源密钥1",
-            description: "要接收数据的目标源密钥1",
-            action: {
-                // Called when focus is lost and content changes
-                callback: async () => {
-                    // Return data and save it in real time
-                    let value = await this.settingUtils.takeAndSave("sykey");
-                    token = value;
-                    // console.log(value);
-                }
-            }
-        });
-        this.settingUtils.addItem({
-            key: "syurl",
-            value: "",
-            type: "textinput",
-            title: "目标源网址1",
-            description: "要接收数据的目标源的网址1",
-            action: {
-                // Called when focus is lost and content changes
-                callback: async () => {
-                    // Return data and save it in real time
-                    let value = await this.settingUtils.takeAndSave("syurl");
-                    url = value;
-                    // console.log(value);
-                }
-            }
-        });
-        this.settingUtils.addItem({
-            key: "sykey2",
-            value: "",
-            type: "textinput",
-            title: "目标源密钥2",
-            description: "要接收数据的目标源密钥2",
-            action: {
-                // Called when focus is lost and content changes
-                callback: async () => {
-                    // Return data and save it in real time
-                    let value = await this.settingUtils.takeAndSave("sykey");
-                    token = value;
-                    // console.log(value);
-                }
-            }
-        });
-        this.settingUtils.addItem({
-            key: "syurl2",
-            value: "",
-            type: "textinput",
-            title: "目标源网址2",
-            description: "要接收数据的目标源的网址2",
-            action: {
-                // Called when focus is lost and content changes
-                callback: async () => {
-                    // Return data and save it in real time
-                    let value = await this.settingUtils.takeAndSave("syurl");
-                    url = value;
-                    // console.log(value);
-                }
-            }
-        });
-        this.settingUtils.addItem({
-            key: "Select",
-            value: 1,
-            type: "select",
-            title: "目标源",
-            description: "选择目标源",
-            options: {
-                1: "目标源1",
-                2: "目标源2"
-            },
-            action: {
-                callback: async () => {
-                    // Read data in real time
-                    let value = await this.settingUtils.takeAndSave("Select");
-                    serNum = value;
-                    console.log(serNum);
-                    if (serNum == "1") {
-                        url = this.settingUtils.get("syurl");
-                        token = this.settingUtils.get("sykey");
-                    } else if (serNum == "2") {
-                        url = this.settingUtils.get("syurl2");
-                        token = this.settingUtils.get("sykey2");
-                    }
-                    outLog(url, "当前目标源地址");
-                }
-            }
-        });
+
+
+        
         this.settingUtils.addItem({
             key: "isconnect",
             value: "",
             type: "button",
             title: "验证服务连接",
-            description: "判断是否连接上目标服务和alist服务",
+            description: "判断是否连接上alist服务",
             button: {
                 label: "验证",
                 callback: () => {
                     showMessage("正在验证...");
-                    isconnect();
                     if (alistUrl != "") {
                         checkAlistConnection(alistname, alistmima);
                     } else {
                         showMessage("未配置备份地址", 2000);
                     }
-                }
-            }
-        });
-        this.settingUtils.addItem({
-            key: "push",
-            value: "",
-            type: "button",
-            title: "全量传输",
-            description: "全量传输当前data",
-            button: {
-                label: "传输",
-                callback: () => {
-                    showMessage("正在传输...");
-                    this.runpush();
-                }
-            }
-        });
-        this.settingUtils.addItem({
-            key: "pull",
-            value: "",
-            type: "button",
-            title: "全量拉取",
-            description: "全量拉取目标服务data",
-            button: {
-                label: "拉取",
-                callback: () => {
-                    showMessage("正在拉取...");
-                    this.runpull();
                 }
             }
         });
@@ -542,20 +384,7 @@ export default class SiYuanLink extends Plugin {
                 }
             }
         });
-        this.settingUtils.addItem({
-            key: "readonlyText",
-            value: Boolean,
-            type: "checkbox",
-            title: "是否只读标记",
-            description: "控制是否在传输时对笔记内容进行只读标记",
-            action: {
-                callback: () => {
-                    // Return data and save it in real time
-                    let value = !this.settingUtils.get("readonlyText");
-                    this.settingUtils.set("readonlyText", value);
-                }
-            }
-        });
+    
         this.settingUtils.addItem({
             key: "alistUrl",
             value: "",
@@ -637,20 +466,7 @@ export default class SiYuanLink extends Plugin {
                 }
             }
         });
-        this.settingUtils.addItem({
-            key: "isrefresh",
-            value: true,
-            type: "checkbox",
-            title: "拉取笔记时是否刷新",
-            description: "控制拉取笔记时是否刷新页面（建议开启）",
-            action: {
-                callback: () => {
-                    // Return data and save it in real time
-                    let value = !this.settingUtils.get("isrefresh");
-                    this.settingUtils.set("isrefresh", value);
-                }
-            }
-        });
+
         this.settingUtils.addItem({
             key: "alistToPath2",
             value: "",
@@ -681,70 +497,7 @@ export default class SiYuanLink extends Plugin {
 
 
 
-    private addMenu(rect?: DOMRect) {
-        //退出回调
-        const menu = new Menu("topBarSample", () => {
-            outLog(this.i18n.byeMenu);
-        });
-        //添加菜单项
-        menu.addItem({
-            icon: "iconDataTransferSimple",
-            label: "传输当前笔记",
-            click: () => {
-                if (url == "") {
-                    showMessage("请先配置目标源地址！");
-                    return;
-                }
-                outLog("传输当前笔记");
-                this.run();
-                // this.dbug();
-            }
-        });
-        // menu.addItem({
-        //     icon: "iconAlist",
-        //     label: "ALIST",
-        //     click: async () => {
-        //         const tab = openTab({
-        //             app: this.app,
-        //             custom: {
-        //                 icon: "iconAlist",
-        //                 title: "ALIST",
-        //                 data: null,
-        //                 id: this.name + 'alist'
-        //             },
-        //             position: "right",
-        //         });
-        //         const tab1 = await tab
-        //         console.log(tab1);
-        //         console.log(tab1.headElement);
-        //         const alistSpan = tab1.headElement.querySelector('span.item__text');
-        //         // 修改其文本内容
-        //         if (alistSpan) {
-        //             alistSpan.textContent = '新的内容'; // 在这里替换 '新的内容' 为你想要的内容
-        //         }
-        //         console.log(tab1.panelElement);
-        //         //插入html
-        //         tab1.panelElement.innerHTML = `<iframe
-        //         allow="clipboard-read; clipboard-write"
-        //         sandbox="allow-forms allow-presentation allow-same-origin allow-scripts allow-modals allow-popups"
-        //         src="${alistUrl}"
-        //         data-src=""
-        //         border="0"
-        //         frameborder="no"
-        //         framespacing="0"
-        //         allowfullscreen="true"
-        //         style="height: 100% ; width: 100%;"
-        //         >
-        //         </iframe>`;
-
-        //     }
-        // });
-        menu.open({
-            x: rect.right,
-            y: rect.bottom,
-            isLeft: true,
-        });
-    }
+  
 
     private addMenu2(rect?: DOMRect) {
         //退出回调
@@ -807,14 +560,7 @@ export default class SiYuanLink extends Plugin {
 
         this.settingUtils.load();
         console.log(`frontend: ${getFrontend()}; backend: ${getBackend()}`);
-        serNum = this.settingUtils.get("Select");
-        if (serNum == "1") {
-            url = this.settingUtils.get("syurl");
-            token = this.settingUtils.get("sykey");
-        } else if (serNum == "2") {
-            url = this.settingUtils.get("syurl2");
-            token = this.settingUtils.get("sykey2");
-        }
+ 
         outLog(url, "当前目标源地址");
         alistmima = this.settingUtils.get("alistToken");
         alistname = this.settingUtils.get("alistname");
@@ -828,7 +574,6 @@ export default class SiYuanLink extends Plugin {
         outLog(alistToPath2, "当前附件上传路径");
         outLog(alistFilename, "当前备份文件名");
         trunLog(this.settingUtils.get("islog"));
-        outLog('cseffsddfsfdsfdfd');
 
 
         let tabDiv = document.createElement("div");
@@ -863,108 +608,22 @@ export default class SiYuanLink extends Plugin {
         showMessage("Goodbye ");
         console.log("onunload");
 
-        this.eventBus.off("paste", this.eventBusPaste);
+        // this.eventBus.off("paste", this.eventBusPaste);
         document.removeEventListener("click", this.onlick, true);
     }
 
     uninstall() {
         console.log("uninstall");
 
-        this.eventBus.off("paste", this.eventBusPaste);
+        // this.eventBus.off("paste", this.eventBusPaste);
         document.removeEventListener("click", this.onlick, true);
     }
     //插件卸载相关
 
     //写插件实现功能的函数
-    private async run() {
-        if (currentDocId) {
-            try {
-                showMessage("正在传输...", -1, "info", "单笔记传输")
-                const notePath = await getCurrentNotePath(currentDocId);
-                outLog(notePath, "当前笔记路径");
-                //获取文字数据并保存
-                //是否标记只读
-                if (this.settingUtils.get("readonlyText")) {
-                    await putFileContent(notePath, await transferLockAndReadonly(await getNoteData(notePath)));
-                } else {
-                    await putFileContent(notePath, await getNoteData(notePath));
-                }
-                //处理数据库资源文件
-                handleDbResource(currentDocId);
-                //修改目标服务笔记配置
-                //0.0.6: 这里的notebookId可能是空的，导致无法修改笔记配置
-                await setNotebookConf(notebookId, await getNotebookName(notebookId));
-                //获取资源路径并下载
-                const links = await getmd(currentDocId);
-                if (links) {
-                    for (const link of links) {
-                        console.log(link);
-                        console.log('1');
-                        const imageData = await downloadImage(link);
-                        putFileContentM(link, imageData);
-                    }
-                } else {
-                    showMessage("未发现资源文件附件");
-                    console.log("未发现资源文件附件");
-                }
-                //数据库文件处理
-                await refreshURL();
-            } catch (error) {
-                console.error("运行时发生错误:", error);
-                showMessage("运行时发生错误:" + error.message);
-            }
-            showMessage("传输结束!", 6000, "info", "单笔记传输")
-        }
-    }
+   
 
-    public async pullNote(currentDocIds: string[]) {
-        try {
-            let index = 0;
-            for (const currentDocId of currentDocIds) {
-                showMessage(`正在传输${index}...`, -1, "info", "多笔记传输")
-                const notePath = await getCurrentNotePath(currentDocId, false, true);
-                outLog(notePath, "当前笔记路径");
-                //获取文字数据并保存
-                //是否标记只读 
-                //远程拉取相关
-                if (this.settingUtils.get("readonlyText")) {
-                    await putFileContent(notePath, await transferLockAndReadonly(await getNoteData(notePath, true)), false);
-                } else {
-                    await putFileContent(notePath, await getNoteData(notePath, true), false);
-                }
-                //处理数据库资源文件
-                handleDbResource(currentDocId);
-                //修改目标服务笔记配置
-                //0.0.6: 这里的notebookId可能是空的，导致无法修改笔记配置
-                await setNotebookConf(notebookId, await getNotebookName(notebookId, true), false);
-                //获取资源路径并下载
-                const links = await getmd(currentDocId, true);
-                if (links) {
-                    for (const link of links) {
-                        console.log(link);
-                        console.log('1');
-                        const imageData = await downloadImageURL(link);
-                        putFileContentM(link, imageData, false);
-                    }
-                } else {
-                    showMessage(`未发现资源文件附件${index}`);
-                    console.log(`未发现资源文件附件${index}`);
-                }
-                index++;
-            }
-            //数据库文件处理
-            showMessage(`成功传输${index}`, -1, "info", "多笔记传输")
-            if (this.settingUtils.get("isrefresh")) {
-                await refresh();
-            }
-        } catch (error) {
-            console.error("运行时发生错误:", error);
-            showMessage("运行时发生错误:" + error.message);
-        }
-        showMessage("传输结束!", 6000, "info", "多笔记传输")
-
-
-    }
+   
 
 
 
@@ -972,34 +631,9 @@ export default class SiYuanLink extends Plugin {
 
 
     //全量传输
-    private async runpush() {
-        showMessage("正在传输...", -1, "info", "传输")
-        outLog('runpush');
-        try {
-            const link = await exportAllDataPath();
-            // const data = await downloadImage(link);
-            await importAllDataURL(await downloadImage(link));
-        } catch (error) {
-            showMessage("传输失败!", -1, "error", "传输")
-            console.error('Failed to run runpush:', error);
-        }
-        showMessage("传输结束!", 6000, "info", "传输")
-    }
-
+   
     //全量拉取
-    private async runpull() {
-        showMessage("正在拉取...", -1, "info", "拉取")
-        outLog('runpull');
-        try {
-            const link = await exportAllDataPathURL();
-            // const data = await downloadImage(link);
-            await importAllData(await downloadImageURL(link));
-        } catch (error) {
-            showMessage("拉取失败!", -1, "error", "拉取")
-            console.error('Failed to run runpull:', error);
-        }
-        showMessage("拉取结束!", 6000, "info", "拉取")
-    }
+    
 
     private async runbackup(alistFilename: string) {
         showMessage("正在备份...", -1, "info", "备份")
@@ -1039,7 +673,7 @@ export default class SiYuanLink extends Plugin {
             const isContained = myapi.isUrlContained(target.dataset.href, alistUrl);
             // console.log(isContained);
             if (isContained) {
-                const buttonAlist = document.querySelector('span[data-type="siyuan-linkalist-dock"]');
+                const buttonAlist = document.querySelector('span[data-type="siyuan-alistalist-dock"]');
                 // console.log(buttonAlist, 'buttonAlist');
                 if (buttonAlist) {
                     // 手动触发点击事件
@@ -1084,20 +718,20 @@ export default class SiYuanLink extends Plugin {
         }
     }
 
-    private eventBusPaste(event: any) {
-        // 如果需异步处理请调用 preventDefault， 否则会进行默认处理
-        event.preventDefault();
-        showMessage("Paste event triggered");
-        console.log(event);
-        const pasttext = event.detail.textPlain;
+    // private eventBusPaste(event: any) {
+    //     // 如果需异步处理请调用 preventDefault， 否则会进行默认处理
+    //     event.preventDefault();
+    //     showMessage("Paste event triggered");
+    //     console.log(event);
+    //     const pasttext = event.detail.textPlain;
 
-        console.log(pasttext);
+    //     console.log(pasttext);
 
-        // 如果使用了 preventDefault，必须调用 resolve，否则程序会卡死
-        event.detail.resolve({
-            textPlain: event.detail.textPlain.trim(),
-        });
-    }
+    //     // 如果使用了 preventDefault，必须调用 resolve，否则程序会卡死
+    //     event.detail.resolve({
+    //         textPlain: event.detail.textPlain.trim(),
+    //     });
+    // }
 }
 
 // handleUrl(protocol, target:any) {
