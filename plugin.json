@@ -2,7 +2,7 @@
   "name": "siyuan-alist",
   "author": "steve",
   "url": "https://github.com/loonghfut/siyuan-alist",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "minAppVersion": "3.0.12",
   "backends": [
     "all"
@@ -20,7 +20,7 @@
   },
   "description": {
     "en_US": "Link Alist to achieve large attachment management and release the space of Siyuan notes",
-    "zh_CN": "联动Alist,实现大型附件管理，释放思源笔记空间"
+    "zh_CN": "联动Alist，实现大型附件管理，释放思源笔记空间"
   },
   "readme": {
     "en_US": "README.md",
