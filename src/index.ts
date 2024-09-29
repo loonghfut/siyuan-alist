@@ -5,7 +5,7 @@ import {
     getFrontend,
     getBackend,
     IModel,
-    Menu,
+    // Menu,
     confirm,
     // openTab
 } from "siyuan";
@@ -40,6 +40,7 @@ export let alistUrl: string | null = null;
 export let alistToPath: string | null = null;
 export let alistToPath2: string | null = null;
 export let alistFilename: string | null = null;
+export let alistTime: string | null = null;
 // let notePath: string | null = null;
 let targetURL: string | null = null;
 let isclickalist: boolean = true;
@@ -85,8 +86,9 @@ export default class SiYuanLink extends Plugin {
             position: "left",
             callback: () => {
                 // console.log(await getCurrentNotePathById(currentDocId));
-                let rect = document.querySelector("#plugin_siyuan-alist_0").getBoundingClientRect();
-                this.addMenu2(rect);
+                // let rect = document.querySelector("#plugin_siyuan-alist_0").getBoundingClientRect();
+                // this.addMenu2(rect);
+                this.readbackup();
                 // this.runbackup();
                 // showMessage("处理中...");
             }
@@ -194,13 +196,14 @@ export default class SiYuanLink extends Plugin {
             value: "",
             type: "button",
             title: "验证服务连接",
-            description: "判断是否连接上alist服务",
+            description: "判断是否连接上alist服务和是否定时备份",
             button: {
                 label: "验证",
                 callback: () => {
                     showMessage("正在验证...");
                     if (alistUrl != "") {
                         checkAlistConnection(alistname, alistmima);
+                        //TODO:验证是否定时备份
                     } else {
                         showMessage("未配置备份地址", 2000);
                     }
@@ -209,7 +212,7 @@ export default class SiYuanLink extends Plugin {
         });
         this.settingUtils.addItem({
             key: "islog",
-            value: Boolean,
+            value: false,
             type: "checkbox",
             title: "是否日志输出",
             description: "控制本插件日志是否输出到控制台",
@@ -323,6 +326,24 @@ export default class SiYuanLink extends Plugin {
             }
         });
 
+        this.settingUtils.addItem({
+            key: "alistTime",
+            value: "",
+            type: "textinput",
+            title: "（可选）每日备份定时【需保证思源一直在运行】    (功能测试中...欢迎反馈bug)   ",
+            description: "设置每日全量备份的时间,不填则取消定时(设置格式eg: 08/00 表示每天 8:00)",
+            action: {
+                // Called when focus is lost and content changes
+                callback: async () => {
+                    // Return data and save it in real time
+                    let value = await this.settingUtils.takeAndSave("alistTime");
+                    alistTime = value;
+                    myapi.refresh();
+                    // console.log(value);
+                }
+            }
+        })
+
         try {
             this.settingUtils.load();
         } catch (error) {
@@ -338,59 +359,66 @@ export default class SiYuanLink extends Plugin {
 
 
 
-    private addMenu2(rect?: DOMRect) {
-        //退出回调
-        const menu = new Menu("topBarSample2", () => {
-            outLog(this.i18n.byeMenu);
-        });
-        //添加菜单项
-        menu.addItem({
-            icon: "",
-            label: "备份data",
-            click: () => {
-                if (alistUrl == "") {
-                    showMessage("请先配置备份地址！");
-                    return;
-                }
-                confirm("请给备份文件取个名字 ^_^", `<style>
-        #alistFilename {
-            width: 100%;
-            padding: 4px;
-            color: #fff; /* 设置文字为白色 */
-            background-color: #333; /* 设置背景颜色为深色 */
-            border: 1px solid #007BFF;
-            border-radius: 4px;
-            font-size: 14px;
-            outline: none;
-        }
-        #alistFilename:focus {
-            border-color: #007BFF;
-            box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
-        }
-    </style>
-    文件名: <input type="text" id="alistFilename" value="${alistFilename}">`, () => {
-                    const inputElement = document.getElementById("alistFilename") as HTMLInputElement;
-                    const inputValue = inputElement.value;
-                    if (inputValue) {
-                        outLog("正在备份..." + inputValue);
-                        outLog("备份data");
-                        this.runbackup(inputValue);
-                    } else {
-                        showMessage("没有输入文件名，备份取消。");
-                        return;
-                    }
-                });
+    // private addMenu2(rect?: DOMRect) {
+    //     //退出回调
+    //     const menu = new Menu("topBarSample2", () => {
+    //         // outLog(this.i18n.byeMenu);
+    //     });
+    //     //添加菜单项
+    //     menu.addItem({
+    //         icon: "",
+    //         label: "备份data",
+    //         click: () => {
+    //             if (alistUrl == "") {
+    //                 showMessage("请先配置备份地址！");
+    //                 return;
+    //             }
+    //             confirm("请给备份文件取个名字 ^_^", `<style>
+    //     #alistFilename {
+    //         width: 100%;
+    //         padding: 4px;
+    //         color: #fff; /* 设置文字为白色 */
+    //         background-color: #333; /* 设置背景颜色为深色 */
+    //         border: 1px solid #007BFF;
+    //         border-radius: 4px;
+    //         font-size: 14px;
+    //         outline: none;
+    //     }
+    //     #alistFilename:focus {
+    //         border-color: #007BFF;
+    //         box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+    //     }
+    // </style>
+    // 文件名: <input type="text" id="alistFilename" value="${alistFilename}">`, () => {
+    //                 const inputElement = document.getElementById("alistFilename") as HTMLInputElement;
+    //                 const inputValue = inputElement.value;
+    //                 if (inputValue) {
+    //                     outLog("正在备份..." + inputValue);
+    //                     outLog("备份data");
+    //                     this.runbackup(inputValue);
+    //                 } else {
+    //                     showMessage("没有输入文件名，备份取消。");
+    //                     return;
+    //                 }
+    //             });
 
-                // this.runbackup();
-                // this.dbug();
-            }
-        });
-        menu.open({
-            x: rect.left,
-            y: rect.bottom,
-            isLeft: false,
-        });
-    }
+    //             // this.runbackup();
+    //             // this.dbug();
+    //         }
+    //     });
+    // menu.addItem({
+    //     icon: "",
+    //     label: "定时备份",
+    //     click: () => {
+    //         console.log(myapi.getDateTime());
+    //     }
+    // });
+    // menu.open({
+    //     x: rect.left,
+    //     y: rect.bottom,
+    //     isLeft: false,
+    // });
+    // }
 
 
 
@@ -407,13 +435,19 @@ export default class SiYuanLink extends Plugin {
         alistToPath = this.settingUtils.get("alistToPath");
         alistToPath2 = this.settingUtils.get("alistToPath2");
         alistFilename = this.settingUtils.get("alistFilename");
+        alistTime = this.settingUtils.get("alistTime");
         outLog(alistUrl, "当前备份地址");
         outLog(alistname, "当前备份用户名");
         outLog(alistToPath, "当前备份路径");
         outLog(alistToPath2, "当前附件上传路径");
         outLog(alistFilename, "当前备份文件名");
         trunLog(this.settingUtils.get("islog"));
-
+        if (alistTime) {
+            myapi.scheduleDailyTask(alistTime, () => {
+                console.log("每日任务执行了！");
+                this.runbackup(alistFilename);
+            });
+        }
 
         let tabDiv = document.createElement("div");
 
@@ -606,24 +640,46 @@ export default class SiYuanLink extends Plugin {
         e.stopPropagation();
     }
 
-    // private eventBusPaste(event: any) {
-    //     // 如果需异步处理请调用 preventDefault， 否则会进行默认处理
-    //     event.preventDefault();
-    //     showMessage("Paste event triggered");
-    //     console.log(event);
-    //     const pasttext = event.detail.textPlain;
 
-    //     console.log(pasttext);
 
-    //     // 如果使用了 preventDefault，必须调用 resolve，否则程序会卡死
-    //     event.detail.resolve({
-    //         textPlain: event.detail.textPlain.trim(),
-    //     });
-    // }
+    readbackup() {
+        if (alistUrl == "") {
+            showMessage("请先配置备份地址！");
+            return;
+        }
+        confirm("请给备份文件取个名字 ^_^", `<style>
+            #alistFilename {
+                width: 100%;
+                padding: 4px;
+                color: #fff; /* 设置文字为白色 */
+                background-color: #333; /* 设置背景颜色为深色 */
+                border: 1px solid #007BFF;
+                border-radius: 4px;
+                font-size: 14px;
+                outline: none;
+            }
+            #alistFilename:focus {
+                border-color: #007BFF;
+                box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+            }
+        </style>
+        文件名: <input type="text" id="alistFilename" value="${alistFilename}">`, () => {
+            const inputElement = document.getElementById("alistFilename") as HTMLInputElement;
+            const inputValue = inputElement.value;
+            if (inputValue) {
+                outLog("正在备份..." + inputValue);
+                outLog("备份data");
+                this.runbackup(inputValue);
+            } else {
+                showMessage("没有输入文件名，备份取消。");
+                return;
+            }
+        });
+
+        // this.runbackup();
+        // this.dbug();
+    }
+
+
 }
-
-// handleUrl(protocol, target:any) {
-
-// }
-
 

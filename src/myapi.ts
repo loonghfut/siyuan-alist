@@ -1079,3 +1079,70 @@ export function isUrlContained(targetUrl, standardUrl) {
 export function insertDoc(){
 
 }
+
+//获取时间
+export function getDateTime() {
+    const date = new Date();
+    // const year = date.getFullYear();
+    // const month = date.getMonth() + 1;
+    // const day = date.getDate();
+    const hour = date.getHours();
+    const minute = date.getMinutes();
+    const second = date.getSeconds();
+    return `${hour}:${minute}:${second}`;
+}
+
+export function scheduleDailyTask(time, task) {
+    // 解析输入的时间字符串
+    const [hour, minute] = time.split('/').map(Number);
+    outLog(`${hour} ${minute}`, 'scheduleDailyTask');
+    function executeTask() {
+        // 执行传入的任务
+        task();
+
+        // 获取当前时间
+        const now = new Date();
+
+        // 设置下一次执行的时间
+        const nextExecutionTime = new Date(
+            now.getFullYear(),
+            now.getMonth(),
+            now.getDate() + 1, // 下一天
+            hour,
+            minute,
+            0 // 秒
+        );
+
+        // 计算距离下一次执行的时间差（毫秒）
+        const timeUntilNextExecution = nextExecutionTime.getTime() - now.getTime();
+        console.log(`任务将在 ${hour}:${minute} 执行，距禿下次执行还有 ${timeUntilNextExecution / 1000} 秒`,'111111111');
+        // 设置定时器，等待时间差后再次执行
+        setTimeout(executeTask, timeUntilNextExecution);
+    }
+
+    // 获取当前时间
+    const now = new Date();
+
+    // 设置今天的目标时间
+    const targetTime = new Date(
+        now.getFullYear(),
+        now.getMonth(),
+        now.getDate(),
+        hour,
+        minute,
+        0 // 秒
+    );
+
+    // 如果当前时间已经过了目标时间，则设置为明天的目标时间
+    if (now > targetTime) {
+        targetTime.setDate(targetTime.getDate() + 1);
+    }
+
+    // 计算距离目标时间的时间差（毫秒）
+    const timeUntilTarget = targetTime.getTime() - now.getTime();
+    console.log(`任务将在 ${hour}:${minute} 执行，距离下次执行还有 ${timeUntilTarget / 1000} 秒`,'sad');
+    showMessage(`alist备份任务将在 ${hour}:${minute} 执行，距离下次执行还有 ${timeUntilTarget / 1000} 秒`);
+    // 设置定时器，等待时间差后执行任务
+    setTimeout(executeTask, timeUntilTarget);
+}
+
