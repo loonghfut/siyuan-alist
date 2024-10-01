@@ -183,6 +183,73 @@ export default class SiYuanLink extends Plugin {
         });
 
 
+        //dev
+        this.addDock({
+            config: {
+                position: "RightTop",
+                size: { width: 250, height: 0 },
+                icon: "iconAlist",
+                title: "alist网页",
+            },
+            data: null,
+            type: "alist-dock-dev",
+            resize() {
+                if (this.element.clientWidth == 0) {
+                    isclickalist = true;
+                } else {
+                    isclickalist = false;
+                    this.element.style.width = "200px";
+                }
+            },
+            update() {
+                // console.log("alist-dock" + " update");
+                // console.log(this, "cehsihs8");
+                this.element.innerHTML = `<div id="alist-dock" style="height: 100% ; width: 100%;">
+                <iframe 
+                allow="clipboard-read; clipboard-write"
+                sandbox="allow-forms allow-presentation allow-same-origin allow-scripts allow-modals allow-popups" 
+                src="${targetURL}" 
+                data-src="" 
+                border="0" 
+                frameborder="no" 
+                framespacing="0" 
+                allowfullscreen="true" 
+                style="height: 99% ; width: 100%;"
+                >
+                </iframe>
+                </div>`;
+            },
+            init: (dock) => {
+                this.alistdock = dock;//将dock赋值给全局变量，以便在其它地方进行后续操作
+                if (alistUrl == "") {
+                    showMessage("请先配置alist网址...", -1, "error");
+                }
+                dock.element.innerHTML = `<div id="alist-dock" style="height: 100% ; width: 100%;">
+                <iframe 
+                allow="clipboard-read; clipboard-write"
+                sandbox="allow-forms allow-presentation allow-same-origin allow-scripts allow-modals allow-popups" 
+                src="plugins/siyuan-alist/alist/index.html" 
+                data-src="" 
+                border="0" 
+                frameborder="no" 
+                framespacing="0" 
+                allowfullscreen="true" 
+                style="height: 99% ; width: 100%;"
+                >
+                </iframe>
+                </div>`;
+            },
+            destroy() {
+                console.log("destroy dock:", "alist-dock");
+            }
+        });
+        //dev
+
+
+
+
+
+
 
         //插件设置相关
         this.settingUtils = new SettingUtils({
@@ -436,6 +503,9 @@ export default class SiYuanLink extends Plugin {
         alistToPath2 = this.settingUtils.get("alistToPath2");
         alistFilename = this.settingUtils.get("alistFilename");
         alistTime = this.settingUtils.get("alistTime");
+
+
+
         outLog(alistUrl, "当前备份地址");
         outLog(alistname, "当前备份用户名");
         outLog(alistToPath, "当前备份路径");

@@ -27,11 +27,13 @@ export default defineConfig({
     plugins: [
         // svelte(),
 
-        vitePluginYamlI18n({
-            inDir: 'public/i18n',
-            outDir: `${distDir}/i18n`
-        }),
-        
+        vitePluginYamlI18n(
+            {
+                inDir: 'public/i18n',
+                outDir: `${distDir}/i18n`
+            },
+        ),
+
         vue(),
         viteStaticCopy({
             targets: [
@@ -50,6 +52,10 @@ export default defineConfig({
                 {
                     src: "./icon.png",
                     dest: "./",
+                }, 
+                {
+                    src: "./src/alist/*",
+                    dest: "./alist",
                 }
             ],
         }),
