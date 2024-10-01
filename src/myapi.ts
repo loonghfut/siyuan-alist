@@ -211,13 +211,13 @@ export async function getCurrentNotePathById(docId: string, isDir = false, isUrl
         outLog(docData, "getCurrentNotePath");
         notebookId = docData.data.box;
         if (isDir) {
-            const notePath = "data" +docData.data ;
+            const notePath = "data" + docData.data;
             //TODO:这里返回路径没有笔记本的，需要知道笔记本的id才行
             //去掉后缀
             const notePath2 = notePath.substring(0, notePath.lastIndexOf('.'));
             return notePath2;
         }
-        const notePath = "data" +docData.data ;
+        const notePath = "data" + docData.data;
         // console.log('Current note path:', notePath);
         return notePath;
     } catch (error) {
@@ -669,7 +669,7 @@ export async function handleDbResource(currentDocId) {
     //获取笔记文件数据
     const data = await getNoteData(await getCurrentNotePath(currentDocId, false, true), true);
     //将json字符串转换为json对象，并输出
-//BUG
+    //BUG
     //提取数据库资源文件路径
     const dbResourcePaths = extractDbResourcePaths(data);
     outLog(dbResourcePaths, "handleDbResource");
@@ -990,15 +990,17 @@ export async function uploadToAList(blob, filePath) {
                 showMessage('备份到alist成功', 6000, 'info', '备份到AList');
                 // 9/16 2024 更新：返回文件路径到剪切板
                 var markdownLink = `[${FileName}](${alistUrl}${filePath})`;
-                navigator.clipboard.writeText(markdownLink).then(function() {
-                    outLog('Markdown链接已复制到剪贴板', 'uploadToAList');
-                    // 可以在这里添加一个提示，告知用户链接已复制
-          
-                }).catch(function(err) {
-                    console.error('无法复制链接: ', err);
-                    // 可以在这里添加一个错误提示
-                    showMessage('无法复制链接', -1, 'error');
-                });
+                if (navigator.clipboard && navigator.clipboard.writeText) {
+                    navigator.clipboard.writeText(markdownLink).then(function () {
+                        outLog('Markdown链接已复制到剪贴板', 'uploadToAList');
+                        showMessage('文件链接已复制到剪贴板', 1000);
+
+                    }).catch(function (err) {
+                        console.error('无法复制链接: ', err);
+                        // 可以在这里添加一个错误提示
+                        // showMessage('复制链接', 6000, 'error');
+                    });
+                }
 
                 console.log("Upload successful.");
             } else {
@@ -1076,7 +1078,7 @@ export function isUrlContained(targetUrl, standardUrl) {
 }
 
 //插入文档方法
-export function insertDoc(){
+export function insertDoc() {
 
 }
 
@@ -1115,7 +1117,7 @@ export function scheduleDailyTask(time, task) {
 
         // 计算距离下一次执行的时间差（毫秒）
         const timeUntilNextExecution = nextExecutionTime.getTime() - now.getTime();
-        console.log(`任务将在 ${hour}:${minute} 执行，距禿下次执行还有 ${timeUntilNextExecution / 1000} 秒`,'111111111');
+        console.log(`任务将在 ${hour}:${minute} 执行，距禿下次执行还有 ${timeUntilNextExecution / 1000} 秒`, '111111111');
         // 设置定时器，等待时间差后再次执行
         setTimeout(executeTask, timeUntilNextExecution);
     }
@@ -1140,7 +1142,7 @@ export function scheduleDailyTask(time, task) {
 
     // 计算距离目标时间的时间差（毫秒）
     const timeUntilTarget = targetTime.getTime() - now.getTime();
-    console.log(`任务将在 ${hour}:${minute} 执行，距离下次执行还有 ${timeUntilTarget / 1000} 秒`,'sad');
+    console.log(`任务将在 ${hour}:${minute} 执行，距离下次执行还有 ${timeUntilTarget / 1000} 秒`, 'sad');
     showMessage(`alist备份任务将在 ${hour}:${minute} 执行，距离下次执行还有 ${timeUntilTarget / 1000} 秒`);
     // 设置定时器，等待时间差后执行任务
     setTimeout(executeTask, timeUntilTarget);

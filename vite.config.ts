@@ -53,10 +53,10 @@ export default defineConfig({
                     src: "./icon.png",
                     dest: "./",
                 }, 
-                {
-                    src: "./src/alist/*",
-                    dest: "./alist",
-                }
+                // {
+                //     src: "./src/alist/*",
+                //     dest: "./alist",
+                // }
             ],
         }),
     ],

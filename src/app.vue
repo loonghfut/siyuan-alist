@@ -1,33 +1,5 @@
 <template>
-  <div id="app">
-    <div class="header-container"> <!-- 添加一个新的容器 -->
-      <h1 class="title">目标源笔记</h1>
-      <div>
-        <!-- <label class="MY-select-label" for="options">笔记本:</label> -->
-        <select v-model="selectedOption" id="options" class="MY-select-box" @change="onOptionChange">
-          <option v-for="option in options" :key="option.id" :value="option.name">
-            {{ option.name }}
-          </option>
-        </select>
-      </div>
-      <button class="MY-refresh-button" @click="refreshPage()">刷新</button>
-    </div>
-    <span v-if="loading">加载中...</span>
-    <div class="tree-container">
-      <FileTree :items="fileTreeData" />
-    </div>
-    <!-- 实时展示 url, token, alistname, alistmima, alistUrl -->
-    <!-- 当之变化时，实时更新 -->
-    <div class="info-container">
-      <p class="info-item">服务源: <span class="info-value">{{ serNum }}</span></p>
-      <!-- 当selectedFileIdsName有值时，显示，否则不显示 -->
-      <p v-if="selectedFileIdsName.length" class="info-item">已选笔记: <span class="info-value">{{ selectedFileIdsName
-          }}</span></p>
-      <p>-----------------</p>
-      <div v-if="selectedFileIdsName.length"><button class="MY-pull-note-button"
-          @click="plugin.pullNote(selectedFileIds)">拉取笔记</button></div>
-    </div>
-  </div>
+
 </template>
 
 
@@ -52,12 +24,7 @@ export default {
   // },
 
   async mounted() {
-    this.loading = true;
-    this.options = await filetree.listNotebooks()
-    this.loading = false;
-    // console.log('mounted');
-    // console.log(await filetree.getFileTreeData());
-    // this.fileTreeData = await filetree.getFileTreeData();
+   
   },
   methods: {
     async refreshPage1() {
