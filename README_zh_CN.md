@@ -35,7 +35,7 @@
 
 ## 更新日志  
  0.0.5：  
- 增加：'是否改为'Ctrl+左键'触发' 选项提高插件兼容性
+ 增加：'是否改为'Ctrl+左键'触发' 选项提高插件兼容性  
  0.0.4:  
  优化：报错反馈 [#1](https://github.com/loonghfut/siyuan-alist/issues/1)  
 
