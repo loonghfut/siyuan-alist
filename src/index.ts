@@ -43,6 +43,7 @@ export let alistToPath: string | null = null;
 export let alistToPath2: string | null = null;
 export let alistFilename: string | null = null;
 export let alistTime: string | null = null;
+export let isCtrl: boolean = false;
 // let notePath: string | null = null;
 let targetURL: string | null = null;
 let isclickalist: boolean = true;
@@ -196,10 +197,10 @@ export default class SiYuanLink extends Plugin {
         //     data: null,
         //     type: 'alist-vue',
         //     resize() {
-                
+
         //     },
         //     update() {
-             
+
 
         //     },
         //     init: (dock) => {
@@ -257,6 +258,22 @@ export default class SiYuanLink extends Plugin {
                     // Return data and save it in real time
                     let value = !this.settingUtils.get("islog");
                     this.settingUtils.set("islog", value);
+                    trunLog(value);
+                    outLog(value);
+                }
+            }
+        });
+        this.settingUtils.addItem({
+            key: "isCtrl",
+            value: false,
+            type: "checkbox",
+            title: "是否改为'Ctrl+左键'触发",
+            description: "为兼容其他插件设计(修改后记得刷新一下哦)",
+            action: {
+                callback: () => {
+                    // Return data and save it in real time
+                    let value = !this.settingUtils.get("isCtrl");
+                    this.settingUtils.set("isCtrl", value);
                     trunLog(value);
                     outLog(value);
                 }
@@ -472,6 +489,7 @@ export default class SiYuanLink extends Plugin {
         alistToPath2 = this.settingUtils.get("alistToPath2");
         alistFilename = this.settingUtils.get("alistFilename");
         alistTime = this.settingUtils.get("alistTime");
+        isCtrl = this.settingUtils.get("isCtrl");
 
 
 
@@ -573,6 +591,20 @@ export default class SiYuanLink extends Plugin {
             // console.log('Alt + 鼠标左键被按下222');
             this.openMyTab(e.target, e);
         } else if (
+            isCtrl && 
+            e.ctrlKey && e.button === 0 && 
+            e.target.dataset &&
+            e.target.dataset.type == "a" &&
+            e.target.dataset.href
+        ) {
+            try {
+                outLog(e.target.dataset.href);
+                this.isrecall(e.target, e);
+            } catch (e) {
+                console.error(e);
+            }
+        } else if (
+            isCtrl!==true &&
             e.target.dataset &&
             e.target.dataset.type == "a" &&
             e.target.dataset.href

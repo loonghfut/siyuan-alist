@@ -6,6 +6,8 @@
 2. 上传文件到alist，并将链接插入当前笔记  
 3. 一键全量备份数据到alist
 4. 定时全量备份到alist (beta)(代码运行在前端故需保证思源笔记一直在后台运行)
+5. 支持通过标签页打开链接（Alt+左键） 
+6. 在alist中初步实现视频记录[需要配置一下alist](https://ld246.com/article/1727347960883/comment/1729590148031#comments) #感谢[@wilsons](https://ld246.com/member/wilsons)提供
 
 #### 达到目的（使用场景）
 1. 方便将数据备份到alist
@@ -28,8 +30,12 @@
       > 后面不要加“/”
    - 默认文件名后面要加.zip
 
+## 展望
+ 尝试更深入联动alist
 
 ## 更新日志  
+ 0.0.5：  
+ 增加：'是否改为'Ctrl+左键'触发' 选项提高插件兼容性
  0.0.4:  
  优化：报错反馈 [#1](https://github.com/loonghfut/siyuan-alist/issues/1)  
 
