@@ -26,6 +26,7 @@ import {
 } from "@/myapi";
 
 import { SettingUtils } from "./libs/setting-utils";
+import exp from "constants";
 
 const STORAGE_NAME = "menu-config";
 const TAB_TYPE = "custom_tab";
@@ -44,6 +45,7 @@ export let alistToPath2: string | null = null;
 export let alistFilename: string | null = null;
 export let alistTime: string | null = null;
 export let isCtrl: boolean = false;
+export let isdrag: boolean = true;
 // let notePath: string | null = null;
 let targetURL: string | null = null;
 let isclickalist: boolean = true;
@@ -96,6 +98,7 @@ export default class SiYuanLink extends Plugin {
                 // showMessage("处理中...");
             }
         });
+
         this.addTopBar({
             icon: "iconAlist",
             title: "附件上传",
@@ -122,6 +125,7 @@ export default class SiYuanLink extends Plugin {
                 fileInput.click();
             }
         });
+
 
 
 
@@ -274,8 +278,34 @@ export default class SiYuanLink extends Plugin {
                     // Return data and save it in real time
                     let value = !this.settingUtils.get("isCtrl");
                     this.settingUtils.set("isCtrl", value);
-                    trunLog(value);
                     outLog(value);
+                }
+            }
+        });
+        this.settingUtils.addItem({
+            key: "isdrag",
+            value: true,
+            type: "checkbox",
+            title: "增加拖拽上传能力(刷新后生效)    (功能测试中...欢迎反馈bug)",
+            description: "启用后顶栏部分区域可以拖拽文件上传",
+            action: {
+                callback: () => {
+                    // Return data and save it in real time
+                    let value = !this.settingUtils.get("isdrag");
+                    this.settingUtils.set("isdrag", value);
+                    outLog(value);
+                    // const elementToHide = document.getElementById('plugin_siyuan-alist_1');
+                    // if (value) {
+                    //     if (elementToHide) {
+                    //         // 设置 display 为 none 隐藏元素
+                    //         elementToHide.style.display = 'none';
+                    //     }
+                    // } else {
+                    //     if (elementToHide) {
+                    //         // 设置 display 为 none 隐藏元素
+                    //         elementToHide.style.display = 'block';
+                    //     }
+                    // }
                 }
             }
         });
@@ -490,7 +520,7 @@ export default class SiYuanLink extends Plugin {
         alistFilename = this.settingUtils.get("alistFilename");
         alistTime = this.settingUtils.get("alistTime");
         isCtrl = this.settingUtils.get("isCtrl");
-
+        isdrag = this.settingUtils.get("isdrag");
 
 
         outLog(alistUrl, "当前备份地址");
@@ -505,7 +535,9 @@ export default class SiYuanLink extends Plugin {
                 this.runbackup(alistFilename);
             });
         }
-
+        if (isdrag) {
+            insertCountdownElement();
+        }
         let tabDiv = document.createElement("div");
 
         this.customTab = this.addTab({
@@ -521,7 +553,6 @@ export default class SiYuanLink extends Plugin {
                 console.log("destroy tab:", TAB_TYPE);
             }
         });
-
         //获取当前文档ID
         this.eventBus.on("switch-protyle", (event) => {
             currentDocId = event.detail.protyle.block.id;
@@ -529,6 +560,7 @@ export default class SiYuanLink extends Plugin {
         });
         //获取当前文档ID
     }
+
 
 
 
@@ -544,7 +576,6 @@ export default class SiYuanLink extends Plugin {
 
     uninstall() {
         console.log("uninstall");
-
         // this.eventBus.off("paste", this.eventBusPaste);
         document.removeEventListener("click", this.onlick, true);
     }
@@ -591,8 +622,8 @@ export default class SiYuanLink extends Plugin {
             // console.log('Alt + 鼠标左键被按下222');
             this.openMyTab(e.target, e);
         } else if (
-            isCtrl && 
-            e.ctrlKey && e.button === 0 && 
+            isCtrl &&
+            e.ctrlKey && e.button === 0 &&
             e.target.dataset &&
             e.target.dataset.type == "a" &&
             e.target.dataset.href
@@ -604,7 +635,7 @@ export default class SiYuanLink extends Plugin {
                 console.error(e);
             }
         } else if (
-            isCtrl!==true &&
+            isCtrl !== true &&
             e.target.dataset &&
             e.target.dataset.type == "a" &&
             e.target.dataset.href
@@ -754,3 +785,107 @@ export default class SiYuanLink extends Plugin {
 
 }
 
+
+
+function insertCountdownElement() {//TODO:需要优化
+    let toolbarDrag = document.querySelector('#toolbar > #drag');
+    if (toolbarDrag) {
+        toolbarDrag.insertAdjacentHTML(
+            "afterend",
+            `<head>
+    <style>
+        .upload-container {
+            width: 100px;
+            height: 30px;
+            border-radius: 4px;
+            background-color: var(--b3-toolbar-hover) ;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            font-size: 13px;
+            cursor: pointer;
+            text-align: center;
+            
+        }
+
+
+        .upload-input {
+            display: none;
+        }
+        .wd {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            user-select: none; /* 防止该元素的文本被选中 */
+        }
+    </style>
+
+</head>
+<body>
+    <div id="uploadContainer" class="upload-container">
+        <div class="wd b3-list-item__text">上传<svg width="15" height="15">
+            <use xlink:href="#iconAlist"></use>
+        </svg>附件</div>
+        <input type="file" id="fileInput" class="upload-input" multiple>
+    </div>
+</body>`
+        );
+    } else {
+        console.error("找不到 #toolbar > #drag 元素");
+    }
+    const uploadContainer = document.getElementById('uploadContainer');
+    const fileInput = document.getElementById('fileInput');
+    const textElement = uploadContainer.querySelector('.wd') as HTMLElement; // 获取子元素
+    uploadContainer.addEventListener('click', () => {
+        fileInput.click();
+    });
+
+    // 文件选择事件处理
+    fileInput.addEventListener('change', async (event) => {
+        console.log(event);
+        const inputElement = event.target as HTMLInputElement; // 类型断言
+        const files = inputElement.files; // 现在可以安全地访问 files
+        if (files && files.length > 0) {
+            const file = files[0]; // 获取选中的第一个文件
+            await uploadToAList(file, alistToPath2 + "/" + file.name); // 调用上传文件的函数
+            //增加插入笔记上传的文件链接
+            api.appendBlock('markdown', `[${file.name}](${alistUrl}${alistToPath2}/${file.name})`, currentDocId);
+        }
+    });
+    uploadContainer.addEventListener('dragover', (event) => {
+        event.preventDefault();
+        uploadContainer.style.backgroundColor = '#70c6bea1'; // 改变背景色以显示拖拽效果
+        // uploadContainer.style.border = '12px dashed #42625f6e'; // 显示虚线边框
+        if (textElement) {
+            textElement.innerText = '松手上传'; // 或者使用 textContent
+        }
+    });
+
+    uploadContainer.addEventListener('dragleave', () => {
+        uploadContainer.style.backgroundColor = 'var(--b3-toolbar-hover)'; // 恢复原背景色
+        if (textElement) {
+            textElement.innerHTML = '上传<svg width="15" height="15"><use xlink:href="#iconAlist"></use></svg>附件'; // 或者使用 textContent
+        }
+    });
+
+    uploadContainer.addEventListener('drop', async (event) => {
+        event.preventDefault();
+        uploadContainer.style.backgroundColor = 'var(--b3-toolbar-hover)'; // 恢复原背景色
+        if (textElement) {
+            textElement.innerHTML = '上传<svg width="15" height="15"><use xlink:href="#iconAlist"></use></svg>附件'; // 或者使用 textContent
+        }
+        const files = event.dataTransfer.files; // 获取拖拽的文件列表
+        if (files && files.length > 0) {
+            const file = files[0]; // 获取选中的第一个文件
+            await uploadToAList(file, alistToPath2 + "/" + file.name); // 调用上传文件的函数
+            // 增加插入笔记上传的文件链接
+            api.appendBlock('markdown', `[${file.name}](${alistUrl}${alistToPath2}/${file.name})`, currentDocId);
+        } else {
+            console.log("没有文件");
+            showMessage("没有文件", 1000);
+        }
+    });
+}    

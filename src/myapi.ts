@@ -1148,3 +1148,121 @@ export function scheduleDailyTask(time, task) {
     setTimeout(executeTask, timeUntilTarget);
 }
 
+
+// export function setupFileUpload() {
+//     `<!DOCTYPE html>
+// <html lang="zh-CN">
+// <head>
+//     <meta charset="UTF-8">
+//     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+//     <style>
+//         .upload-container {
+//             width: 300px;
+//             height: 150px;
+//             border: 2px dashed #fff;
+//             border-radius: 10px;
+//             background-color: #333;
+//             display: flex;
+//             flex-direction: column;
+//             justify-content: center;
+//             align-items: center;
+//             color: #fff;
+//             font-size: 16px;
+//             cursor: pointer;
+//             text-align: center;
+//         }
+
+//         .upload-container:hover {
+//             background-color: #444;
+//         }
+
+//         .upload-input {
+//             display: none;
+//         }
+//     </style>
+//     <title>文件上传</title>
+// </head>
+// <body>
+//     <div id="uploadContainer" class="upload-container">
+//         <div>+</div>
+//         <div>点击或拖拽文件到此处上传</div>
+//     </div>
+// </body>
+// </html>
+// `
+
+    // function setupFileUpload(containerId, inputId) {
+    //     const uploadContainer = document.getElementById(containerId);
+    //     const fileInput = document.getElementById(inputId);
+
+    //     // 点击上传区域触发文件选择
+    //     uploadContainer.addEventListener('click', () => {
+    //         fileInput.click();
+    //     });
+
+    //     // 处理文件选择
+    //     fileInput.addEventListener('change', (event) => {
+    //         const files = event.target.files;
+    //         alert(`选择了 ${files.length} 个文件`);
+    //     });
+
+    //     // 拖拽上传处理
+    //     uploadContainer.addEventListener('dragover', (event) => {
+    //         event.preventDefault();
+    //         uploadContainer.style.backgroundColor = '#555'; // 改变背景色以显示拖拽效果
+    //     });
+
+    //     uploadContainer.addEventListener('dragleave', () => {
+    //         uploadContainer.style.backgroundColor = '#333'; // 恢复原背景色
+    //     });
+
+    //     uploadContainer.addEventListener('drop', (event) => {
+    //         event.preventDefault();
+    //         uploadContainer.style.backgroundColor = '#333'; // 恢复原背景色
+    //         const files = event.dataTransfer.files;
+    //         alert(`拖拽上传了 ${files.length} 个文件`);
+    //     });
+    // }
+
+//     // 调用方法
+//     setupFileUpload('uploadContainer', 'fileInput');
+
+// }
+
+
+
+
+
+
+//   // 首次插入倒计时显示元素到 #toolbar > #drag 元素旁边
+
+//   const uploadContainer = document.getElementById('uploadContainer');
+//   const fileInput = document.getElementById('fileInput');
+
+//   // 点击上传区域触发文件选择
+//   uploadContainer.addEventListener('click', () => {
+//       fileInput.click();
+//   });
+
+//   // 处理文件选择
+//   fileInput.addEventListener('change', (event) => {
+//       const files = event.target.files;
+//       alert(`选择了 ${files.length} 个文件`);
+//   });
+
+//   // 拖拽上传处理
+//   uploadContainer.addEventListener('dragover', (event) => {
+//       event.preventDefault();
+//       uploadContainer.style.backgroundColor = '#555'; // 改变背景色以显示拖拽效果
+//   });
+
+//   uploadContainer.addEventListener('dragleave', () => {
+//       uploadContainer.style.backgroundColor = '#333'; // 恢复原背景色
+//   });
+
+//   uploadContainer.addEventListener('drop', (event) => {
+//       event.preventDefault();
+//       uploadContainer.style.backgroundColor = '#333'; // 恢复原背景色
+//       const files = event.dataTransfer.files;
+//       alert(`拖拽上传了 ${files.length} 个文件`);
+//   });
