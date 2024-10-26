@@ -36,6 +36,9 @@ export let currentDocId: string | null = null;
 export let url: string | null = null;
 export let token: string | null = null;
 export let serNum: string | null = null;
+export let isKeyPressed: boolean = false;
+export let hotkey: string | null = null;
+// hotkey = "z";
 //alist相关设置  
 export let alistname: string | null = null;
 export let alistmima: string | null = null;
@@ -58,7 +61,33 @@ export default class SiYuanLink extends Plugin {
     async onload() {
         //监听事件
         document.addEventListener("click", this.onlick, true);
+        document.addEventListener('keydown', (e) => {
+            if (e.key === "F1") {
+                isKeyPressed = true; // F1键被按下时设置标志
+                console.log(isKeyPressed);
+                e.preventDefault(); // 阻止F1的默认行为
+            }
+        });
 
+        // 监听键盘抬起事件以重置标志
+        document.addEventListener('keyup', (e) => {
+            if (e.key === "F1") {
+                isKeyPressed = false; // F1键抬起时重置标志
+                console.log(isKeyPressed);
+            }
+        });
+        // document.addEventListener('keydown', (e) => {
+        //     if (e.key === hotkey) {
+        //         isKeyPressed = true;
+        //         console.log(isKeyPressed,'sd');
+        //     }
+        // });
+        // document.addEventListener('keyup', (e) => {
+        //     if (e.key === hotkey) {
+        //         isKeyPressed = false;
+        //         console.log(isKeyPressed);
+        //     }
+        // });
         //TODO暂时放弃这种方案
         // this.eventBus.on("paste", this.eventBusPaste);
 
@@ -268,17 +297,20 @@ export default class SiYuanLink extends Plugin {
             }
         });
         this.settingUtils.addItem({
-            key: "isCtrl",
-            value: false,
-            type: "checkbox",
-            title: "是否改为'Ctrl+左键'触发",
-            description: "为兼容其他插件设计(修改后记得刷新一下哦)",
+            key: "Select",
+            value: 1,
+            type: "select",
+            title: "选择触发方式(刷新后生效)",
+            description: "选择触发侧边栏或者新建页面方式，默认左键触发侧边栏，alt+左键触发新建页面",
+            options: {
+                1: "默认",
+                2: "alt+左键触发侧边栏",
+                3: "alt+左键触发新建页面",
+            },
             action: {
-                callback: () => {
-                    // Return data and save it in real time
-                    let value = !this.settingUtils.get("isCtrl");
-                    this.settingUtils.set("isCtrl", value);
-                    outLog(value);
+                callback: async () => {
+                    // Read data in real time
+                    await this.settingUtils.takeAndSave("Select");
                 }
             }
         });
@@ -294,22 +326,9 @@ export default class SiYuanLink extends Plugin {
                     let value = !this.settingUtils.get("isdrag");
                     this.settingUtils.set("isdrag", value);
                     outLog(value);
-                    // const elementToHide = document.getElementById('plugin_siyuan-alist_1');
-                    // if (value) {
-                    //     if (elementToHide) {
-                    //         // 设置 display 为 none 隐藏元素
-                    //         elementToHide.style.display = 'none';
-                    //     }
-                    // } else {
-                    //     if (elementToHide) {
-                    //         // 设置 display 为 none 隐藏元素
-                    //         elementToHide.style.display = 'block';
-                    //     }
-                    // }
                 }
             }
         });
-
         this.settingUtils.addItem({
             key: "alistUrl",
             value: "",
@@ -521,8 +540,9 @@ export default class SiYuanLink extends Plugin {
         alistTime = this.settingUtils.get("alistTime");
         isCtrl = this.settingUtils.get("isCtrl");
         isdrag = this.settingUtils.get("isdrag");
+        serNum = this.settingUtils.get("Select");
 
-
+        outLog(serNum, "当前触发方式");
         outLog(alistUrl, "当前备份地址");
         outLog(alistname, "当前备份用户名");
         outLog(alistToPath, "当前备份路径");
@@ -579,22 +599,10 @@ export default class SiYuanLink extends Plugin {
         // this.eventBus.off("paste", this.eventBusPaste);
         document.removeEventListener("click", this.onlick, true);
     }
-    //插件卸载相关
 
-    //写插件实现功能的函数
-
-
-
-
-
-
-
-
-
-    //全量传输
-
-    //全量拉取
-
+    isCtrl(e): boolean {
+        return true;
+    }
 
     private async runbackup(alistFilename: string) {
         showMessage("正在备份...", -1, "info", "备份")
@@ -612,34 +620,32 @@ export default class SiYuanLink extends Plugin {
     }
     //点击链接触发的事件
     onlick = (e) => {
-        // console.log(e,"sd");
         if (
             e.altKey && e.button === 0 &&    // event.button === 0 表示鼠标左键
             e.target.dataset &&
             e.target.dataset.type == "a" &&
             e.target.dataset.href
         ) {
-            // console.log('Alt + 鼠标左键被按下222');
-            this.openMyTab(e.target, e);
-        } else if (
-            isCtrl &&
-            e.ctrlKey && e.button === 0 &&
-            e.target.dataset &&
-            e.target.dataset.type == "a" &&
-            e.target.dataset.href
-        ) {
-            try {
-                outLog(e.target.dataset.href);
-                this.isrecall(e.target, e);
-            } catch (e) {
-                console.error(e);
+            if (serNum == '1' || serNum == '3') {
+                this.openMyTab(e.target, e);
+            }
+            if (serNum == '2') {
+                e.preventDefault();
+                try {
+                    outLog(e.target.dataset.href);
+                    this.isrecall(e.target, e);
+                } catch (e) {
+                    console.error(e);
+                }
             }
         } else if (
-            isCtrl !== true &&
+            serNum == '1' &&
+            e.button === 0 &&
             e.target.dataset &&
             e.target.dataset.type == "a" &&
             e.target.dataset.href
         ) {
+            e.preventDefault();
             try {
                 outLog(e.target.dataset.href);
                 this.isrecall(e.target, e);
