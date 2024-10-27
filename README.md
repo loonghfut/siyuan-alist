@@ -28,7 +28,9 @@
    - 路径填写示例  
     正确示例：/alist/siyuan
       > 后面不要加“/”
-   - 默认文件名后面要加.zip
+   - 默认文件名后面要加.zip 
+
+- 建议发布服务的工作空间不要使用此插件
 
 ## 展望
  尝试更深入联动alist  
@@ -36,8 +38,13 @@
  画个大饼：不再使用alist网页嵌入，而通过alist前端项目集成到思源（方便更深入联动alist） 
 
 ## 更新日志  
+ 0.0.8:  
+ 安全：在发布状态下，插件禁用（后续考虑开放部分功能） [#2.2](https://github.com/loonghfut/siyuan-alist/issues/2)  
+ 优化：优化插件设置体验，部分配置变更后自动刷新  
+ 安全：默认禁止敏感信息日志输出，防止发布状态下alist配置信息泄漏（如有遗漏，欢迎反馈）  
+  
  0.0.7:  
- 优化：触发方式支持自定义[#2](https://github.com/loonghfut/siyuan-alist/issues/2#issuecomment-2439596132)  
+ 优化：触发方式支持自定义 [#2.1](https://github.com/loonghfut/siyuan-alist/issues/2#issuecomment-2439596132)  
  移除：移除 '是否改为`Ctrl+左键`触发' 选项（没有太大用处）
     
  0.0.6:  

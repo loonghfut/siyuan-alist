@@ -26,7 +26,7 @@ import {
 } from "@/myapi";
 
 import { SettingUtils } from "./libs/setting-utils";
-import exp from "constants";
+
 
 const STORAGE_NAME = "menu-config";
 const TAB_TYPE = "custom_tab";
@@ -38,6 +38,7 @@ export let token: string | null = null;
 export let serNum: string | null = null;
 export let isKeyPressed: boolean = false;
 export let hotkey: string | null = null;
+export let isReadonly: boolean = false;
 // hotkey = "z";
 //alist相关设置  
 export let alistname: string | null = null;
@@ -58,24 +59,21 @@ export default class SiYuanLink extends Plugin {
     customTab: () => IModel;
     private settingUtils: SettingUtils;
     private isMobile: boolean;
+
+    
     async onload() {
+
+        isReadonly = window.siyuan.config.readonly;
+        console.log(isReadonly, "是否只读");
+        if (isReadonly) {
+            // showMessage("只读模式下插件不可用", -1, "error");
+            return;
+        }
+
+
         //监听事件
         document.addEventListener("click", this.onlick, true);
-        document.addEventListener('keydown', (e) => {
-            if (e.key === "F1") {
-                isKeyPressed = true; // F1键被按下时设置标志
-                console.log(isKeyPressed);
-                e.preventDefault(); // 阻止F1的默认行为
-            }
-        });
 
-        // 监听键盘抬起事件以重置标志
-        document.addEventListener('keyup', (e) => {
-            if (e.key === "F1") {
-                isKeyPressed = false; // F1键抬起时重置标志
-                console.log(isKeyPressed);
-            }
-        });
         // document.addEventListener('keydown', (e) => {
         //     if (e.key === hotkey) {
         //         isKeyPressed = true;
@@ -88,6 +86,7 @@ export default class SiYuanLink extends Plugin {
         //         console.log(isKeyPressed);
         //     }
         // });
+
         //TODO暂时放弃这种方案
         // this.eventBus.on("paste", this.eventBusPaste);
 
@@ -300,7 +299,7 @@ export default class SiYuanLink extends Plugin {
             key: "Select",
             value: 1,
             type: "select",
-            title: "选择触发方式(刷新后生效)",
+            title: "选择触发方式",
             description: "选择触发侧边栏或者新建页面方式，默认左键触发侧边栏，alt+左键触发新建页面",
             options: {
                 1: "默认",
@@ -311,6 +310,7 @@ export default class SiYuanLink extends Plugin {
                 callback: async () => {
                     // Read data in real time
                     await this.settingUtils.takeAndSave("Select");
+                    myapi.refresh();
                 }
             }
         });
@@ -318,14 +318,16 @@ export default class SiYuanLink extends Plugin {
             key: "isdrag",
             value: true,
             type: "checkbox",
-            title: "增加拖拽上传能力(刷新后生效)    (功能测试中...欢迎反馈bug)",
+            title: "增加拖拽上传能力    (功能测试中...欢迎反馈bug)",
             description: "启用后顶栏部分区域可以拖拽文件上传",
             action: {
-                callback: () => {
+                callback: async () => {
                     // Return data and save it in real time
-                    let value = !this.settingUtils.get("isdrag");
-                    this.settingUtils.set("isdrag", value);
-                    outLog(value);
+                    // let value = !this.settingUtils.get("isdrag");
+                    // this.settingUtils.set("isdrag", value);
+                    // outLog(value);
+                    await this.settingUtils.takeAndSave("isdrag");
+                    myapi.refresh();
                 }
             }
         });
@@ -432,7 +434,7 @@ export default class SiYuanLink extends Plugin {
             key: "alistTime",
             value: "",
             type: "textinput",
-            title: "（可选）每日备份定时【需保证思源一直在运行】    (功能测试中...欢迎反馈bug)   ",
+            title: "（可选）每日备份定时【需保证思源一直在运行,且不要多端同时在线】    (功能测试中...欢迎反馈bug)   ",
             description: "设置每日全量备份的时间,不填则取消定时(设置格式eg: 08/00 表示每天 8:00)",
             action: {
                 // Called when focus is lost and content changes
@@ -526,11 +528,14 @@ export default class SiYuanLink extends Plugin {
 
 
     onLayoutReady() {
+        isReadonly = window.siyuan.config.readonly;
+        if(isReadonly){
+            return;
+        }  
+        // this.settingUtils.load();
+        // console.log(`frontend: ${getFrontend()}; backend: ${getBackend()}`);
 
-        this.settingUtils.load();
-        console.log(`frontend: ${getFrontend()}; backend: ${getBackend()}`);
-
-        outLog(url, "当前目标源地址");
+ 
         alistmima = this.settingUtils.get("alistToken");
         alistname = this.settingUtils.get("alistname");
         alistUrl = this.settingUtils.get("alistUrl");
@@ -542,13 +547,15 @@ export default class SiYuanLink extends Plugin {
         isdrag = this.settingUtils.get("isdrag");
         serNum = this.settingUtils.get("Select");
 
-        outLog(serNum, "当前触发方式");
-        outLog(alistUrl, "当前备份地址");
-        outLog(alistname, "当前备份用户名");
-        outLog(alistToPath, "当前备份路径");
-        outLog(alistToPath2, "当前附件上传路径");
-        outLog(alistFilename, "当前备份文件名");
         trunLog(this.settingUtils.get("islog"));
+        // outLog(serNum, "当前触发方式");
+        // outLog(alistUrl, "当前备份地址");
+        // outLog(alistname, "当前备份用户名");
+        // outLog(alistToPath, "当前备份路径");
+        // outLog(alistToPath2, "当前附件上传路径");
+        // outLog(alistFilename, "当前备份文件名");
+        // outLog(url, "当前目标源地址");
+
         if (alistTime) {
             myapi.scheduleDailyTask(alistTime, () => {
                 console.log("每日任务执行了！");
