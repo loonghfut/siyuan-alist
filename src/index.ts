@@ -4,7 +4,7 @@
 // import { Router } from "@solidjs/router"
 // import { render } from "solid-js/web"
 
-import { Index } from "@/alist-web/src/app"
+import { Index } from "@/app/alist-web/src/index"
 
 
 import * as sy from "siyuan";
@@ -33,7 +33,7 @@ import {
 } from "@/myapi";
 
 import { SettingUtils } from "./libs/setting-utils";
-import exp from "constants";
+
 
 const STORAGE_NAME = "menu-config";
 const TAB_TYPE = "custom_tab";
