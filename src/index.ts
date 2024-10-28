@@ -1,5 +1,12 @@
 // import { createApp } from "vue";
 // import App from "./app.vue";
+// import { createSignal } from 'solid-js';
+// import { Router } from "@solidjs/router"
+// import { render } from "solid-js/web"
+
+import { Index } from "@/alist-web/src/app"
+
+
 import * as sy from "siyuan";
 import {
     Plugin,
