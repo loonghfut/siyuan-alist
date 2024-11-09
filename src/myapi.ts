@@ -1,6 +1,7 @@
 
 import { url, token, alistname, alistmima, alistUrl } from '@/index';
 import "@/index.scss";
+import { error } from 'console';
 import { showMessage } from 'siyuan';
 
 //控制日志输出
@@ -1096,7 +1097,23 @@ export function getDateTime() {
 
 export function scheduleDailyTask(time, task) {
     // 解析输入的时间字符串
-    const [hour, minute] = time.split('/').map(Number);
+    const timeParts = time.split('/');
+    
+    // 检查时间字符串的格式
+    if (timeParts.length !== 2) {
+        showMessage('alist备份时间格式错误，正确格式为 "小时/分钟"',-1,"error");
+        throw new Error('时间格式错误，正确格式为 "小时/分钟"');
+    }
+
+    const hour = Number(timeParts[0]);
+    const minute = Number(timeParts[1]);
+
+    // 检查小时和分钟的有效性
+    if (isNaN(hour) || isNaN(minute) || hour < 0 || hour > 23 || minute < 0 || minute > 59) {
+        showMessage('alist备份时间小时或分钟无效，请确保小时在0-23之间，分钟在0-59之间',-1,"error");
+        throw new Error('小时或分钟无效，请确保小时在0-23之间，分钟在0-59之间');
+    }
+
     outLog(`${hour} ${minute}`, 'scheduleDailyTask');
     function executeTask() {
         // 执行传入的任务

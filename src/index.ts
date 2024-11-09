@@ -558,7 +558,7 @@ export default class SiYuanLink extends Plugin {
 
         if (alistTime) {
             myapi.scheduleDailyTask(alistTime, () => {
-                console.log("每日任务执行了！");
+                console.log("备份任务开始执行");
                 this.runbackup(alistFilename);
             });
         }
