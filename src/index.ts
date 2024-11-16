@@ -41,6 +41,7 @@ export let hotkey: string | null = null;
 export let isReadonly: boolean = false;
 // hotkey = "z";
 //alist相关设置  
+export let beta: boolean = false;
 export let alistname: string | null = null;
 export let alistmima: string | null = null;
 export let alistUrl: string | null = null;
@@ -434,7 +435,7 @@ export default class SiYuanLink extends Plugin {
             key: "alistTime",
             value: "",
             type: "textinput",
-            title: "（可选）每日备份定时【需保证思源一直在运行,且不要多端同时在线】    (功能测试中...欢迎反馈bug)   ",
+            title: "（可选）每日备份定时【需保证思源一直在运行,且不要多端同时在线】 ",
             description: "设置每日全量备份的时间,不填则取消定时(设置格式eg: 08/00 表示每天 8:00)",
             action: {
                 // Called when focus is lost and content changes
@@ -446,7 +447,24 @@ export default class SiYuanLink extends Plugin {
                     // console.log(value);
                 }
             }
-        })
+        });
+        this.settingUtils.addItem({
+            key: "beta",
+            value: false,
+            type: "checkbox",
+            title: "beta版本",
+            description: "启用后可进入beta模式，体验还在测试中的新功能(具体功能详见更新日志)，欢迎反馈bug ",
+            action: {
+                callback: async () => {
+                    // Return data and save it in real time
+                    // let value = !this.settingUtils.get("isdrag");
+                    // this.settingUtils.set("isdrag", value);
+                    // outLog(value);
+                    await this.settingUtils.takeAndSave("beta");
+                    myapi.refresh();
+                }
+            }
+        });
 
         try {
             this.settingUtils.load();
@@ -546,6 +564,7 @@ export default class SiYuanLink extends Plugin {
         isCtrl = this.settingUtils.get("isCtrl");
         isdrag = this.settingUtils.get("isdrag");
         serNum = this.settingUtils.get("Select");
+        beta = this.settingUtils.get("beta");
 
         trunLog(this.settingUtils.get("islog"));
         // outLog(serNum, "当前触发方式");
@@ -607,9 +626,15 @@ export default class SiYuanLink extends Plugin {
         document.removeEventListener("click", this.onlick, true);
     }
 
+
+
+
     isCtrl(e): boolean {
         return true;
     }
+
+
+
 
     private async runbackup(alistFilename: string) {
         showMessage("正在备份...", -1, "info", "备份")

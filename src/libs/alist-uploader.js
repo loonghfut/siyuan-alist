@@ -1,5 +1,5 @@
-(function (global) {
-    class AlistUploader {
+
+export  class AlistUploader {
         constructor(alistUploaderOptions) {
             this.baseUrl = alistUploaderOptions.baseUrl;
             this.username = alistUploaderOptions.username;
@@ -377,5 +377,5 @@
         }
     }
 
-    global.AlistUploader = AlistUploader;
-})(window);
+
+

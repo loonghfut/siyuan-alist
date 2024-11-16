@@ -48,7 +48,7 @@
         "src/**/*.d.ts",
         "src/**/*.tsx",
         "src/**/*.vue"
-    ],
+, "src/AlistUp.html"    ],
     "references": [
         {
             "path": "./tsconfig.node.json"
