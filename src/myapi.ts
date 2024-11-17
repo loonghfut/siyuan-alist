@@ -967,13 +967,14 @@ export async function importAllData(blob: Blob) {
 export async function uploadToAList(blob, filePath) {
     if (beta) {
         try {
-            const FileName = filePath.split('/').pop();
+            const FileName = filePath.split('/').pop()
             const file = new File([blob], FileName, { type: 'application/zip' });
+            // 创建用于上传的FormData对象
             const formData = new FormData();
             formData.append('file', file);
             const token2 = await getToken(alistname, alistmima);
             const xhr = new XMLHttpRequest();
-            xhr.open('put', `${alistUrl}/api/fs/put`);
+            xhr.open('put', `${alistUrl}/api/fs/form`);//TODO：用/put流式上传api会乱码，但是这里却没问题，有时间再研究
             // 设置请求头
             xhr.setRequestHeader('Authorization', token2); 
             xhr.setRequestHeader('File-Path', encodeURIComponent(filePath));
@@ -1019,7 +1020,7 @@ export async function uploadToAList(blob, filePath) {
             outLog(file.name);
             const token2 = await getToken(alistname, alistmima);
             showMessage('正在备份到AList...', -1, 'info', '备份到AList');
-            const response = await fetch(`${alistUrl}/api/fs/put`, {
+            const response = await fetch(`${alistUrl}/api/fs/put`, {  //TODO：用/put流式上传api会乱码
                 method: 'PUT',
                 headers: {
                     'Authorization': token2,

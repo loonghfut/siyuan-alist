@@ -7,6 +7,7 @@ import {
     getFrontend,
     getBackend,
     IModel,
+    // IOperation,
     // Menu,
     confirm,
     // openTab
@@ -26,6 +27,8 @@ import {
 } from "@/myapi";
 
 import { SettingUtils } from "./libs/setting-utils";
+import { link } from "fs";
+
 
 
 const STORAGE_NAME = "menu-config";
@@ -60,8 +63,8 @@ export default class SiYuanLink extends Plugin {
     customTab: () => IModel;
     private settingUtils: SettingUtils;
     private isMobile: boolean;
+    private blockIconEventBindThis = this.blockIconEvent.bind(this);
 
-    
     async onload() {
 
         isReadonly = window.siyuan.config.readonly;
@@ -74,6 +77,7 @@ export default class SiYuanLink extends Plugin {
 
         //监听事件
         document.addEventListener("click", this.onlick, true);
+        // this.eventBus.on("click-blockicon", this.blockIconEventBindThis);
 
         // document.addEventListener('keydown', (e) => {
         //     if (e.key === hotkey) {
@@ -478,7 +482,32 @@ export default class SiYuanLink extends Plugin {
     //选中菜单设置
 
 
-
+    private blockIconEvent({ detail }: any) {
+        console.log("blockIconEvent", detail.element.dataset.href);
+        const linkUrl = detail.element.dataset.href;
+        if (linkUrl.startsWith("assets")) {
+            detail.menu.addItem({
+                iconHTML: `<style>
+        .wd {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            user-select: none; /* 防止该元素的文本被选中 */
+        }
+        </style>
+            <div class="wd b3-list-item__text">上传<svg width="15" height="15">
+            <use xlink:href="#iconAlist"></use>
+        </svg>附件</div>`,
+                label: '',
+                click: async () => {
+                    console.log("上传附件");
+                    runblockIconEvent(detail);
+                }
+            });
+        }
+    }
 
 
     // private addMenu2(rect?: DOMRect) {
@@ -547,14 +576,14 @@ export default class SiYuanLink extends Plugin {
 
     onLayoutReady() {
         isReadonly = window.siyuan.config.readonly;
-        if(isReadonly){
+        if (isReadonly) {
             return;
-        }  
+        }
         // this.settingUtils.load();
         // console.log(`frontend: ${getFrontend()}; backend: ${getBackend()}`);
 
- 
-        alistmima = this.settingUtils.get("alistToken");
+
+        alistmima = this.settingUtils.get("alistToken");//TODO:后面改到前面去
         alistname = this.settingUtils.get("alistname");
         alistUrl = this.settingUtils.get("alistUrl");
         alistToPath = this.settingUtils.get("alistToPath");
@@ -574,6 +603,12 @@ export default class SiYuanLink extends Plugin {
         // outLog(alistToPath2, "当前附件上传路径");
         // outLog(alistFilename, "当前备份文件名");
         // outLog(url, "当前目标源地址");
+
+
+        if (beta) {
+            this.eventBus.on("open-menu-link", this.blockIconEventBindThis);
+        }
+
 
         if (alistTime) {
             myapi.scheduleDailyTask(alistTime, () => {
@@ -618,12 +653,14 @@ export default class SiYuanLink extends Plugin {
 
         // this.eventBus.off("paste", this.eventBusPaste);
         document.removeEventListener("click", this.onlick, true);
+        this.eventBus.off("open-menu-link", this.blockIconEventBindThis);
     }
 
     uninstall() {
         console.log("uninstall");
         // this.eventBus.off("paste", this.eventBusPaste);
         document.removeEventListener("click", this.onlick, true);
+        this.eventBus.off("open-menu-link", this.blockIconEventBindThis);
     }
 
 
@@ -926,4 +963,16 @@ function insertCountdownElement() {//TODO:需要优化
             showMessage("没有文件", 1000);
         }
     });
-}    
+}
+
+
+//右键上传附件
+async function runblockIconEvent(detail: any) {
+    const file = await downloadImage(decodeURIComponent("data/" + detail.element.dataset.href))
+    // console.log(decodeURIComponent("data/" + detail.element.dataset.href));
+    const filename = detail.element.dataset.href.split("/")[1];
+    await uploadToAList(file, alistToPath2 + "/" + filename);
+    api.appendBlock("markdown", `[${filename}](${alistUrl}${alistToPath2}/${filename})`, detail.element.offsetParent.dataset.nodeId);
+    // console.log("ces1", detail.element.dataset.href);
+    // console.log("ces2", detail.element.offsetParent.dataset.nodeId);
+}
