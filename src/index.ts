@@ -54,6 +54,7 @@ export let alistFilename: string | null = null;
 export let alistTime: string | null = null;
 export let isCtrl: boolean = false;
 export let isdrag: boolean = true;
+export let today: string | null = null;
 // let notePath: string | null = null;
 let targetURL: string | null = null;
 let isclickalist: boolean = true;
@@ -73,6 +74,16 @@ export default class SiYuanLink extends Plugin {
             // showMessage("只读模式下插件不可用", -1, "error");
             return;
         }
+
+        //获取当前日期
+        let date = new Date();
+        let year = date.getFullYear();
+        let month = date.getMonth() + 1;
+        let day = date.getDate();
+
+        today = year + "-" + month + "-" + day;
+        console.log(today, "当前日期");
+
 
 
         //监听事件
@@ -148,9 +159,10 @@ export default class SiYuanLink extends Plugin {
                     const files = inputElement.files; // 现在可以安全地访问 files
                     if (files && files.length > 0) {
                         const file = files[0]; // 获取选中的第一个文件
-                        await uploadToAList(file, alistToPath2 + "/" + file.name); // 调用上传文件的函数
+                        await uploadToAList(file, alistToPath2 + "/" + today + "/" + file.name); // 调用上传文件的函数
                         //增加插入笔记上传的文件链接
-                        api.appendBlock('markdown', `[${file.name}](${alistUrl}${alistToPath2}/${file.name})`, currentDocId);
+                        // console.log(alistToPath2 + "/" + alistTime + "/" + file.name,"afa");
+                        api.appendBlock('markdown', `[${file.name}](${alistUrl}${alistToPath2}/${today}/${file.name})`, currentDocId);
                     }
                 });
 
@@ -925,9 +937,9 @@ function insertCountdownElement() {//TODO:需要优化
         const files = inputElement.files; // 现在可以安全地访问 files
         if (files && files.length > 0) {
             const file = files[0]; // 获取选中的第一个文件
-            await uploadToAList(file, alistToPath2 + "/" + file.name); // 调用上传文件的函数
+            await uploadToAList(file, alistToPath2 + "/" + today + "/" + file.name); // 调用上传文件的函数
             //增加插入笔记上传的文件链接
-            api.appendBlock('markdown', `[${file.name}](${alistUrl}${alistToPath2}/${file.name})`, currentDocId);
+            api.appendBlock('markdown', `[${file.name}](${alistUrl}${alistToPath2}/${today}/${file.name})`, currentDocId);
         }
     });
     uploadContainer.addEventListener('dragover', (event) => {
@@ -955,9 +967,9 @@ function insertCountdownElement() {//TODO:需要优化
         const files = event.dataTransfer.files; // 获取拖拽的文件列表
         if (files && files.length > 0) {
             const file = files[0]; // 获取选中的第一个文件
-            await uploadToAList(file, alistToPath2 + "/" + file.name); // 调用上传文件的函数
+            await uploadToAList(file, alistToPath2 + "/" + today + "/" + file.name); // 调用上传文件的函数
             // 增加插入笔记上传的文件链接
-            api.appendBlock('markdown', `[${file.name}](${alistUrl}${alistToPath2}/${file.name})`, currentDocId);
+            api.appendBlock('markdown', `[${file.name}](${alistUrl}${alistToPath2}/${today}/${file.name})`, currentDocId);
         } else {
             console.log("没有文件");
             showMessage("没有文件", 1000);
@@ -971,8 +983,8 @@ async function runblockIconEvent(detail: any) {
     const file = await downloadImage(decodeURIComponent("data/" + detail.element.dataset.href))
     // console.log(decodeURIComponent("data/" + detail.element.dataset.href));
     const filename = detail.element.dataset.href.split("/")[1];
-    await uploadToAList(file, alistToPath2 + "/" + filename);
-    api.appendBlock("markdown", `[${filename}](${alistUrl}${alistToPath2}/${filename})`, detail.element.offsetParent.dataset.nodeId);
+    await uploadToAList(file, alistToPath2 + "/" + today + "/" + filename);
+    api.appendBlock("markdown", `[${filename}](${alistUrl}${alistToPath2}/${today}/${filename})`, detail.element.offsetParent.dataset.nodeId);
     // console.log("ces1", detail.element.dataset.href);
     // console.log("ces2", detail.element.offsetParent.dataset.nodeId);
 }

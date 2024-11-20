@@ -963,7 +963,7 @@ export async function importAllData(blob: Blob) {
  * @param {string} filePath - 在AList中的目标路径
  */
 // 9/16 2024 更新：返回文件路径到剪切板
-// 11/16 2021 更新：尝试重构(failure)（success）
+// 11/16 2024 更新：尝试重构(failure)（success）
 export async function uploadToAList(blob, filePath) {
     if (beta) {
         try {
