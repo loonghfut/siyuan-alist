@@ -1,7 +1,6 @@
 // import { AlistUploader } from '@/libs/alist-uploader';  //废案
 import { url, token, alistname, alistmima, alistUrl,beta } from '@/index';
 import "@/index.scss";
-import { error } from 'console';
 import { showMessage } from 'siyuan';
 
 //控制日志输出

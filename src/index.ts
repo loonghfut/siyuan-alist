@@ -6,7 +6,7 @@ import {
     Plugin,
     showMessage,
     getFrontend,
-    getBackend,
+    // getBackend,
     IModel,
     // IOperation,
     // Menu,
@@ -46,6 +46,7 @@ export let isReadonly: boolean = false;
 // hotkey = "z";
 //alist相关设置  
 export let beta: boolean = false;
+export let beta_pro: boolean = false;
 export let alistname: string | null = null;
 export let alistmima: string | null = null;
 export let alistUrl: string | null = null;
@@ -454,6 +455,7 @@ export default class SiYuanLink extends Plugin {
                 }
             }
         });
+
         this.settingUtils.addItem({
             key: "beta",
             value: false,
@@ -471,6 +473,24 @@ export default class SiYuanLink extends Plugin {
                 }
             }
         });
+        this.settingUtils.addItem({
+            key: "beta_pro",
+            value: false,
+            type: "checkbox",
+            title: "beta_pro版本【谨慎启用，建议先在新空间使用】",
+            description: "体验还在测试中改动较大的新功能（稳定性未知）(具体功能详见更新日志)，欢迎反馈bug ",
+            action: {
+                callback: async () => {
+                    // Return data and save it in real time
+                    // let value = !this.settingUtils.get("isdrag");
+                    // this.settingUtils.set("isdrag", value);
+                    // outLog(value);
+                    await this.settingUtils.takeAndSave("beta_pro");
+                    myapi.refresh();
+                }
+            }
+        });
+
 
         try {
             this.settingUtils.load();
@@ -543,7 +563,9 @@ export default class SiYuanLink extends Plugin {
         isCtrl = this.settingUtils.get("isCtrl");
         isdrag = this.settingUtils.get("isdrag");
         serNum = this.settingUtils.get("Select");
+
         beta = this.settingUtils.get("beta");
+        beta_pro = this.settingUtils.get("beta_pro");
 
         trunLog(this.settingUtils.get("islog"));
         // outLog(serNum, "当前触发方式");
@@ -619,9 +641,9 @@ export default class SiYuanLink extends Plugin {
 
 
 
-    isCtrl(e): boolean {
-        return true;
-    }
+    // isCtrl(e): boolean {
+    //     return true;
+    // }
 
 
 
@@ -687,45 +709,105 @@ export default class SiYuanLink extends Plugin {
             const isContained = myapi.isUrlContained(target.dataset.href, alistUrl);
             // console.log(isContained);
             if (isContained) {
-                const buttonAlist = document.querySelector('span[data-type="siyuan-alistalist-dock"]');
-                // console.log(buttonAlist, 'buttonAlist');
-                if (buttonAlist) {
-                    // 手动触发点击事件
-                    if (isclickalist) {//判断是否点击
-                        const clickEvent = new MouseEvent('click', {
-                            bubbles: true,
-                            cancelable: true,
-                            view: window
-                        });
-                        buttonAlist.dispatchEvent(clickEvent);
-                    }
+                if (beta_pro) {
+                    const dialog = document.createElement('div');
+                    dialog.style.position = 'absolute';
+                    dialog.style.left = `${e.clientX}px`;
+                    dialog.style.top = `${e.clientY}px`;
+                    dialog.style.width = '40%';
+                    dialog.style.height = '40%';
+                    dialog.style.backgroundColor = 'white';
+                    dialog.style.border = '1px solid #ccc';
+                    dialog.style.boxShadow = '0 2px 10px rgba(0, 0, 0, 0.1)';
+                    dialog.style.zIndex = '1000';
+                    dialog.style.display = 'flex';
+                    dialog.style.flexDirection = 'column';
+    
+                    // 创建 iframe
+                    const iframe = document.createElement('iframe');
+                    iframe.src = target.dataset.href;
+                    iframe.style.width = '100%';
+                    iframe.style.height = '100%';
+                    iframe.style.border = 'none';
+                    iframe.style.flexGrow = '1';
+    
+                    // 将 iframe 添加到对话框容器中
+                    dialog.appendChild(iframe);
+    
+                    // 将对话框容器添加到文档中
+                    document.body.appendChild(dialog);
+    
+                    // 添加点击事件监听器，当点击对话框外部时关闭对话框
+                    const handleClickOutside = (event: MouseEvent) => {
+                        if (!dialog.contains(event.target as Node)) {
+                            document.body.removeChild(dialog);
+                            document.removeEventListener('click', handleClickOutside);
+                        }
+                    };
+    
+                    // 延迟添加事件监听器，以避免立即触发关闭
+                    setTimeout(() => {
+                        document.addEventListener('click', handleClickOutside);
+                    }, 0);
 
-                    if (this.alistdock) {//判断是否存在
-                        targetURL = target.dataset.href;
-                        this.alistdock.update();
-                    } else {
-                        //首次点击，以初始化
-                        const clickEvent = new MouseEvent('click', {
-                            bubbles: true,
-                            cancelable: true,
-                            view: window
-                        });
-                        buttonAlist.dispatchEvent(clickEvent);
+//另一种方式  TODO:后续优化
+                    // const iframeHtml = `<iframe src="${target.dataset.href}" style="width:100%; height:100%; border:none;"></iframe>`;
+                    // console.log(e, 'clickId');
+                    // const dialog = new sy.Dialog({
+                    //     // positionId: clickId,
+                    //     title: null,
+                    //     content: iframeHtml,
+                    //     width: "40%",
+                    //     height: "40%",
+                    //     disableClose: false,
+                    //     hideCloseIcon: true,
+                    // });
+                    // dialog.element.style.position = "absolute";
+                    // dialog.element.style.left = `${e.clientX}px`;
+                    // dialog.element.style.top = `${e.clientY}px`;
+
+
+
+                } else {
+                    const buttonAlist = document.querySelector('span[data-type="siyuan-alistalist-dock"]');
+                    // console.log(buttonAlist, 'buttonAlist');
+                    if (buttonAlist) {
+                        // 手动触发点击事件
+                        if (isclickalist) {//判断是否点击
+                            const clickEvent = new MouseEvent('click', {
+                                bubbles: true,
+                                cancelable: true,
+                                view: window
+                            });
+                            buttonAlist.dispatchEvent(clickEvent);
+                        }
+
                         if (this.alistdock) {//判断是否存在
                             targetURL = target.dataset.href;
                             this.alistdock.update();
                         } else {
-                            console.error('Alist dock not found');
+                            //首次点击，以初始化
+                            const clickEvent = new MouseEvent('click', {
+                                bubbles: true,
+                                cancelable: true,
+                                view: window
+                            });
+                            buttonAlist.dispatchEvent(clickEvent);
+                            if (this.alistdock) {//判断是否存在
+                                targetURL = target.dataset.href;
+                                this.alistdock.update();
+                            } else {
+                                console.error('Alist dock not found');
+                            }
+                            // console.error('Alist dock not found');
                         }
-                        // console.error('Alist dock not found');
+                    } else {
+                        console.error('Span element not found');
                     }
-                } else {
-                    console.error('Span element not found');
+
+
+                    // console.log(this.alistdock,'this.alistdock');
                 }
-
-
-                // console.log(this.alistdock,'this.alistdock');
-
                 e.preventDefault();
                 e.stopPropagation();
             }
@@ -969,3 +1051,4 @@ function getCursorBlockId() {
         return null;
     }
 }
+

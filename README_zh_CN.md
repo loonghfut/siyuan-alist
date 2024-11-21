@@ -38,10 +38,16 @@
 
 DONE:实现alist上传进度可视化  
 DONE:支持将思源笔记里的附件上传到alist并在其下方增加链接
-  
-TODO:用vue写一个（或找个开源的改）alist前端，可能要很久。。
+
+TODO:暂无（欢迎提issue）  
+
+LL_TODO:用vue写一个（或找个开源的改）alist前端，可能要很久。。
 
 ## 更新日志  
+ 0.1.0_dev:  
+ 优化：优化上传链接插入位置，默认为光标所在的块的后面添加链接（不再是在文档末尾添加链接了）（beta）  
+ 增加：新增悬浮alist附件预览窗口（beta_pro）
+
  0.0.12:  
  增加：支持上传文件到alist时，自动添加日期文件夹 [#6](https://github.com/loonghfut/siyuan-alist/issues/6)
 
