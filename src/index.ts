@@ -1,6 +1,7 @@
 // import { createApp } from "vue";
 // import App from "./app.vue";
 import * as sy from "siyuan";
+
 import {
     Plugin,
     showMessage,
@@ -27,7 +28,7 @@ import {
 } from "@/myapi";
 
 import { SettingUtils } from "./libs/setting-utils";
-import { link } from "fs";
+
 
 
 
@@ -48,13 +49,16 @@ export let beta: boolean = false;
 export let alistname: string | null = null;
 export let alistmima: string | null = null;
 export let alistUrl: string | null = null;
-export let alistToPath: string | null = null;
-export let alistToPath2: string | null = null;
+export let alistToPath: string | null = null;  //备份路径
+export let alistToPath2: string | null = null; //上传路径
 export let alistFilename: string | null = null;
 export let alistTime: string | null = null;
 export let isCtrl: boolean = false;
 export let isdrag: boolean = true;
 export let today: string | null = null;
+
+export let clickId: string | null = null;
+
 // let notePath: string | null = null;
 let targetURL: string | null = null;
 let isclickalist: boolean = true;
@@ -88,24 +92,6 @@ export default class SiYuanLink extends Plugin {
 
         //监听事件
         document.addEventListener("click", this.onlick, true);
-        // this.eventBus.on("click-blockicon", this.blockIconEventBindThis);
-
-        // document.addEventListener('keydown', (e) => {
-        //     if (e.key === hotkey) {
-        //         isKeyPressed = true;
-        //         console.log(isKeyPressed,'sd');
-        //     }
-        // });
-        // document.addEventListener('keyup', (e) => {
-        //     if (e.key === hotkey) {
-        //         isKeyPressed = false;
-        //         console.log(isKeyPressed);
-        //     }
-        // });
-
-        //TODO暂时放弃这种方案
-        // this.eventBus.on("paste", this.eventBusPaste);
-
 
         const frontEnd = getFrontend();
         this.isMobile = frontEnd === "mobile" || frontEnd === "browser-mobile";
@@ -162,7 +148,11 @@ export default class SiYuanLink extends Plugin {
                         await uploadToAList(file, alistToPath2 + "/" + today + "/" + file.name); // 调用上传文件的函数
                         //增加插入笔记上传的文件链接
                         // console.log(alistToPath2 + "/" + alistTime + "/" + file.name,"afa");
-                        api.appendBlock('markdown', `[${file.name}](${alistUrl}${alistToPath2}/${today}/${file.name})`, currentDocId);
+                        if (clickId) {
+                            api.appendBlock('markdown', `[${file.name}](${alistUrl}${alistToPath2}/${today}/${file.name})`, clickId);
+                        } else {
+                            api.appendBlock('markdown', `[${file.name}](${alistUrl}${alistToPath2}/${today}/${file.name})`, currentDocId);
+                        }
                     }
                 });
 
@@ -521,68 +511,16 @@ export default class SiYuanLink extends Plugin {
         }
     }
 
-
-    // private addMenu2(rect?: DOMRect) {
-    //     //退出回调
-    //     const menu = new Menu("topBarSample2", () => {
-    //         // outLog(this.i18n.byeMenu);
-    //     });
-    //     //添加菜单项
-    //     menu.addItem({
-    //         icon: "",
-    //         label: "备份data",
-    //         click: () => {
-    //             if (alistUrl == "") {
-    //                 showMessage("请先配置备份地址！");
-    //                 return;
-    //             }
-    //             confirm("请给备份文件取个名字 ^_^", `<style>
-    //     #alistFilename {
-    //         width: 100%;
-    //         padding: 4px;
-    //         color: #fff; /* 设置文字为白色 */
-    //         background-color: #333; /* 设置背景颜色为深色 */
-    //         border: 1px solid #007BFF;
-    //         border-radius: 4px;
-    //         font-size: 14px;
-    //         outline: none;
-    //     }
-    //     #alistFilename:focus {
-    //         border-color: #007BFF;
-    //         box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
-    //     }
-    // </style>
-    // 文件名: <input type="text" id="alistFilename" value="${alistFilename}">`, () => {
-    //                 const inputElement = document.getElementById("alistFilename") as HTMLInputElement;
-    //                 const inputValue = inputElement.value;
-    //                 if (inputValue) {
-    //                     outLog("正在备份..." + inputValue);
-    //                     outLog("备份data");
-    //                     this.runbackup(inputValue);
-    //                 } else {
-    //                     showMessage("没有输入文件名，备份取消。");
-    //                     return;
-    //                 }
-    //             });
-
-    //             // this.runbackup();
-    //             // this.dbug();
-    //         }
-    //     });
-    // menu.addItem({
-    //     icon: "",
-    //     label: "定时备份",
-    //     click: () => {
-    //         console.log(myapi.getDateTime());
-    //     }
-    // });
-    // menu.open({
-    //     x: rect.left,
-    //     y: rect.bottom,
-    //     isLeft: false,
-    // });
-    // }
-
+    async handleSelectionChange() {
+        outLog("handleSelectionChange");
+        const blockId = getCursorBlockId();
+        if (blockId) {
+            // showMessage(`光标所在的块ID: ${blockId}`);
+            clickId = blockId;
+        } else {
+            showMessage("无法获取光标所在的块ID");
+        }
+    }
 
 
 
@@ -619,6 +557,7 @@ export default class SiYuanLink extends Plugin {
 
         if (beta) {
             this.eventBus.on("open-menu-link", this.blockIconEventBindThis);
+            this.eventBus.on("click-editorcontent", this.handleSelectionChange);
         }
 
 
@@ -666,6 +605,7 @@ export default class SiYuanLink extends Plugin {
         // this.eventBus.off("paste", this.eventBusPaste);
         document.removeEventListener("click", this.onlick, true);
         this.eventBus.off("open-menu-link", this.blockIconEventBindThis);
+        this.eventBus.off("click-editorcontent", this.handleSelectionChange);
     }
 
     uninstall() {
@@ -673,6 +613,7 @@ export default class SiYuanLink extends Plugin {
         // this.eventBus.off("paste", this.eventBusPaste);
         document.removeEventListener("click", this.onlick, true);
         this.eventBus.off("open-menu-link", this.blockIconEventBindThis);
+        this.eventBus.off("click-editorcontent", this.handleSelectionChange);
     }
 
 
@@ -699,8 +640,11 @@ export default class SiYuanLink extends Plugin {
         }
         showMessage("备份结束!", 6000, "info", "备份")
     }
-    //点击链接触发的事件
-    onlick = (e) => {
+    //点击链接触发的事件 TODO:后续优化，改为官方的点击事件
+    onlick = async (e) => {
+        //测试
+
+        //测试
         if (
             e.altKey && e.button === 0 &&    // event.button === 0 表示鼠标左键
             e.target.dataset &&
@@ -939,7 +883,11 @@ function insertCountdownElement() {//TODO:需要优化
             const file = files[0]; // 获取选中的第一个文件
             await uploadToAList(file, alistToPath2 + "/" + today + "/" + file.name); // 调用上传文件的函数
             //增加插入笔记上传的文件链接
-            api.appendBlock('markdown', `[${file.name}](${alistUrl}${alistToPath2}/${today}/${file.name})`, currentDocId);
+            if (clickId) {
+                api.appendBlock('markdown', `[${file.name}](${alistUrl}${alistToPath2}/${today}/${file.name})`, clickId);
+            } else {
+                api.appendBlock('markdown', `[${file.name}](${alistUrl}${alistToPath2}/${today}/${file.name})`, currentDocId);
+            }
         }
     });
     uploadContainer.addEventListener('dragover', (event) => {
@@ -969,7 +917,11 @@ function insertCountdownElement() {//TODO:需要优化
             const file = files[0]; // 获取选中的第一个文件
             await uploadToAList(file, alistToPath2 + "/" + today + "/" + file.name); // 调用上传文件的函数
             // 增加插入笔记上传的文件链接
-            api.appendBlock('markdown', `[${file.name}](${alistUrl}${alistToPath2}/${today}/${file.name})`, currentDocId);
+            if (clickId) {
+                api.appendBlock('markdown', `[${file.name}](${alistUrl}${alistToPath2}/${today}/${file.name})`, clickId);
+            } else {
+                api.appendBlock('markdown', `[${file.name}](${alistUrl}${alistToPath2}/${today}/${file.name})`, currentDocId);
+            }
         } else {
             console.log("没有文件");
             showMessage("没有文件", 1000);
@@ -987,4 +939,33 @@ async function runblockIconEvent(detail: any) {
     api.appendBlock("markdown", `[${filename}](${alistUrl}${alistToPath2}/${today}/${filename})`, detail.element.offsetParent.dataset.nodeId);
     // console.log("ces1", detail.element.dataset.href);
     // console.log("ces2", detail.element.offsetParent.dataset.nodeId);
+}
+
+
+//根据光标获取块ID
+function getCursorBlockId() {
+    outLog("getCursorBlockId");
+    const selection = window.getSelection();
+    if (!selection || !selection.rangeCount) return null;
+
+    const range = selection.getRangeAt(0);
+    let container = range.startContainer;
+
+    // 如果 startContainer 是文本节点，则获取其父元素
+    if (container.nodeType === Node.TEXT_NODE) {
+        container = container.parentElement;
+    }
+
+    // 确保 container 是一个元素节点
+    if (!(container instanceof Element)) {
+        return null;
+    }
+
+    const blockElement = container.closest('.protyle-wysiwyg [data-node-id]');
+
+    if (blockElement) {
+        return blockElement.getAttribute('data-node-id');
+    } else {
+        return null;
+    }
 }
