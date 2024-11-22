@@ -28,6 +28,7 @@ import {
 } from "@/myapi";
 
 import { SettingUtils } from "./libs/setting-utils";
+import path from "path";
 
 
 
@@ -150,9 +151,9 @@ export default class SiYuanLink extends Plugin {
                         //增加插入笔记上传的文件链接
                         // console.log(alistToPath2 + "/" + alistTime + "/" + file.name,"afa");
                         if (clickId) {
-                            api.appendBlock('markdown', `[${file.name}](${alistUrl}${alistToPath2}/${today}/${file.name})`, clickId);
+                            api.appendBlock('markdown', `📄[${file.name}](${alistUrl}${alistToPath2}/${today}/${file.name})`, clickId);
                         } else {
-                            api.appendBlock('markdown', `[${file.name}](${alistUrl}${alistToPath2}/${today}/${file.name})`, currentDocId);
+                            api.appendBlock('markdown', `📄[${file.name}](${alistUrl}${alistToPath2}/${today}/${file.name})`, currentDocId);
                         }
                     }
                 });
@@ -494,6 +495,32 @@ export default class SiYuanLink extends Plugin {
                 }
             });
         }
+        if (linkUrl.startsWith("http")) {
+            if (myapi.isUrlContained(linkUrl, alistUrl)) {
+                detail.menu.addItem({
+                    iconHTML: `<style>
+        .wd {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            user-select: none; /* 防止该元素的文本被选中 */
+        }
+        </style>
+            <div class="wd b3-list-item__text">删除<svg width="15" height="15">
+            <use xlink:href="#iconAlist"></use>
+        </svg>附件</div>`,
+                    label: '',
+                    click: async () => {
+                        console.log("删除附件");
+                        confirm("确定删除附件吗？", "删除后无法恢复", () => {
+                        runblockIconEventDelete(detail);
+                        });
+                    }
+                });
+            }
+        }
     }
 
     async handleSelectionChange() {
@@ -640,6 +667,7 @@ export default class SiYuanLink extends Plugin {
         ) {
             if (serNum == '1' || serNum == '3') {
                 this.openMyTab(e.target, e);
+                // this.openMyPDF(e.target, e);//放弃，能力不够
             }
             if (serNum == '2') {
                 e.preventDefault();
@@ -676,7 +704,7 @@ export default class SiYuanLink extends Plugin {
             if (isContained) {
                 if (this.isMobile) {//移动端
 
-//另一种方式  TODO:后续优化
+                    //另一种方式  TODO:后续优化
                     const iframeHtml = `<iframe src="${target.dataset.href}" style="width:100%; height:100%; border:none;"></iframe>`;
                     console.log(e, 'clickId');
                     const dialog = new sy.Dialog({
@@ -892,9 +920,9 @@ function insertCountdownElement() {//TODO:需要优化
             await uploadToAList(file, alistToPath2 + "/" + today + "/" + file.name); // 调用上传文件的函数
             //增加插入笔记上传的文件链接
             if (clickId) {
-                api.appendBlock('markdown', `[${file.name}](${alistUrl}${alistToPath2}/${today}/${file.name})`, clickId);
+                api.appendBlock('markdown', `📄[${file.name}](${alistUrl}${alistToPath2}/${today}/${file.name})`, clickId);
             } else {
-                api.appendBlock('markdown', `[${file.name}](${alistUrl}${alistToPath2}/${today}/${file.name})`, currentDocId);
+                api.appendBlock('markdown', `📄[${file.name}](${alistUrl}${alistToPath2}/${today}/${file.name})`, currentDocId);
             }
         }
     });
@@ -926,9 +954,9 @@ function insertCountdownElement() {//TODO:需要优化
             await uploadToAList(file, alistToPath2 + "/" + today + "/" + file.name); // 调用上传文件的函数
             // 增加插入笔记上传的文件链接
             if (clickId) {
-                api.appendBlock('markdown', `[${file.name}](${alistUrl}${alistToPath2}/${today}/${file.name})`, clickId);
+                api.appendBlock('markdown', `📄[${file.name}](${alistUrl}${alistToPath2}/${today}/${file.name})`, clickId);
             } else {
-                api.appendBlock('markdown', `[${file.name}](${alistUrl}${alistToPath2}/${today}/${file.name})`, currentDocId);
+                api.appendBlock('markdown', `📄[${file.name}](${alistUrl}${alistToPath2}/${today}/${file.name})`, currentDocId);
             }
         } else {
             console.log("没有文件");
@@ -944,10 +972,22 @@ async function runblockIconEvent(detail: any) {
     // console.log(decodeURIComponent("data/" + detail.element.dataset.href));
     const filename = detail.element.dataset.href.split("/")[1];
     await uploadToAList(file, alistToPath2 + "/" + today + "/" + filename);
-    api.appendBlock("markdown", `[${filename}](${alistUrl}${alistToPath2}/${today}/${filename})`, detail.element.offsetParent.dataset.nodeId);
+    api.appendBlock('markdown', `📄[${filename}](${alistUrl}${alistToPath2}/${today}/${filename})`, detail.element.offsetParent.dataset.nodeId);
     // console.log("ces1", detail.element.dataset.href);
     // console.log("ces2", detail.element.offsetParent.dataset.nodeId);
 }
+
+//右键删除附件
+async function runblockIconEventDelete(detail: any) {
+    const filename = myapi.getFileNameFromUrl(detail.element.dataset.href, true);
+    const path = myapi.getPathFromUrl(detail.element.dataset.href);
+    console.log(filename);
+    console.log(path);
+    // console.log("ces1", detail.element.dataset.href);
+    myapi.alistDelete(path, filename);
+    api.deleteBlock(detail.element.offsetParent.dataset.nodeId);
+}
+
 
 
 //根据光标获取块ID

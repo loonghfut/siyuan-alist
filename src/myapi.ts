@@ -1,12 +1,13 @@
 // import { AlistUploader } from '@/libs/alist-uploader';  //废案
-import { url, token, alistname, alistmima, alistUrl, beta } from '@/index';
+import { url, token, alistname, alistmima, alistUrl, beta, alistToPath2 } from '@/index';
 import "@/index.scss";
-import exp from 'constants';
+// import exp from 'constants';
 import { showMessage } from 'siyuan';
 
 //控制日志输出
 export let notebookId = '';
 export let islog = true;
+export let alistToken = '';
 export function outLog(msg: any, tag: string = '') {
     if (islog) {
         console.log(msg, tag);
@@ -1216,12 +1217,14 @@ export function scheduleDailyTask(time, task) {
     setTimeout(executeTask, timeUntilTarget);
 }
 
-export async function getFileInfo(path, password = "", page = 1, perPage = 0, refresh = false) {
+export async function getAlistFileInfo(path, password = "", page = 1, perPage = 0, refresh = false) {
     const url = `${alistUrl}/api/fs/get`;
-    const alistToken = await getToken(alistname, alistmima);
+    if (!alistToken) {
+        alistToken = await getToken(alistname, alistmima);
+    }
     const headers = {
         'Content-Type': 'application/json',
-        'Authorization': `token ${alistToken}`
+        'Authorization': `${alistToken}`
     };
     const body = {
         path: path,
@@ -1243,6 +1246,165 @@ export async function getFileInfo(path, password = "", page = 1, perPage = 0, re
         }
         if (response.status === 200) {
             const data = await response.json();
+            return data;
+        } else {
+            throw new Error(`Request failed with status: ${response.status}`);
+        }
+    } catch (error) {
+        console.error('Error fetching file info:', error);
+        throw error;
+    }
+}
+
+
+export function getFileNameFromUrl(url: string, isdecodeURIComponent = false): string {
+    // 使用URL构造函数解析URL
+    const parsedUrl = new URL(url);
+    // 获取路径部分
+    const pathname = parsedUrl.pathname;
+    // 使用split方法分割路径并获取最后一个部分，即文件名
+    const fileName = pathname.split('/').pop();
+    if (isdecodeURIComponent) {
+        return decodeURIComponent(fileName || '');
+    }
+    return fileName || '';
+}
+
+export function getPathFromUrl(url: string): string {
+    const parsedUrl = new URL(url);
+    const pathname = decodeURIComponent(parsedUrl.pathname);
+    // 去掉文件名，只保留文件夹路径
+    return pathname.substring(0, pathname.lastIndexOf('/'));
+}
+
+//创建文件夹
+export async function alistAddDir(dir) {
+    const url = `${alistUrl}/api/fs/mkdir`;
+    if (!alistToken) {
+        alistToken = await getToken(alistname, alistmima);
+    };
+    const headers = {
+        'Content-Type': 'application/json',
+        'Authorization': `${alistToken}`
+    };
+    const body = {
+        path: dir
+    };
+    try {
+        const response = await fetch(url, {
+            method: 'POST',
+            headers: headers,
+            body: JSON.stringify(body)
+        });
+
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        if (response.status === 200) {
+            const data = await response.json();
+            console.log(data);
+            return data;
+        } else {
+            throw new Error(`Request failed with status: ${response.status}`);
+        }
+    } catch (error) {
+        console.error('Error fetching file info:', error);
+        throw error;
+    }
+}
+
+export async function alistDelete(dir, name, dirTo = `${alistToPath2}/回收站`) {
+    await alistAddDir(dirTo);
+    //获取时间（
+    const date = new Date();
+    const year = date.getFullYear();
+    const month = date.getMonth() + 1;
+    const day = date.getDate();
+    const hour = date.getHours();
+    const minute = date.getMinutes();
+    const second = date.getSeconds();
+    const time = `${year}${month}${day}${hour}${minute}${second}`;
+    const newName = `${time}-${name}`;
+    const data= await alistRename(`${dir}/${name}`, newName);
+    if(data.code!==200){
+        showMessage(`alist文件${name}未找到`, -1, 'error')
+        return data;
+    }
+
+    const url = `${alistUrl}/api/fs/move`;
+    if (!alistToken) {
+        alistToken = await getToken(alistname, alistmima);
+    };
+    const headers = {
+        'Content-Type': 'application/json',
+        'Authorization': `${alistToken}`
+    };
+    const body = {
+        src_dir: dir,
+        dst_dir: dirTo,
+        names: [
+            newName
+        ]
+    };
+
+    try {
+        const response = await fetch(url, {
+            method: 'POST',
+            headers: headers,
+            body: JSON.stringify(body)
+        });
+
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        if (response.status === 200) {
+
+            const data = await response.json();
+            if (data.code === 200) {
+                console.log(data);
+                showMessage(`文件${name}已移动到回收站`, 6000, 'info');
+                return data;
+            } else {
+                showMessage(`文件${name}移动失败${data.message}，请重试`, -1, 'error');
+                console.log(data);
+                return data;
+            }
+        } else {
+            showMessage(`文件${name}移动失败，请重试`, -1, 'error');
+            throw new Error(`Request failed with status: ${response.status}`);
+        }
+    } catch (error) {
+        console.error('Error fetching file info:', error);
+        throw error;
+    }
+}
+
+export async function alistRename(pathName, newName) {
+    const url = `${alistUrl}/api/fs/rename`;
+    if (!alistToken) {
+        alistToken = await getToken(alistname, alistmima);
+    };
+    const headers = {
+        'Content-Type': 'application/json',
+        'Authorization': `${alistToken}`
+    };
+    const body = {
+        name: newName,
+        path: pathName
+    }
+    try {
+        const response = await fetch(url, {
+            method: 'POST',
+            headers: headers,
+            body: JSON.stringify(body)
+        });
+
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        if (response.status === 200) {
+            const data = await response.json();
+            console.log(data);
             return data;
         } else {
             throw new Error(`Request failed with status: ${response.status}`);
