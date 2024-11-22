@@ -4,6 +4,7 @@ import "@/index.scss";
 // import exp from 'constants';
 import { showMessage } from 'siyuan';
 
+import * as api from '@/api';
 //控制日志输出
 export let notebookId = '';
 export let islog = true;
@@ -1327,7 +1328,7 @@ export async function alistDelete(dir, name, dirTo = `${alistToPath2}/回收站`
     const newName = `${time}-${name}`;
     const data= await alistRename(`${dir}/${name}`, newName);
     if(data.code!==200){
-        showMessage(`alist文件${name}未找到`, -1, 'error')
+        showMessage(`alist文件${name}未找到（可能已经删除过了）`, -1, 'error')
         return data;
     }
 
@@ -1362,7 +1363,7 @@ export async function alistDelete(dir, name, dirTo = `${alistToPath2}/回收站`
             const data = await response.json();
             if (data.code === 200) {
                 console.log(data);
-                showMessage(`文件${name}已移动到回收站`, 6000, 'info');
+                showMessage(`文件${name}已移动到回收站，请手动删除笔记中的链接`, 6000, 'info');
                 return data;
             } else {
                 showMessage(`文件${name}移动失败${data.message}，请重试`, -1, 'error');
@@ -1413,4 +1414,9 @@ export async function alistRename(pathName, newName) {
         console.error('Error fetching file info:', error);
         throw error;
     }
+}
+
+export async function deletetxt(blockId){
+    const txt = await api.getBlockKramdown(blockId);
+    console.log(txt);
 }

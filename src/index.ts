@@ -514,7 +514,7 @@ export default class SiYuanLink extends Plugin {
                     label: '',
                     click: async () => {
                         console.log("删除附件");
-                        confirm("确定删除附件吗？", "删除后无法恢复", () => {
+                        confirm("确定要将附件移动到回收站吗？", "移动到回收站后，请手动删除笔记中的链接", () => {
                         runblockIconEventDelete(detail);
                         });
                     }
@@ -985,7 +985,8 @@ async function runblockIconEventDelete(detail: any) {
     console.log(path);
     // console.log("ces1", detail.element.dataset.href);
     myapi.alistDelete(path, filename);
-    api.deleteBlock(detail.element.offsetParent.dataset.nodeId);
+    myapi.deletetxt(detail.element.offsetParent.dataset.nodeId);
+    // api.deleteBlock(detail.element.offsetParent.dataset.nodeId);
 }
 
 
