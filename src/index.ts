@@ -57,7 +57,9 @@ export let alistFilename: string | null = null;
 export let alistTime: string | null = null;
 export let isCtrl: boolean = false;
 export let isdrag: boolean = true;
+
 export let today: string | null = null;
+export let timeNow: string | null = null;
 
 export let clickId: string | null = null;
 
@@ -86,7 +88,10 @@ export default class SiYuanLink extends Plugin {
         let year = date.getFullYear();
         let month = date.getMonth() + 1;
         let day = date.getDate();
-
+        let hour = date.getHours();
+        let minute = date.getMinutes();
+        let second = date.getSeconds();
+        timeNow = `${year}${month}${day}${hour}${minute}${second}`;
         today = year + "-" + month + "-" + day;
         console.log(today, "当前日期");
 
@@ -515,7 +520,7 @@ export default class SiYuanLink extends Plugin {
                     click: async () => {
                         console.log("删除附件");
                         confirm("确定要将附件移动到回收站吗？", "移动到回收站后，请手动删除笔记中的链接", () => {
-                        runblockIconEventDelete(detail);
+                            runblockIconEventDelete(detail);
                         });
                     }
                 });
@@ -640,14 +645,14 @@ export default class SiYuanLink extends Plugin {
 
 
 
-    private async runbackup(alistFilename: string) {
+    private async runbackup(Filename: string) {
         showMessage("正在备份...", -1, "info", "备份")
         outLog('runbackup');
         try {
             const link = await exportAllDataPath();
             // const data = await downloadImageURL(link);
             const data = await downloadImage(link);
-            await uploadToAList(data, alistToPath + "/" + alistFilename);
+            await uploadToAList(data, alistToPath + "/" +`${timeNow}-${Filename}`);
         } catch (error) {
             showMessage("备份失败!", -1, "error", "备份");
             console.error('Failed to run runbackup:', error);
