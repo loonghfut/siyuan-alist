@@ -535,7 +535,7 @@ export default class SiYuanLink extends Plugin {
             // showMessage(`光标所在的块ID: ${blockId}`);
             clickId = blockId;
         } else {
-            showMessage("无法获取光标所在的块ID");
+            outLog("无法获取光标所在的块ID");
         }
     }
 
