@@ -658,7 +658,7 @@ export default class SiYuanAlist extends Plugin {
             const link = await exportAllDataPath();
             // const data = await downloadImageURL(link);
             const data = await downloadImage(link);
-            await uploadToAList(data, alistToPath + "/" +`${timeNow}-${Filename}`);
+            await uploadToAList(data, alistToPath + "/" +`${Filename}`);
         } catch (error) {
             showMessage("备份失败!", -1, "error", "备份");
             console.error('Failed to run runbackup:', error);
