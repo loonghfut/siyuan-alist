@@ -381,7 +381,7 @@ export default class SiYuanAlist extends Plugin {
             value: "",
             type: "textinput",
             title: "默认备份文件名",
-            description: "备份到alist的默认文件名(注意要加后缀名eg:siyuan-backup.zip)",
+            description: "备份到alist的默认文件名,支持自定义时间戳变量${timeNow}(注意要加后缀名eg:${timeNow}-siyuan-backup.zip)",
             action: {
                 // Called when focus is lost and content changes
                 callback: async () => {
