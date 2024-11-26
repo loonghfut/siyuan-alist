@@ -47,8 +47,11 @@ TODO:优化体验（欢迎提issue）
 LL_TODO:用vue写一个（或找个开源的改）alist前端，可能要很久。。  
 LL_TODO:在alist中实现PDF批注  （这个好难实现啊。。）
 
-## 更新日志  
-  
+## 更新日志    
+ 0.1.4:   
+ 修复：备份时间戳不会更新 [#9.1](https://github.com/loonghfut/siyuan-alist/issues/9)  
+ 增加：支持时间戳位置自定义 [#9.2](https://github.com/loonghfut/siyuan-alist/issues/9)   
+    
  0.1.3：  
  增加：默认备份名新增时间戳变量 [#8](https://github.com/loonghfut/siyuan-alist/issues/8)  
  修复：修复部分日志输出  
@@ -116,6 +119,11 @@ LL_TODO:在alist中实现PDF批注  （这个好难实现啊。。）
 
 
 ## 最后
+### 用爱发电，若觉得好用，且帮你节约了时间，希望可以请我一瓶快乐水^-^
+![1732600937468.webp](https://pic.zcl.me/i/2024/11/26/674566b93898c.webp)
+![1732601501744.webp](https://pic.zcl.me/i/2024/11/26/674566b97887b.webp)
+
+
 自用插件，开源分享，代码凌乱不堪，插件使用了思源社区的模板，主要参考https://github.com/siyuan-community/siyuan-developer-docs
 
 

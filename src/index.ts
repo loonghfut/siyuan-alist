@@ -6,7 +6,7 @@ import {
     Plugin,
     showMessage,
     getFrontend,
-    getBackend,
+    // getBackend,
     IModel,
     // IOperation,
     // Menu,
@@ -28,7 +28,8 @@ import {
 } from "@/myapi";
 
 import { SettingUtils } from "./libs/setting-utils";
-import path from "path";
+import { get } from "http";
+// import path from "path";
 
 
 
@@ -66,7 +67,7 @@ export let clickId: string | null = null;
 // let notePath: string | null = null;
 let targetURL: string | null = null;
 let isclickalist: boolean = true;
-export default class SiYuanLink extends Plugin {
+export default class SiYuanAlist extends Plugin {
     initalist: any;
     alistdock: any = null;
     customTab: () => IModel;
@@ -583,6 +584,10 @@ export default class SiYuanLink extends Plugin {
         if (alistTime) {
             myapi.scheduleDailyTask(alistTime, () => {
                 console.log("备份任务开始执行");
+                if (alistFilename.includes("${timeNow}")) {
+                    updateTimeNow();
+                    alistFilename = alistFilename.replace("${timeNow}", timeNow);
+                }
                 this.runbackup(alistFilename);
             });
         }
@@ -649,6 +654,7 @@ export default class SiYuanLink extends Plugin {
         showMessage("正在备份...", -1, "info", "备份")
         outLog('runbackup');
         try {
+            console.log(`${Filename}`, "being backed up");
             const link = await exportAllDataPath();
             // const data = await downloadImageURL(link);
             const data = await downloadImage(link);
@@ -839,10 +845,15 @@ export default class SiYuanLink extends Plugin {
         </style>
         文件名: <input type="text" id="alistFilename" value="${alistFilename}">`, () => {
             const inputElement = document.getElementById("alistFilename") as HTMLInputElement;
-            const inputValue = inputElement.value;
+            let inputValue = inputElement.value;
             if (inputValue) {
                 outLog("正在备份..." + inputValue);
                 outLog("备份data");
+                //检测文件名中是否有${timeNow}，有则替换
+                if (inputValue.includes("${timeNow}")) {
+                    updateTimeNow();
+                    inputValue = inputValue.replace("${timeNow}", timeNow);
+                }
                 this.runbackup(inputValue);
             } else {
                 showMessage("没有输入文件名，备份取消。");
@@ -1024,3 +1035,13 @@ function getCursorBlockId() {
     }
 }
 
+function updateTimeNow() {
+    let date = new Date();
+    let year = date.getFullYear();
+    let month = date.getMonth() + 1;
+    let day = date.getDate();
+    let hour = date.getHours();
+    let minute = date.getMinutes();
+    let second = date.getSeconds();
+    timeNow = `${year}${month}${day}${hour}${minute}${second}`;
+}

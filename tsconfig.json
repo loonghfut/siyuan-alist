@@ -38,8 +38,12 @@
         ],
         // "baseUrl": "./src",
         "paths": {
-            "@/*": ["./src/*"],
-            "@/libs/*": ["./src/libs/*"],
+            "@/*": [
+                "./src/*"
+            ],
+            "@/libs/*": [
+                "./src/libs/*"
+            ],
         }
     },
     "include": [
@@ -47,8 +51,9 @@
         "src/**/*.ts",
         "src/**/*.d.ts",
         "src/**/*.tsx",
-        "src/**/*.vue"
-, "src/AlistUp.html"    ],
+        // "src/**/*.vue"
+        "src/AlistUp.html"
+    ],
     "references": [
         {
             "path": "./tsconfig.node.json"
