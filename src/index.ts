@@ -58,6 +58,7 @@ export let alistFilename: string | null = null;
 export let alistTime: string | null = null;
 export let isCtrl: boolean = false;
 export let isdrag: boolean = true;
+export let selectTOP: string | null = null;
 
 export let today: string | null = null;
 export let timeNow: string | null = null;
@@ -427,13 +428,27 @@ export default class SiYuanAlist extends Plugin {
                 }
             }
         });
+        this.settingUtils.addItem({
+            key: "SelectTOP",
+            value: 1,
+            type: "textinput",
+            title: "选择自动备份平台（设定完后请刷新一下哦）（beta）",
+            description: `当前平台：${frontEnd} ,请填入要自动备份的平台,多个平台用（英文）逗号隔开`,
+            action: {
+                callback: async () => {
+                    // Read data in real time
+                    await this.settingUtils.takeAndSave("SelectTOP");
+                    // myapi.refresh();
+                }
+            }
+        });
 
         this.settingUtils.addItem({
             key: "beta",
             value: false,
             type: "checkbox",
             title: "beta版本",
-            description: "启用后可进入beta模式，体验可能不稳定的新功能(具体功能详见更新日志)，欢迎反馈bug ",
+            description: "启用后可进入beta模式，体验更多可能不稳定的新功能(具体功能详见更新日志)，欢迎反馈bug ",
             action: {
                 callback: async () => {
                     // Return data and save it in real time
@@ -561,6 +576,7 @@ export default class SiYuanAlist extends Plugin {
         isCtrl = this.settingUtils.get("isCtrl");
         isdrag = this.settingUtils.get("isdrag");
         serNum = this.settingUtils.get("Select");
+        selectTOP = this.settingUtils.get("SelectTOP");
 
         beta = this.settingUtils.get("beta");
         beta_pro = this.settingUtils.get("beta_pro");
@@ -581,16 +597,16 @@ export default class SiYuanAlist extends Plugin {
         }
 
 
-        if (alistTime) {
+        if (alistTime && selectTOP.includes(getFrontend())) {
+            console.log("定时备份允许");
             myapi.scheduleDailyTask(alistTime, () => {
                 console.log("备份任务开始执行");
-                // if (alistFilename.includes("${timeNow}")) {
-                //     updateTimeNow();
-                //    const alistFilename2 = alistFilename.replace("${timeNow}", timeNow);
-                // }
                 this.runbackup(alistFilename);
             });
-        }
+        }else{
+            console.log("无定时备份任务");
+        }   
+        
         if (isdrag && !this.isMobile) {//兼容移动端
             insertCountdownElement();
         }
