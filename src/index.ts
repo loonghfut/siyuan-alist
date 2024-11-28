@@ -584,10 +584,10 @@ export default class SiYuanAlist extends Plugin {
         if (alistTime) {
             myapi.scheduleDailyTask(alistTime, () => {
                 console.log("备份任务开始执行");
-                if (alistFilename.includes("${timeNow}")) {
-                    updateTimeNow();
-                    alistFilename = alistFilename.replace("${timeNow}", timeNow);
-                }
+                // if (alistFilename.includes("${timeNow}")) {
+                //     updateTimeNow();
+                //    const alistFilename2 = alistFilename.replace("${timeNow}", timeNow);
+                // }
                 this.runbackup(alistFilename);
             });
         }
@@ -654,11 +654,15 @@ export default class SiYuanAlist extends Plugin {
         showMessage("正在备份...", -1, "info", "备份")
         outLog('runbackup');
         try {
+            if (Filename.includes("${timeNow}")) {
+                updateTimeNow();
+                Filename = Filename.replace("${timeNow}", timeNow);
+            }
             console.log(`${Filename}`, "being backed up");
             const link = await exportAllDataPath();
             // const data = await downloadImageURL(link);
             const data = await downloadImage(link);
-            await uploadToAList(data, alistToPath + "/" +`${Filename}`);
+            await uploadToAList(data, alistToPath + "/" + `${Filename}`);
         } catch (error) {
             showMessage("备份失败!", -1, "error", "备份");
             console.error('Failed to run runbackup:', error);
@@ -850,10 +854,10 @@ export default class SiYuanAlist extends Plugin {
                 outLog("正在备份..." + inputValue);
                 outLog("备份data");
                 //检测文件名中是否有${timeNow}，有则替换
-                if (inputValue.includes("${timeNow}")) {
-                    updateTimeNow();
-                    inputValue = inputValue.replace("${timeNow}", timeNow);
-                }
+                // if (inputValue.includes("${timeNow}")) {
+                //     updateTimeNow();
+                //     inputValue = inputValue.replace("${timeNow}", timeNow);
+                // }
                 this.runbackup(inputValue);
             } else {
                 showMessage("没有输入文件名，备份取消。");
@@ -1038,10 +1042,10 @@ function getCursorBlockId() {
 function updateTimeNow() {
     let date = new Date();
     let year = date.getFullYear();
-    let month = date.getMonth() + 1;
-    let day = date.getDate();
-    let hour = date.getHours();
-    let minute = date.getMinutes();
-    let second = date.getSeconds();
+    let month = (date.getMonth() + 1).toString().padStart(2, '0');
+    let day = date.getDate().toString().padStart(2, '0');
+    let hour = date.getHours().toString().padStart(2, '0');
+    let minute = date.getMinutes().toString().padStart(2, '0');
+    let second = date.getSeconds().toString().padStart(2, '0');
     timeNow = `${year}${month}${day}${hour}${minute}${second}`;
 }
