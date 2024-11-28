@@ -48,6 +48,9 @@ LL_TODO:用vue写一个（或找个开源的改）alist前端，可能要很久�
 LL_TODO:在alist中实现PDF批注  （这个好难实现啊。。）
 
 ## 更新日志    
+ 0.1.6：  
+ 修复：[#10](https://github.com/loonghfut/siyuan-alist/issues/10)
+
  0.1.4:   
  修复：备份时间戳不会更新 [#9.1](https://github.com/loonghfut/siyuan-alist/issues/9)  
  增加：支持时间戳位置自定义 [#9.2](https://github.com/loonghfut/siyuan-alist/issues/9)   
