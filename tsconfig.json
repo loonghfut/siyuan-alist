@@ -38,8 +38,12 @@
         ],
         // "baseUrl": "./src",
         "paths": {
-            "@/*": ["./src/*"],
-            "@/libs/*": ["./src/libs/*"],
+            "@/*": [
+                "./src/*"
+            ],
+            "@/libs/*": [
+                "./src/libs/*"
+            ],
         }
     },
     "include": [
@@ -47,7 +51,8 @@
         "src/**/*.ts",
         "src/**/*.d.ts",
         "src/**/*.tsx",
-        "src/**/*.vue"
+        // "src/**/*.vue"
+        "src/AlistUp.html"
     ],
     "references": [
         {

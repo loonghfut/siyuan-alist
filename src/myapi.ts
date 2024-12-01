@@ -1,11 +1,14 @@
-
-import { url, token, alistname, alistmima, alistUrl } from '@/index';
+// import { AlistUploader } from '@/libs/alist-uploader';  //废案
+import { url, token, alistname, alistmima, alistUrl, beta, alistToPath2 } from '@/index';
 import "@/index.scss";
+// import exp from 'constants';
 import { showMessage } from 'siyuan';
 
+import * as api from '@/api';
 //控制日志输出
 export let notebookId = '';
 export let islog = true;
+export let alistToken = '';
 export function outLog(msg: any, tag: string = '') {
     if (islog) {
         console.log(msg, tag);
@@ -15,6 +18,8 @@ export function trunLog(msg: boolean) {
     islog = msg;
 }
 //连接验证（判断是否连接上目标服务）
+
+
 
 export async function isconnect() {
     try {
@@ -960,61 +965,110 @@ export async function importAllData(blob: Blob) {
  * @param {string} filePath - 在AList中的目标路径
  */
 // 9/16 2024 更新：返回文件路径到剪切板
+// 11/16 2024 更新：尝试重构(failure)（success）
 export async function uploadToAList(blob, filePath) {
-    try {
-        const FileName = filePath.split('/').pop()
-        const file = new File([blob], FileName, { type: 'application/zip' });
-        // 创建用于上传的FormData对象
-        const formData = new FormData();
-        formData.append('file', file);
-        outLog(file.name);
-        const token2 = await getToken(alistname, alistmima);
-        showMessage('正在备份到AList...', -1, 'info', '备份到AList');
-        const response = await fetch(`${alistUrl}/api/fs/put`, {
-            method: 'PUT',
-            headers: {
-                'Authorization': token2,
-                'File-Path': encodeURIComponent(filePath),
-                'Content-Type': 'application/octet-stream',
-                'Content-Length': String(file.size),
-                'As-Task': 'true'
-            },
-            body: file
-        });
-
-        // 检查响应并返回结果
-        console.log(file.name, "asdas");
-        if (response.status === 200) {
-            const result = await response.json();
-            if (result.code === 200) {
-                showMessage('备份到alist成功', 6000, 'info', '备份到AList');
-                // 9/16 2024 更新：返回文件路径到剪切板
-                var markdownLink = `[${FileName}](${alistUrl}${filePath})`;
-                if (navigator.clipboard && navigator.clipboard.writeText) {
-                    navigator.clipboard.writeText(markdownLink).then(function () {
-                        outLog('Markdown链接已复制到剪贴板', 'uploadToAList');
-                        showMessage('文件链接已复制到剪贴板', 1000);
-
-                    }).catch(function (err) {
-                        console.error('无法复制链接: ', err);
-                        // 可以在这里添加一个错误提示
-                        // showMessage('复制链接', 6000, 'error');
-                    });
+    if (beta) {
+        try {
+            const FileName = filePath.split('/').pop()
+            const file = new File([blob], FileName, { type: 'application/zip' });
+            // 创建用于上传的FormData对象
+            const formData = new FormData();
+            formData.append('file', file);
+            const token2 = await getToken(alistname, alistmima);
+            const xhr = new XMLHttpRequest();
+            xhr.open('put', `${alistUrl}/api/fs/form`);//TODO：用/put流式上传api会乱码，但是这里却没问题，有时间再研究
+            // 设置请求头
+            xhr.setRequestHeader('Authorization', token2);
+            xhr.setRequestHeader('File-Path', encodeURIComponent(filePath));
+            xhr.setRequestHeader('As-Task', 'true'); // 根据需要添加其他头部
+            // 监听上传进度
+            xhr.upload.addEventListener('progress', (event) => {
+                if (event.lengthComputable) {
+                    const percentComplete = (event.loaded / event.total) * 100;
+                    showMessage(`上传进度: ${percentComplete.toFixed(2)}%`, -1, 'info', 'beta');
+                    console.log(`上传进度: ${percentComplete.toFixed(2)}%`);
                 }
+            });
 
-                console.log("Upload successful.");
-            } else {
-                showMessage('备份到AList失败:' + result.message, -1, 'error', '备份到AList');
-                console.log(`Upload failed. Status code: ${response.status} - Message: ${result.message}`);
-            }
-        } else {
-            showMessage('备份到AList失败:' + await response.text(), -1, 'error', '备份到AList');
-            console.log(`Upload failed. Status code: ${response.status} - Message: ${await response.text()}`);
+            // 监听上传成功
+            xhr.onload = () => {
+                if (xhr.status === 200) {
+                    showMessage(`上传成功`, 3000, 'info', 'beta');
+                    console.log('上传成功');
+                } else {
+                    console.error('上传失败:', xhr.statusText);
+                }
+            };
+
+            // 监听上传失败
+            xhr.onerror = () => {
+                console.error('上传过程中发生错误请重试');
+            };
+
+            // 发送请求
+            xhr.send(formData);
+
+        } catch (error) {
+            console.error('上传出现异常请重试:', error);
         }
-    } catch (error) {
-        showMessage('备份到AList失败:' + error.message, -1, 'error', '备份到AList');
-        console.error('上传出错:', error);
-        throw error; // 将错误向上抛出
+
+    } else {
+        try {
+            const FileName = filePath.split('/').pop()
+            const file = new File([blob], FileName, { type: 'application/zip' });
+            // 创建用于上传的FormData对象
+            const formData = new FormData();
+            formData.append('file', file);
+            outLog(file.name);
+            const token2 = await getToken(alistname, alistmima);
+            showMessage('正在备份到AList...', -1, 'info', '备份到AList');
+            const response = await fetch(`${alistUrl}/api/fs/put`, {  //TODO：用/put流式上传api会乱码
+                method: 'PUT',
+                headers: {
+                    'Authorization': token2,
+                    'File-Path': encodeURIComponent(filePath),
+                    'Content-Type': 'application/octet-stream',
+                    'Content-Length': String(file.size),
+                    'As-Task': 'true'
+                },
+                body: file
+            });
+
+            // 检查响应并返回结果
+            console.log(file.name, "asdas");
+            console.log(response, "asdas");
+            if (response.status === 200) {
+                const result = await response.json();
+                if (result.code === 200) {
+                    showMessage('备份到alist成功', 6000, 'info', '备份到AList');
+                    // 9/16 2024 更新：返回文件路径到剪切板
+                    var markdownLink = `[${FileName}](${alistUrl}${filePath})`;
+                    if (navigator.clipboard && navigator.clipboard.writeText) {
+                        navigator.clipboard.writeText(markdownLink).then(function () {
+                            outLog('Markdown链接已复制到剪贴板', 'uploadToAList');
+                            showMessage('文件链接已复制到剪贴板', 1000);
+
+                        }).catch(function (err) {
+                            console.error('无法复制链接: ', err);
+                            // 可以在这里添加一个错误提示
+                            // showMessage('复制链接', 6000, 'error');
+                        });
+                    }
+
+                    console.log("Upload successful.");
+                } else {
+                    showMessage('备份到AList失败:' + result.message, -1, 'error', '备份到AList');
+                    console.log(`Upload failed. Status code: ${response.status} - Message: ${result.message}`);
+                }
+            } else {
+                showMessage('备份到AList失败:' + await response.text(), -1, 'error', '备份到AList');
+                console.log(`Upload failed. Status code: ${response.status} - Message: ${await response.text()}`);
+            }
+        } catch (error) {
+            showMessage('备份到AList失败:' + error.message, -1, 'error', '备份到AList');
+            console.error('上传出错:', error);
+            throw error; // 将错误向上抛出
+        }
     }
 }
 
@@ -1096,7 +1150,23 @@ export function getDateTime() {
 
 export function scheduleDailyTask(time, task) {
     // 解析输入的时间字符串
-    const [hour, minute] = time.split('/').map(Number);
+    const timeParts = time.split('/');
+
+    // 检查时间字符串的格式
+    if (timeParts.length !== 2) {
+        showMessage('alist备份时间格式错误，正确格式为 "小时/分钟"', -1, "error");
+        throw new Error('时间格式错误，正确格式为 "小时/分钟"');
+    }
+
+    const hour = Number(timeParts[0]);
+    const minute = Number(timeParts[1]);
+
+    // 检查小时和分钟的有效性
+    if (isNaN(hour) || isNaN(minute) || hour < 0 || hour > 23 || minute < 0 || minute > 59) {
+        showMessage('alist备份时间小时或分钟无效，请确保小时在0-23之间，分钟在0-59之间', -1, "error");
+        throw new Error('小时或分钟无效，请确保小时在0-23之间，分钟在0-59之间');
+    }
+
     outLog(`${hour} ${minute}`, 'scheduleDailyTask');
     function executeTask() {
         // 执行传入的任务
@@ -1148,121 +1218,205 @@ export function scheduleDailyTask(time, task) {
     setTimeout(executeTask, timeUntilTarget);
 }
 
+export async function getAlistFileInfo(path, password = "", page = 1, perPage = 0, refresh = false) {
+    const url = `${alistUrl}/api/fs/get`;
+    if (!alistToken) {
+        alistToken = await getToken(alistname, alistmima);
+    }
+    const headers = {
+        'Content-Type': 'application/json',
+        'Authorization': `${alistToken}`
+    };
+    const body = {
+        path: path,
+        password: password,
+        page: page,
+        per_page: perPage,
+        refresh: refresh
+    };
 
-// export function setupFileUpload() {
-//     `<!DOCTYPE html>
-// <html lang="zh-CN">
-// <head>
-//     <meta charset="UTF-8">
-//     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-//     <style>
-//         .upload-container {
-//             width: 300px;
-//             height: 150px;
-//             border: 2px dashed #fff;
-//             border-radius: 10px;
-//             background-color: #333;
-//             display: flex;
-//             flex-direction: column;
-//             justify-content: center;
-//             align-items: center;
-//             color: #fff;
-//             font-size: 16px;
-//             cursor: pointer;
-//             text-align: center;
-//         }
+    try {
+        const response = await fetch(url, {
+            method: 'POST',
+            headers: headers,
+            body: JSON.stringify(body)
+        });
 
-//         .upload-container:hover {
-//             background-color: #444;
-//         }
-
-//         .upload-input {
-//             display: none;
-//         }
-//     </style>
-//     <title>文件上传</title>
-// </head>
-// <body>
-//     <div id="uploadContainer" class="upload-container">
-//         <div>+</div>
-//         <div>点击或拖拽文件到此处上传</div>
-//     </div>
-// </body>
-// </html>
-// `
-
-    // function setupFileUpload(containerId, inputId) {
-    //     const uploadContainer = document.getElementById(containerId);
-    //     const fileInput = document.getElementById(inputId);
-
-    //     // 点击上传区域触发文件选择
-    //     uploadContainer.addEventListener('click', () => {
-    //         fileInput.click();
-    //     });
-
-    //     // 处理文件选择
-    //     fileInput.addEventListener('change', (event) => {
-    //         const files = event.target.files;
-    //         alert(`选择了 ${files.length} 个文件`);
-    //     });
-
-    //     // 拖拽上传处理
-    //     uploadContainer.addEventListener('dragover', (event) => {
-    //         event.preventDefault();
-    //         uploadContainer.style.backgroundColor = '#555'; // 改变背景色以显示拖拽效果
-    //     });
-
-    //     uploadContainer.addEventListener('dragleave', () => {
-    //         uploadContainer.style.backgroundColor = '#333'; // 恢复原背景色
-    //     });
-
-    //     uploadContainer.addEventListener('drop', (event) => {
-    //         event.preventDefault();
-    //         uploadContainer.style.backgroundColor = '#333'; // 恢复原背景色
-    //         const files = event.dataTransfer.files;
-    //         alert(`拖拽上传了 ${files.length} 个文件`);
-    //     });
-    // }
-
-//     // 调用方法
-//     setupFileUpload('uploadContainer', 'fileInput');
-
-// }
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        if (response.status === 200) {
+            const data = await response.json();
+            return data;
+        } else {
+            throw new Error(`Request failed with status: ${response.status}`);
+        }
+    } catch (error) {
+        console.error('Error fetching file info:', error);
+        throw error;
+    }
+}
 
 
+export function getFileNameFromUrl(url: string, isdecodeURIComponent = false): string {
+    // 使用URL构造函数解析URL
+    const parsedUrl = new URL(url);
+    // 获取路径部分
+    const pathname = parsedUrl.pathname;
+    // 使用split方法分割路径并获取最后一个部分，即文件名
+    const fileName = pathname.split('/').pop();
+    if (isdecodeURIComponent) {
+        return decodeURIComponent(fileName || '');
+    }
+    return fileName || '';
+}
 
+export function getPathFromUrl(url: string): string {
+    const parsedUrl = new URL(url);
+    const pathname = decodeURIComponent(parsedUrl.pathname);
+    // 去掉文件名，只保留文件夹路径
+    return pathname.substring(0, pathname.lastIndexOf('/'));
+}
 
+//创建文件夹
+export async function alistAddDir(dir) {
+    const url = `${alistUrl}/api/fs/mkdir`;
+    if (!alistToken) {
+        alistToken = await getToken(alistname, alistmima);
+    };
+    const headers = {
+        'Content-Type': 'application/json',
+        'Authorization': `${alistToken}`
+    };
+    const body = {
+        path: dir
+    };
+    try {
+        const response = await fetch(url, {
+            method: 'POST',
+            headers: headers,
+            body: JSON.stringify(body)
+        });
 
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        if (response.status === 200) {
+            const data = await response.json();
+            console.log(data);
+            return data;
+        } else {
+            throw new Error(`Request failed with status: ${response.status}`);
+        }
+    } catch (error) {
+        console.error('Error fetching file info:', error);
+        throw error;
+    }
+}
 
-//   // 首次插入倒计时显示元素到 #toolbar > #drag 元素旁边
+export async function alistDelete(dir, name, dirTo = `${alistToPath2}/回收站`) {
+    await alistAddDir(dirTo);
+    //获取时间（
+    const date = new Date();
+    const year = date.getFullYear();
+    const month = date.getMonth() + 1;
+    const day = date.getDate();
+    const hour = date.getHours();
+    const minute = date.getMinutes();
+    const second = date.getSeconds();
+    const time = `${year}${month}${day}${hour}${minute}${second}`;
+    const newName = `${time}-${name}`;
+    const data= await alistRename(`${dir}/${name}`, newName);
+    if(data.code!==200){
+        showMessage(`alist文件${name}未找到（可能已经删除过了）`, -1, 'error')
+        return data;
+    }
 
-//   const uploadContainer = document.getElementById('uploadContainer');
-//   const fileInput = document.getElementById('fileInput');
+    const url = `${alistUrl}/api/fs/move`;
+    if (!alistToken) {
+        alistToken = await getToken(alistname, alistmima);
+    };
+    const headers = {
+        'Content-Type': 'application/json',
+        'Authorization': `${alistToken}`
+    };
+    const body = {
+        src_dir: dir,
+        dst_dir: dirTo,
+        names: [
+            newName
+        ]
+    };
 
-//   // 点击上传区域触发文件选择
-//   uploadContainer.addEventListener('click', () => {
-//       fileInput.click();
-//   });
+    try {
+        const response = await fetch(url, {
+            method: 'POST',
+            headers: headers,
+            body: JSON.stringify(body)
+        });
 
-//   // 处理文件选择
-//   fileInput.addEventListener('change', (event) => {
-//       const files = event.target.files;
-//       alert(`选择了 ${files.length} 个文件`);
-//   });
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        if (response.status === 200) {
 
-//   // 拖拽上传处理
-//   uploadContainer.addEventListener('dragover', (event) => {
-//       event.preventDefault();
-//       uploadContainer.style.backgroundColor = '#555'; // 改变背景色以显示拖拽效果
-//   });
+            const data = await response.json();
+            if (data.code === 200) {
+                console.log(data);
+                showMessage(`文件${name}已移动到回收站，请手动删除笔记中的链接`, 6000, 'info');
+                return data;
+            } else {
+                showMessage(`文件${name}移动失败${data.message}，请重试`, -1, 'error');
+                console.log(data);
+                return data;
+            }
+        } else {
+            showMessage(`文件${name}移动失败，请重试`, -1, 'error');
+            throw new Error(`Request failed with status: ${response.status}`);
+        }
+    } catch (error) {
+        console.error('Error fetching file info:', error);
+        throw error;
+    }
+}
 
-//   uploadContainer.addEventListener('dragleave', () => {
-//       uploadContainer.style.backgroundColor = '#333'; // 恢复原背景色
-//   });
+export async function alistRename(pathName, newName) {
+    const url = `${alistUrl}/api/fs/rename`;
+    if (!alistToken) {
+        alistToken = await getToken(alistname, alistmima);
+    };
+    const headers = {
+        'Content-Type': 'application/json',
+        'Authorization': `${alistToken}`
+    };
+    const body = {
+        name: newName,
+        path: pathName
+    }
+    try {
+        const response = await fetch(url, {
+            method: 'POST',
+            headers: headers,
+            body: JSON.stringify(body)
+        });
 
-//   uploadContainer.addEventListener('drop', (event) => {
-//       event.preventDefault();
-//       uploadContainer.style.backgroundColor = '#333'; // 恢复原背景色
-//       const files = event.dataTransfer.files;
-//       alert(`拖拽上传了 ${files.length} 个文件`);
-//   });
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        if (response.status === 200) {
+            const data = await response.json();
+            console.log(data);
+            return data;
+        } else {
+            throw new Error(`Request failed with status: ${response.status}`);
+        }
+    } catch (error) {
+        console.error('Error fetching file info:', error);
+        throw error;
+    }
+}
+
+export async function deletetxt(blockId){
+    const txt = await api.getBlockKramdown(blockId);
+    console.log(txt);
+}
