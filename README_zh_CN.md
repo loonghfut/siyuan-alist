@@ -48,6 +48,9 @@ LL_TODO:用vue写一个（或找个开源的改）alist前端，可能要很久�
 LL_TODO:在alist中实现PDF批注  （这个好难实现啊。。）
 
 ## 更新日志    
+ 0.1.8：  
+ 增加：当上传为图片时，在笔记中插入alist链接图片 [#11](https://github.com/loonghfut/siyuan-alist/issues/11)  
+
  0.1.7：  
  增加：支持自定义自动备份平台[#10.1](https://github.com/loonghfut/siyuan-alist/issues/10) 
 
@@ -163,7 +166,7 @@ LL_TODO:在alist中实现PDF批注  （这个好难实现啊。。）
 ## 最后
 ### 用爱发电，若觉得好用，且帮你节约了时间，希望可以请我一瓶快乐水^-^
 <img src="https://pic.zcl.me/i/2024/11/26/674566b93898c.webp" alt="图片描述" width="200" />
-<img src="https://pic.zcl.me/i/2024/11/26/674566b97887b.webp" alt="图片描述" height="200" />
+<img src="https://pic.zcl.me/i/2024/11/26/674566b97887b.webp" alt="图片描述" width="200" />
 
 自用插件，开源分享，代码凌乱不堪，插件使用了思源社区的模板，主要参考https://github.com/siyuan-community/siyuan-developer-docs
 

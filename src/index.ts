@@ -28,8 +28,6 @@ import {
 } from "@/myapi";
 
 import { SettingUtils } from "./libs/setting-utils";
-import { get } from "http";
-// import path from "path";
 
 
 
@@ -157,10 +155,20 @@ export default class SiYuanAlist extends Plugin {
                         await uploadToAList(file, alistToPath2 + "/" + today + "/" + file.name); // 调用上传文件的函数
                         //增加插入笔记上传的文件链接
                         // console.log(alistToPath2 + "/" + alistTime + "/" + file.name,"afa");
-                        if (clickId) {
-                            api.appendBlock('markdown', `📄[${file.name}](${alistUrl}${alistToPath2}/${today}/${file.name})`, clickId);
+                        //判断文件是否为图片
+                        if (file.type.startsWith('image')) {
+                            // console.log("图片");
+                            if (clickId) {
+                                api.appendBlock('markdown', `![${file.name}](${alistUrl}/d${alistToPath2}/${today}/${file.name})`, clickId);
+                            } else {
+                                api.appendBlock('markdown', `![${file.name}](${alistUrl}/d${alistToPath2}/${today}/${file.name})`, currentDocId);
+                            }
                         } else {
-                            api.appendBlock('markdown', `📄[${file.name}](${alistUrl}${alistToPath2}/${today}/${file.name})`, currentDocId);
+                            if (clickId) {
+                                api.appendBlock('markdown', `📄[${file.name}](${alistUrl}${alistToPath2}/${today}/${file.name})`, clickId);
+                            } else {
+                                api.appendBlock('markdown', `📄[${file.name}](${alistUrl}${alistToPath2}/${today}/${file.name})`, currentDocId);
+                            }
                         }
                     }
                 });
@@ -603,10 +611,10 @@ export default class SiYuanAlist extends Plugin {
                 console.log("备份任务开始执行");
                 this.runbackup(alistFilename);
             });
-        }else{
+        } else {
             console.log("无定时备份任务");
-        }   
-        
+        }
+
         if (isdrag && !this.isMobile) {//兼容移动端
             insertCountdownElement();
         }
@@ -955,10 +963,19 @@ function insertCountdownElement() {//TODO:需要优化
             const file = files[0]; // 获取选中的第一个文件
             await uploadToAList(file, alistToPath2 + "/" + today + "/" + file.name); // 调用上传文件的函数
             //增加插入笔记上传的文件链接
-            if (clickId) {
-                api.appendBlock('markdown', `📄[${file.name}](${alistUrl}${alistToPath2}/${today}/${file.name})`, clickId);
+            if (file.type.startsWith('image')) {
+                // console.log("图片");
+                if (clickId) {
+                    api.appendBlock('markdown', `![${file.name}](${alistUrl}/d${alistToPath2}/${today}/${file.name})`, clickId);
+                } else {
+                    api.appendBlock('markdown', `![${file.name}](${alistUrl}/d${alistToPath2}/${today}/${file.name})`, currentDocId);
+                }
             } else {
-                api.appendBlock('markdown', `📄[${file.name}](${alistUrl}${alistToPath2}/${today}/${file.name})`, currentDocId);
+                if (clickId) {
+                    api.appendBlock('markdown', `📄[${file.name}](${alistUrl}${alistToPath2}/${today}/${file.name})`, clickId);
+                } else {
+                    api.appendBlock('markdown', `📄[${file.name}](${alistUrl}${alistToPath2}/${today}/${file.name})`, currentDocId);
+                }
             }
         }
     });
@@ -989,10 +1006,19 @@ function insertCountdownElement() {//TODO:需要优化
             const file = files[0]; // 获取选中的第一个文件
             await uploadToAList(file, alistToPath2 + "/" + today + "/" + file.name); // 调用上传文件的函数
             // 增加插入笔记上传的文件链接
-            if (clickId) {
-                api.appendBlock('markdown', `📄[${file.name}](${alistUrl}${alistToPath2}/${today}/${file.name})`, clickId);
+            if (file.type.startsWith('image')) {
+                // console.log("图片");
+                if (clickId) {
+                    api.appendBlock('markdown', `![${file.name}](${alistUrl}/d${alistToPath2}/${today}/${file.name})`, clickId);
+                } else {
+                    api.appendBlock('markdown', `![${file.name}](${alistUrl}/d${alistToPath2}/${today}/${file.name})`, currentDocId);
+                }
             } else {
-                api.appendBlock('markdown', `📄[${file.name}](${alistUrl}${alistToPath2}/${today}/${file.name})`, currentDocId);
+                if (clickId) {
+                    api.appendBlock('markdown', `📄[${file.name}](${alistUrl}${alistToPath2}/${today}/${file.name})`, clickId);
+                } else {
+                    api.appendBlock('markdown', `📄[${file.name}](${alistUrl}${alistToPath2}/${today}/${file.name})`, currentDocId);
+                }
             }
         } else {
             console.log("没有文件");
