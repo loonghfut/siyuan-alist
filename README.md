@@ -1,6 +1,7 @@
 ## 插件介绍
 联动Alist，实现大型附件管理，释放思源笔记空间  
-[主要功能演示视频](https://ld246.com/article/1727347960883?r=stevehfut)
+[主要功能演示视频1](https://ld246.com/article/1727347960883?r=stevehfut)
+[主要功能演示视频2](https://ld246.com/article/1732334875740?r=stevehfut)
 #### 目前有的功能  （注：带beta的功能需要在插件设置页面开启beta模式才有效果）
 1. 嵌入alist网页，并自动识别alist的链接，不再跳转到浏览器  
 2. 上传文件到alist，并将链接插入当前笔记  
@@ -48,6 +49,9 @@ LL_TODO:用vue写一个（或找个开源的改）alist前端，可能要很久�
 LL_TODO:在alist中实现PDF批注  （这个好难实现啊。。）
 
 ## 更新日志    
+ 0.1.9：
+ 增加：为方便alist管理，将图片单独保存在一个文件夹中
+
  0.1.8：  
  增加：当上传为图片时，在笔记中插入alist链接图片 [#11](https://github.com/loonghfut/siyuan-alist/issues/11)  
 

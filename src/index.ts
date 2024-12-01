@@ -1,7 +1,7 @@
 // import { createApp } from "vue";
 // import App from "./app.vue";
 import * as sy from "siyuan";
-
+import * as myhtml from "@/myhtml";
 import {
     Plugin,
     showMessage,
@@ -17,6 +17,7 @@ import "@/index.scss";
 // import * as api from "@/api"
 import * as myapi from "@/myapi";
 import * as api from '@/api';
+
 
 import {
     downloadImage,
@@ -57,6 +58,7 @@ export let alistTime: string | null = null;
 export let isCtrl: boolean = false;
 export let isdrag: boolean = true;
 export let selectTOP: string | null = null;
+export let alistPIC: string | null = null;
 
 export let today: string | null = null;
 export let timeNow: string | null = null;
@@ -136,6 +138,15 @@ export default class SiYuanAlist extends Plugin {
             }
         });
 
+        // this.addTopBar({
+        //     icon: "iconCloudUpload",
+        //     title: "测试用",
+        //     position: "left",
+        //     callback: () => {
+        //         api.appendBlock('dom', myhtml.myCardLink, clickId);
+        //     }
+        // });
+
         this.addTopBar({
             icon: "iconAlist",
             title: "附件上传",
@@ -152,16 +163,20 @@ export default class SiYuanAlist extends Plugin {
                     const files = inputElement.files; // 现在可以安全地访问 files
                     if (files && files.length > 0) {
                         const file = files[0]; // 获取选中的第一个文件
-                        await uploadToAList(file, alistToPath2 + "/" + today + "/" + file.name); // 调用上传文件的函数
+                        if (file.type.startsWith('image')) {
+                            await uploadToAList(file, alistPIC + "/" + today + "/" + file.name); // 
+                        } else {
+                            await uploadToAList(file, alistToPath2 + "/" + today + "/" + file.name); // 调用上传文件的函数
+                        }
                         //增加插入笔记上传的文件链接
                         // console.log(alistToPath2 + "/" + alistTime + "/" + file.name,"afa");
                         //判断文件是否为图片
                         if (file.type.startsWith('image')) {
                             // console.log("图片");
                             if (clickId) {
-                                api.appendBlock('markdown', `![${file.name}](${alistUrl}/d${alistToPath2}/${today}/${file.name})`, clickId);
+                                api.appendBlock('markdown', `![${file.name}](${alistUrl}/d${alistPIC}/${today}/${file.name})`, clickId);
                             } else {
-                                api.appendBlock('markdown', `![${file.name}](${alistUrl}/d${alistToPath2}/${today}/${file.name})`, currentDocId);
+                                api.appendBlock('markdown', `![${file.name}](${alistUrl}/d${alistPIC}/${today}/${file.name})`, currentDocId);
                             }
                         } else {
                             if (clickId) {
@@ -420,6 +435,21 @@ export default class SiYuanAlist extends Plugin {
         });
 
         this.settingUtils.addItem({
+            key: "PIC",
+            value: null,
+            type: "textinput",
+            title: "alist图片文件夹",
+            description: `为方便alist管理，将图片单独保存在一个文件夹中`,
+            action: {
+                callback: async () => {
+                    // Read data in real time
+                    alistPIC = await this.settingUtils.takeAndSave("PIC");
+                    // myapi.refresh();
+                }
+            }
+        });
+
+        this.settingUtils.addItem({
             key: "alistTime",
             value: "",
             type: "textinput",
@@ -468,6 +498,8 @@ export default class SiYuanAlist extends Plugin {
                 }
             }
         });
+
+
         // this.settingUtils.addItem({
         //     key: "beta_pro",
         //     value: false,
@@ -585,6 +617,7 @@ export default class SiYuanAlist extends Plugin {
         isdrag = this.settingUtils.get("isdrag");
         serNum = this.settingUtils.get("Select");
         selectTOP = this.settingUtils.get("SelectTOP");
+        alistPIC = this.settingUtils.get("PIC");
 
         beta = this.settingUtils.get("beta");
         beta_pro = this.settingUtils.get("beta_pro");
@@ -961,14 +994,18 @@ function insertCountdownElement() {//TODO:需要优化
         const files = inputElement.files; // 现在可以安全地访问 files
         if (files && files.length > 0) {
             const file = files[0]; // 获取选中的第一个文件
-            await uploadToAList(file, alistToPath2 + "/" + today + "/" + file.name); // 调用上传文件的函数
+            if (file.type.startsWith('image')) {
+                await uploadToAList(file, alistPIC + "/" + today + "/" + file.name); // 
+            } else {
+                await uploadToAList(file, alistToPath2 + "/" + today + "/" + file.name); // 调用上传文件的函数
+            }
             //增加插入笔记上传的文件链接
             if (file.type.startsWith('image')) {
                 // console.log("图片");
                 if (clickId) {
-                    api.appendBlock('markdown', `![${file.name}](${alistUrl}/d${alistToPath2}/${today}/${file.name})`, clickId);
+                    api.appendBlock('markdown', `![${file.name}](${alistUrl}/d${alistPIC}/${today}/${file.name})`, clickId);
                 } else {
-                    api.appendBlock('markdown', `![${file.name}](${alistUrl}/d${alistToPath2}/${today}/${file.name})`, currentDocId);
+                    api.appendBlock('markdown', `![${file.name}](${alistUrl}/d${alistPIC}/${today}/${file.name})`, currentDocId);
                 }
             } else {
                 if (clickId) {
@@ -1004,14 +1041,18 @@ function insertCountdownElement() {//TODO:需要优化
         const files = event.dataTransfer.files; // 获取拖拽的文件列表
         if (files && files.length > 0) {
             const file = files[0]; // 获取选中的第一个文件
-            await uploadToAList(file, alistToPath2 + "/" + today + "/" + file.name); // 调用上传文件的函数
+            if (file.type.startsWith('image')) {
+                await uploadToAList(file, alistPIC + "/" + today + "/" + file.name); // 
+            } else {
+                await uploadToAList(file, alistToPath2 + "/" + today + "/" + file.name); // 调用上传文件的函数
+            }
             // 增加插入笔记上传的文件链接
             if (file.type.startsWith('image')) {
                 // console.log("图片");
                 if (clickId) {
-                    api.appendBlock('markdown', `![${file.name}](${alistUrl}/d${alistToPath2}/${today}/${file.name})`, clickId);
+                    api.appendBlock('markdown', `![${file.name}](${alistUrl}/d${alistPIC}/${today}/${file.name})`, clickId);
                 } else {
-                    api.appendBlock('markdown', `![${file.name}](${alistUrl}/d${alistToPath2}/${today}/${file.name})`, currentDocId);
+                    api.appendBlock('markdown', `![${file.name}](${alistUrl}/d${alistPIC}/${today}/${file.name})`, currentDocId);
                 }
             } else {
                 if (clickId) {
