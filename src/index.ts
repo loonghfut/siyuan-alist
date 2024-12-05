@@ -64,7 +64,8 @@ export let today: string | null = null;
 export let timeNow: string | null = null;
 
 export let clickId: string | null = null;
-
+let resizeObserver: ResizeObserver | null = null;
+let resizeTimeout: number = 0;
 // let notePath: string | null = null;
 let targetURL: string | null = null;
 let isclickalist: boolean = true;
@@ -75,6 +76,10 @@ export default class SiYuanAlist extends Plugin {
     private settingUtils: SettingUtils;
     isMobile: boolean;
     private blockIconEventBindThis = this.blockIconEvent.bind(this);
+
+
+
+
 
     async onload() {
 
@@ -102,13 +107,17 @@ export default class SiYuanAlist extends Plugin {
         //监听事件
         document.addEventListener("click", this.onlick, true);
 
+
+
+
         const frontEnd = getFrontend();
         this.isMobile = frontEnd === "mobile" || frontEnd === "browser-mobile";
         console.log(frontEnd, this.isMobile);
+
         this.data[STORAGE_NAME] = { readonlyText: "Readon" };
-        // 图标的制作参见帮助文档
-        //图标相关设置
-        //添加图标
+
+
+
         this.addIcons(`
 <symbol id="iconSaving"  viewBox="0 0 32 32">
   <path d="M28 22h-24c-1.105 0-2-0.895-2-2v-12c0-1.105 0.895-2 2-2h24c1.105 0 2 0.895 2 2v12c0 1.105-0.895 2-2 2zM4 8v12h24v-12h-24zM16 18l-6-6h4v-4h4v4h4l-6 6zM26 24h-20c-1.105 0-2-0.895-2-2v-2h24v2c0 1.105-0.895 2-2 2z"></path>
@@ -216,44 +225,90 @@ export default class SiYuanAlist extends Plugin {
             update() {
                 // console.log("alist-dock" + " update");
                 // console.log(this, "cehsihs8");
-                this.element.innerHTML = `<div id="alist-dock" style="height: 100% ; width: 100%;">
+
+
+                this.element.innerHTML = `
+                <div id="alist-dock" class="alist-dock-container"  >
                 <iframe 
                 allow="clipboard-read; clipboard-write"
                 sandbox="allow-forms allow-presentation allow-same-origin allow-scripts allow-modals allow-popups" 
                 src="${targetURL}" 
                 data-src="" 
-                border="0" 
+                border="1" 
                 frameborder="no" 
                 framespacing="0" 
                 allowfullscreen="true" 
-                style="height: 99% ; width: 100%;"
+                style="height: 100% ; width: 100%;  pointer-events: auto;"
                 >
                 </iframe>
-                </div>`;
+                </div>
+                `;
+                const targetElement = this.element.querySelector('#alist-dock iframe');
+
+
+                if (targetElement) {
+                    resizeObserver = new ResizeObserver(() => {
+                        (targetElement as HTMLElement).style.pointerEvents = 'none';
+
+                        clearTimeout(resizeTimeout);
+                        resizeTimeout = window.setTimeout(() => {
+                            (targetElement as HTMLElement).style.pointerEvents = 'auto';
+                        }, 300); // 300毫秒后恢复
+                    });
+
+                    resizeObserver.observe(targetElement);
+                }
+
             },
             init: (dock) => {
                 this.alistdock = dock;//将dock赋值给全局变量，以便在其它地方进行后续操作
                 if (alistUrl == "") {
                     showMessage("请先配置alist网址...", -1, "error");
                 }
-                dock.element.innerHTML = `<div id="alist-dock" style="height: 100% ; width: 100%;">
+                dock.element.innerHTML = `
+                <div id="alist-dock" class="alist-dock-container"  >
                 <iframe 
                 allow="clipboard-read; clipboard-write"
                 sandbox="allow-forms allow-presentation allow-same-origin allow-scripts allow-modals allow-popups" 
                 src="${alistUrl}" 
                 data-src="" 
-                border="0" 
+                border="1" 
                 frameborder="no" 
                 framespacing="0" 
                 allowfullscreen="true" 
-                style="height: 99% ; width: 100%;"
+                style="height: 100% ; width: 100%;  pointer-events: auto;"
                 >
                 </iframe>
-                </div>`;
+                </div>
+                `;
+                const targetElement = dock.element.querySelector('#alist-dock iframe');
+
+
+                if (targetElement) {
+                    resizeObserver = new ResizeObserver(() => {
+                        (targetElement as HTMLElement).style.pointerEvents = 'none';
+
+                        clearTimeout(resizeTimeout);
+                        resizeTimeout = window.setTimeout(() => {
+                            (targetElement as HTMLElement).style.pointerEvents = 'auto';
+                        }, 300); // 300毫秒后恢复
+                    });
+
+                    resizeObserver.observe(targetElement);
+                }
+
             },
             destroy() {
                 console.log("destroy dock:", "alist-dock");
+                // 断开 ResizeObserver
+                if (resizeObserver) {
+                    resizeObserver.disconnect();
+                    resizeObserver = null;
+                }
+                // 清除定时器
+                clearTimeout(resizeTimeout);
             }
+
         });
 
 
@@ -471,7 +526,7 @@ export default class SiYuanAlist extends Plugin {
             value: 1,
             type: "textinput",
             title: "选择自动备份平台（设定完后请刷新一下哦）（beta）",
-            description: `当前平台：${frontEnd} ,请填入要自动备份的平台,多个平台用（英文）逗号隔开`,
+            description: `当前平台：${frontEnd} ,请填入要自动备份的平台,目前只支持一种平台`,
             action: {
                 callback: async () => {
                     // Read data in real time
@@ -620,7 +675,7 @@ export default class SiYuanAlist extends Plugin {
         alistPIC = this.settingUtils.get("PIC");
 
         beta = this.settingUtils.get("beta");
-        beta_pro = this.settingUtils.get("beta_pro");
+        // beta_pro = this.settingUtils.get("beta_pro");
 
         trunLog(this.settingUtils.get("islog"));
         // outLog(serNum, "当前触发方式");
@@ -638,7 +693,7 @@ export default class SiYuanAlist extends Plugin {
         }
 
 
-        if (alistTime && selectTOP.includes(getFrontend())) {
+        if (alistTime && selectTOP.startsWith(getFrontend())) {//TODO
             console.log("定时备份允许");
             myapi.scheduleDailyTask(alistTime, () => {
                 console.log("备份任务开始执行");
@@ -729,7 +784,13 @@ export default class SiYuanAlist extends Plugin {
     //点击链接触发的事件 TODO:后续优化，改为官方的点击事件
     onlick = async (e) => {
         //测试
-
+        // if (resizeObserver) {
+        //     // ResizeObserver 存在且未断开
+        //     console.log("ResizeObserver 正在观察元素");
+        // } else {
+        //     // ResizeObserver 不存在或已断开
+        //     console.log("ResizeObserver 不存在或已断开");
+        // }
         //测试
         if (
             e.altKey && e.button === 0 &&    // event.button === 0 表示鼠标左键
@@ -810,6 +871,7 @@ export default class SiYuanAlist extends Plugin {
 
                         if (this.alistdock) {//判断是否存在
                             targetURL = target.dataset.href;
+                            this.alistdock.destroy();
                             this.alistdock.update();
                         } else {
                             //首次点击，以初始化
@@ -821,6 +883,7 @@ export default class SiYuanAlist extends Plugin {
                             buttonAlist.dispatchEvent(clickEvent);
                             if (this.alistdock) {//判断是否存在
                                 targetURL = target.dataset.href;
+                                this.alistdock.destroy();
                                 this.alistdock.update();
                             } else {
                                 console.error('Alist dock not found');
@@ -874,7 +937,7 @@ export default class SiYuanAlist extends Plugin {
                     frameborder="no"
                     framespacing="0"
                     allowfullscreen="true"
-                    style="height: 100% ; width: 100%;"
+                    style="height: 100% ; width: 99%;"
                     >
                     </iframe>`;
         e.preventDefault();

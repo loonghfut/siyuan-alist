@@ -45,45 +45,55 @@ DONE:支持将思源笔记里的附件上传到alist并在其下方增加链接
 
 TODO:优化体验（欢迎提issue）  
 
+LL_TODO:重构代码，提高代码质量
 LL_TODO:用vue写一个（或找个开源的改）alist前端，可能要很久。。  
 LL_TODO:在alist中实现PDF批注  （这个好难实现啊。。）
 
 ## 更新日志    
- 0.1.9：
- 增加：为方便alist管理，将图片单独保存在一个文件夹中
+ 0.1.10：  
+ 修复：修复侧边栏缩小时无法拖动[#13](https://github.com/loonghfut/siyuan-alist/issues/13)  
+ 优化：备份平台配置
 
- 0.1.8：  
- 增加：当上传为图片时，在笔记中插入alist链接图片 [#11](https://github.com/loonghfut/siyuan-alist/issues/11)  
-
- 0.1.7：  
- 增加：支持自定义自动备份平台[#10.1](https://github.com/loonghfut/siyuan-alist/issues/10) 
-
- 0.1.6：  
- 修复：[#10](https://github.com/loonghfut/siyuan-alist/issues/10)
-
- 0.1.4:   
- 修复：备份时间戳不会更新 [#9.1](https://github.com/loonghfut/siyuan-alist/issues/9)  
- 增加：支持时间戳位置自定义 [#9.2](https://github.com/loonghfut/siyuan-alist/issues/9)   
-    
- 0.1.3：  
- 增加：默认备份名新增时间戳变量 [#8](https://github.com/loonghfut/siyuan-alist/issues/8)  
- 修复：修复部分日志输出  
-
- 0.1.2:  
- 增加：增加右键删除alist附件（实际上移动到回收站）功能 （beta）  
- 增加：上传的alist附件链接增加前缀📄标识(方便快速识别链接是否为alist附件)   
- 优化：优化部分代码，减少alist api请求数  
-
- 0.1.0:  
- 增加：部分功能兼容手机端  
- 修复：手机端部分功能报错  
- 移除：移除悬浮alist附件预览窗口（感觉没用）    
-
- 0.1.0_dev:  
- 优化：优化上传链接插入位置，默认为光标所在的块的后面添加链接（不再是在文档末尾添加链接了）（beta）   
- 增加：新增悬浮alist附件预览窗口  （beta）
 <details>
-<summary>更多更新日志</summary>
+  <summary>更多更新日志</summary>
+
+### 0.1.9
+- 增加：为方便alist管理，将图片单独保存在一个文件夹中
+
+### 0.1.8
+- 增加：当上传为图片时，在笔记中插入alist链接图片 [#11](https://github.com/loonghfut/siyuan-alist/issues/11)
+
+### 0.1.7
+- 增加：支持自定义自动备份平台 [#10.1](https://github.com/loonghfut/siyuan-alist/issues/10)
+
+### 0.1.6
+- 修复：[#10](https://github.com/loonghfut/siyuan-alist/issues/10)
+
+### 0.1.4
+- 修复：备份时间戳不会更新 [#9.1](https://github.com/loonghfut/siyuan-alist/issues/9)
+- 增加：支持时间戳位置自定义 [#9.2](https://github.com/loonghfut/siyuan-alist/issues/9)
+
+### 0.1.3
+- 增加：默认备份名新增时间戳变量 [#8](https://github.com/loonghfut/siyuan-alist/issues/8)
+- 修复：修复部分日志输出
+
+### 0.1.2
+- 增加：增加右键删除alist附件（实际上移动到回收站）功能 （beta）
+- 增加：上传的alist附件链接增加前缀📄标识(方便快速识别链接是否为alist附件)
+- 优化：优化部分代码，减少alist api请求数
+
+### 0.1.0
+- 增加：部分功能兼容手机端
+- 修复：手机端部分功能报错
+- 移除：移除悬浮alist附件预览窗口（感觉没用）
+
+### 0.1.0_dev
+- 优化：优化上传链接插入位置，默认为光标所在的块的后面添加链接（不再是在文档末尾添加链接了） （beta）
+- 增加：新增悬浮alist附件预览窗口  （beta）
+
+</details>
+<details>
+<summary>更多旧更新日志</summary>
 <details>
   <summary>0.0.12</summary>
   
@@ -169,8 +179,8 @@ LL_TODO:在alist中实现PDF批注  （这个好难实现啊。。）
 
 ## 最后
 ### 用爱发电，若觉得好用，且帮你节约了时间，希望可以请我一瓶快乐水^-^
-<img src="https://pic.zcl.me/i/2024/11/26/674566b93898c.webp" alt="图片描述" width="200" />
-<img src="https://pic.zcl.me/i/2024/11/26/674566b97887b.webp" alt="图片描述" width="200" />
+<img src="https://pic.imgdb.cn/item/6751b929d0e0a243d4de55a7.png" alt="图片描述" width="200" />
+
 
 自用插件，开源分享，代码凌乱不堪，插件使用了思源社区的模板，主要参考https://github.com/siyuan-community/siyuan-developer-docs
 
