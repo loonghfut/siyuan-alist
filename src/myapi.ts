@@ -966,7 +966,7 @@ export async function importAllData(blob: Blob) {
  */
 // 9/16 2024 更新：返回文件路径到剪切板
 // 11/16 2024 更新：尝试重构(failure)（success）
-export async function uploadToAList(blob, filePath) {
+export async function uploadToAList(blob, filePath, insertlink: Function = async () => {console.log('insertlink')}) {
     if (beta) {
         try {
             const FileName = filePath.split('/').pop()
@@ -991,10 +991,11 @@ export async function uploadToAList(blob, filePath) {
             });
 
             // 监听上传成功
-            xhr.onload = () => {
+            xhr.onload =async () => {
                 if (xhr.status === 200) {
                     showMessage(`上传成功`, 3000, 'info', 'beta');
                     console.log('上传成功');
+                    await insertlink();
                 } else {
                     console.error('上传失败:', xhr.statusText);
                 }
@@ -1081,7 +1082,7 @@ async function getToken(username, password) {
         body: JSON.stringify(data)
     });
     const result = await response.json();
-    console.log(result);
+    outLog(result);
     return result.data.token;
 }
 
@@ -1419,4 +1420,40 @@ export async function alistRename(pathName, newName) {
 export async function deletetxt(blockId){
     const txt = await api.getBlockKramdown(blockId);
     console.log(txt);
+}
+
+
+export async function alistgetSign(filePath) {
+    const url = `${alistUrl}/api/fs/get`;
+    if (!alistToken) {
+        alistToken = await getToken(alistname, alistmima);
+    };
+    const headers = {
+        'Content-Type': 'application/json',
+        'Authorization': `${alistToken}`
+    };
+    const body = {
+        path: filePath
+    };
+    try {
+        const response = await fetch(url, {
+            method: 'POST',
+            headers: headers,
+            body: JSON.stringify(body)
+        });
+
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        if (response.status === 200) {
+            const data = await response.json();
+            console.log(data);
+            return data;
+        } else {
+            throw new Error(`Request failed with status: ${response.status}`);
+        }
+    } catch (error) {
+        console.error('Error fetching file info:', error);
+        throw error;
+    }
 }

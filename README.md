@@ -50,6 +50,10 @@ LL_TODO:用vue写一个（或找个开源的改）alist前端，可能要很久�
 LL_TODO:在alist中实现PDF批注  （这个好难实现啊。。）
 
 ## 更新日志    
+ 0.1.11:  
+ 修复：修复部分情况下，alist上传图片无法正常显示的问题  
+ 优化：优化插入链接逻辑
+
  0.1.10：  
  修复：修复侧边栏缩小时无法拖动[#13](https://github.com/loonghfut/siyuan-alist/issues/13)  
  优化：备份平台配置

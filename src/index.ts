@@ -167,33 +167,84 @@ export default class SiYuanAlist extends Plugin {
 
                 // 文件选择事件处理
                 fileInput.addEventListener('change', async (event) => {
-                    console.log(event);
+                    // console.log(event);
                     const inputElement = event.target as HTMLInputElement; // 类型断言
                     const files = inputElement.files; // 现在可以安全地访问 files
                     if (files && files.length > 0) {
                         const file = files[0]; // 获取选中的第一个文件
                         if (file.type.startsWith('image')) {
-                            await uploadToAList(file, alistPIC + "/" + today + "/" + file.name); // 
+                            await uploadToAList(file, alistPIC + "/" + today + "/" + file.name, async () => {
+                                if (file.type.startsWith('image')) {
+                                    // console.log("图片");
+                                    const filesign = await myapi.alistgetSign(`${alistPIC}/${today}/${file.name}`);
+                                    let SIGN = '';
+                                    console.log(filesign, "filesign");
+                                    if (filesign.data.sign) {
+                                        SIGN = "?sign=" + filesign.data.sign;
+                                    }
+                                    if (clickId) {
+                                        api.appendBlock('markdown', `![${file.name}](${alistUrl}/d${alistPIC}/${today}/${file.name}${SIGN})`, clickId);
+                                    } else {
+                                        api.appendBlock('markdown', `![${file.name}](${alistUrl}/d${alistPIC}/${today}/${file.name}${SIGN})`, currentDocId);
+                                    }
+                                } else if (file.type.startsWith('video')) {
+                                    const filesign = await myapi.alistgetSign(`${alistToPath2}/${today}/${file.name}`);
+                                    let SIGN = '';
+                                    if (filesign.data.sign) {
+                                        SIGN = "?sign=" + filesign.data.sign;
+                                    }
+                                    if (clickId) {
+                                        api.appendBlock('markdown', `[${file.name}](${alistUrl}/d${alistToPath2}/${today}/${file.name}${SIGN})`, clickId);
+                                    } else {
+                                        api.appendBlock('markdown', `[${file.name}](${alistUrl}/d${alistToPath2}/${today}/${file.name}${SIGN})`, currentDocId);
+                                    }
+                                } else {
+                                    if (clickId) {
+                                        api.appendBlock('markdown', `📄[${file.name}](${alistUrl}${alistToPath2}/${today}/${file.name})`, clickId);
+                                    } else {
+                                        api.appendBlock('markdown', `📄[${file.name}](${alistUrl}${alistToPath2}/${today}/${file.name})`, currentDocId);
+                                    }
+                                }
+                            }); // 
                         } else {
-                            await uploadToAList(file, alistToPath2 + "/" + today + "/" + file.name); // 调用上传文件的函数
+                            await uploadToAList(file, alistToPath2 + "/" + today + "/" + file.name, async () => {
+                                if (file.type.startsWith('image')) {
+                                    // console.log("图片");
+                                    const filesign = await myapi.alistgetSign(`${alistPIC}/${today}/${file.name}`);
+                                    let SIGN = '';
+                                    console.log(filesign, "filesign");
+                                    if (filesign.data.sign) {
+                                        SIGN = "?sign=" + filesign.data.sign;
+                                    }
+                                    if (clickId) {
+                                        api.appendBlock('markdown', `![${file.name}](${alistUrl}/d${alistPIC}/${today}/${file.name}${SIGN})`, clickId);
+                                    } else {
+                                        api.appendBlock('markdown', `![${file.name}](${alistUrl}/d${alistPIC}/${today}/${file.name}${SIGN})`, currentDocId);
+                                    }
+                                } else if (file.type.startsWith('video')) {
+                                    const filesign = await myapi.alistgetSign(`${alistToPath2}/${today}/${file.name}`);
+                                    let SIGN = '';
+                                    if (filesign.data.sign) {
+                                        SIGN = "?sign=" + filesign.data.sign;
+                                    }
+                                    if (clickId) {
+                                        api.appendBlock('markdown', `[${file.name}](${alistUrl}/d${alistToPath2}/${today}/${file.name}${SIGN})`, clickId);
+                                    } else {
+                                        api.appendBlock('markdown', `[${file.name}](${alistUrl}/d${alistToPath2}/${today}/${file.name}${SIGN})`, currentDocId);
+                                    }
+                                } else {
+                                    if (clickId) {
+                                        api.appendBlock('markdown', `📄[${file.name}](${alistUrl}${alistToPath2}/${today}/${file.name})`, clickId);
+                                    } else {
+                                        api.appendBlock('markdown', `📄[${file.name}](${alistUrl}${alistToPath2}/${today}/${file.name})`, currentDocId);
+                                    }
+                                }
+                            }); // 调用上传文件的函数
                         }
                         //增加插入笔记上传的文件链接
                         // console.log(alistToPath2 + "/" + alistTime + "/" + file.name,"afa");
                         //判断文件是否为图片
-                        if (file.type.startsWith('image')) {
-                            // console.log("图片");
-                            if (clickId) {
-                                api.appendBlock('markdown', `![${file.name}](${alistUrl}/d${alistPIC}/${today}/${file.name})`, clickId);
-                            } else {
-                                api.appendBlock('markdown', `![${file.name}](${alistUrl}/d${alistPIC}/${today}/${file.name})`, currentDocId);
-                            }
-                        } else {
-                            if (clickId) {
-                                api.appendBlock('markdown', `📄[${file.name}](${alistUrl}${alistToPath2}/${today}/${file.name})`, clickId);
-                            } else {
-                                api.appendBlock('markdown', `📄[${file.name}](${alistUrl}${alistToPath2}/${today}/${file.name})`, currentDocId);
-                            }
-                        }
+
                     }
                 });
 
@@ -540,7 +591,7 @@ export default class SiYuanAlist extends Plugin {
             key: "beta",
             value: false,
             type: "checkbox",
-            title: "beta版本",
+            title: "beta版本（经长时间测试，未发现问题，建议开启，预计下个版本默认开启）",
             description: "启用后可进入beta模式，体验更多可能不稳定的新功能(具体功能详见更新日志)，欢迎反馈bug ",
             action: {
                 callback: async () => {
@@ -1058,25 +1109,75 @@ function insertCountdownElement() {//TODO:需要优化
         if (files && files.length > 0) {
             const file = files[0]; // 获取选中的第一个文件
             if (file.type.startsWith('image')) {
-                await uploadToAList(file, alistPIC + "/" + today + "/" + file.name); // 
+                await uploadToAList(file, alistPIC + "/" + today + "/" + file.name, async () => {
+                    if (file.type.startsWith('image')) {
+                        // console.log("图片");
+                        const filesign = await myapi.alistgetSign(`${alistPIC}/${today}/${file.name}`);
+                        let SIGN = '';
+                        console.log(filesign, "filesign");
+                        if (filesign.data.sign) {
+                            SIGN = "?sign=" + filesign.data.sign;
+                        }
+                        if (clickId) {
+                            api.appendBlock('markdown', `![${file.name}](${alistUrl}/d${alistPIC}/${today}/${file.name}${SIGN})`, clickId);
+                        } else {
+                            api.appendBlock('markdown', `![${file.name}](${alistUrl}/d${alistPIC}/${today}/${file.name}${SIGN})`, currentDocId);
+                        }
+                    } else if (file.type.startsWith('video')) {
+                        const filesign = await myapi.alistgetSign(`${alistToPath2}/${today}/${file.name}`);
+                        let SIGN = '';
+                        if (filesign.data.sign) {
+                            SIGN = "?sign=" + filesign.data.sign;
+                        }
+                        if (clickId) {
+                            api.appendBlock('markdown', `[${file.name}](${alistUrl}/d${alistToPath2}/${today}/${file.name}${SIGN})`, clickId);
+                        } else {
+                            api.appendBlock('markdown', `[${file.name}](${alistUrl}/d${alistToPath2}/${today}/${file.name}${SIGN})`, currentDocId);
+                        }
+                    } else {
+                        if (clickId) {
+                            api.appendBlock('markdown', `📄[${file.name}](${alistUrl}${alistToPath2}/${today}/${file.name})`, clickId);
+                        } else {
+                            api.appendBlock('markdown', `📄[${file.name}](${alistUrl}${alistToPath2}/${today}/${file.name})`, currentDocId);
+                        }
+                    }
+                }); // 
             } else {
-                await uploadToAList(file, alistToPath2 + "/" + today + "/" + file.name); // 调用上传文件的函数
+                await uploadToAList(file, alistToPath2 + "/" + today + "/" + file.name, async () => {
+                    if (file.type.startsWith('image')) {
+                        // console.log("图片");
+                        const filesign = await myapi.alistgetSign(`${alistPIC}/${today}/${file.name}`);
+                        let SIGN = '';
+                        console.log(filesign, "filesign");
+                        if (filesign.data.sign) {
+                            SIGN = "?sign=" + filesign.data.sign;
+                        }
+                        if (clickId) {
+                            api.appendBlock('markdown', `![${file.name}](${alistUrl}/d${alistPIC}/${today}/${file.name}${SIGN})`, clickId);
+                        } else {
+                            api.appendBlock('markdown', `![${file.name}](${alistUrl}/d${alistPIC}/${today}/${file.name}${SIGN})`, currentDocId);
+                        }
+                    } else if (file.type.startsWith('video')) {
+                        const filesign = await myapi.alistgetSign(`${alistToPath2}/${today}/${file.name}`);
+                        let SIGN = '';
+                        if (filesign.data.sign) {
+                            SIGN = "?sign=" + filesign.data.sign;
+                        }
+                        if (clickId) {
+                            api.appendBlock('markdown', `[${file.name}](${alistUrl}/d${alistToPath2}/${today}/${file.name}${SIGN})`, clickId);
+                        } else {
+                            api.appendBlock('markdown', `[${file.name}](${alistUrl}/d${alistToPath2}/${today}/${file.name}${SIGN})`, currentDocId);
+                        }
+                    } else {
+                        if (clickId) {
+                            api.appendBlock('markdown', `📄[${file.name}](${alistUrl}${alistToPath2}/${today}/${file.name})`, clickId);
+                        } else {
+                            api.appendBlock('markdown', `📄[${file.name}](${alistUrl}${alistToPath2}/${today}/${file.name})`, currentDocId);
+                        }
+                    }
+                }); // 调用上传文件的函数
             }
             //增加插入笔记上传的文件链接
-            if (file.type.startsWith('image')) {
-                // console.log("图片");
-                if (clickId) {
-                    api.appendBlock('markdown', `![${file.name}](${alistUrl}/d${alistPIC}/${today}/${file.name})`, clickId);
-                } else {
-                    api.appendBlock('markdown', `![${file.name}](${alistUrl}/d${alistPIC}/${today}/${file.name})`, currentDocId);
-                }
-            } else {
-                if (clickId) {
-                    api.appendBlock('markdown', `📄[${file.name}](${alistUrl}${alistToPath2}/${today}/${file.name})`, clickId);
-                } else {
-                    api.appendBlock('markdown', `📄[${file.name}](${alistUrl}${alistToPath2}/${today}/${file.name})`, currentDocId);
-                }
-            }
         }
     });
     uploadContainer.addEventListener('dragover', (event) => {
@@ -1105,25 +1206,76 @@ function insertCountdownElement() {//TODO:需要优化
         if (files && files.length > 0) {
             const file = files[0]; // 获取选中的第一个文件
             if (file.type.startsWith('image')) {
-                await uploadToAList(file, alistPIC + "/" + today + "/" + file.name); // 
+                await uploadToAList(file, alistPIC + "/" + today + "/" + file.name, async () => {
+                    if (file.type.startsWith('image')) {
+                        // console.log("图片");
+                        const filesign = await myapi.alistgetSign(`${alistPIC}/${today}/${file.name}`);
+                        let SIGN = '';
+                        console.log(filesign, "filesign");
+                        if (filesign.data.sign) {
+                            SIGN = "?sign=" + filesign.data.sign;
+                        }
+                        if (clickId) {
+                            api.appendBlock('markdown', `![${file.name}](${alistUrl}/d${alistPIC}/${today}/${file.name}${SIGN})`, clickId);
+                        } else {
+                            api.appendBlock('markdown', `![${file.name}](${alistUrl}/d${alistPIC}/${today}/${file.name}${SIGN})`, currentDocId);
+                        }
+                    } else if (file.type.startsWith('video')) {
+                        const filesign = await myapi.alistgetSign(`${alistToPath2}/${today}/${file.name}`);
+                        let SIGN = '';
+                        if (filesign.data.sign) {
+                            SIGN = "?sign=" + filesign.data.sign;
+                        }
+                        if (clickId) {
+                            api.appendBlock('markdown', `[${file.name}](${alistUrl}/d${alistToPath2}/${today}/${file.name}${SIGN})`, clickId);
+                        } else {
+                            api.appendBlock('markdown', `[${file.name}](${alistUrl}/d${alistToPath2}/${today}/${file.name}${SIGN})`, currentDocId);
+                        }
+                    } else {
+                        if (clickId) {
+                            api.appendBlock('markdown', `📄[${file.name}](${alistUrl}${alistToPath2}/${today}/${file.name})`, clickId);
+                        } else {
+                            api.appendBlock('markdown', `📄[${file.name}](${alistUrl}${alistToPath2}/${today}/${file.name})`, currentDocId);
+                        }
+                    }
+                }); // 
             } else {
-                await uploadToAList(file, alistToPath2 + "/" + today + "/" + file.name); // 调用上传文件的函数
+                await uploadToAList(file, alistToPath2 + "/" + today + "/" + file.name, async () => {
+                    if (file.type.startsWith('image')) {
+                        // console.log("图片");
+                        const filesign = await myapi.alistgetSign(`${alistPIC}/${today}/${file.name}`);
+                        let SIGN = '';
+                        console.log(filesign, "filesign");
+                        if (filesign.data.sign) {
+                            SIGN = "?sign=" + filesign.data.sign;
+                        }
+                        if (clickId) {
+                            api.appendBlock('markdown', `![${file.name}](${alistUrl}/d${alistPIC}/${today}/${file.name}${SIGN})`, clickId);
+                        } else {
+                            api.appendBlock('markdown', `![${file.name}](${alistUrl}/d${alistPIC}/${today}/${file.name}${SIGN})`, currentDocId);
+                        }
+                    } else if (file.type.startsWith('video')) {
+                        const filesign = await myapi.alistgetSign(`${alistToPath2}/${today}/${file.name}`);
+                        let SIGN = '';
+                        if (filesign.data.sign) {
+                            SIGN = "?sign=" + filesign.data.sign;
+                        }
+                        if (clickId) {
+                            api.appendBlock('markdown', `[${file.name}](${alistUrl}/d${alistToPath2}/${today}/${file.name}${SIGN})`, clickId);
+                        } else {
+                            api.appendBlock('markdown', `[${file.name}](${alistUrl}/d${alistToPath2}/${today}/${file.name}${SIGN})`, currentDocId);
+                        }
+                    } else {
+                        if (clickId) {
+                            api.appendBlock('markdown', `📄[${file.name}](${alistUrl}${alistToPath2}/${today}/${file.name})`, clickId);
+                        } else {
+                            api.appendBlock('markdown', `📄[${file.name}](${alistUrl}${alistToPath2}/${today}/${file.name})`, currentDocId);
+                        }
+                    }
+                }); // 调用上传文件的函数
             }
             // 增加插入笔记上传的文件链接
-            if (file.type.startsWith('image')) {
-                // console.log("图片");
-                if (clickId) {
-                    api.appendBlock('markdown', `![${file.name}](${alistUrl}/d${alistPIC}/${today}/${file.name})`, clickId);
-                } else {
-                    api.appendBlock('markdown', `![${file.name}](${alistUrl}/d${alistPIC}/${today}/${file.name})`, currentDocId);
-                }
-            } else {
-                if (clickId) {
-                    api.appendBlock('markdown', `📄[${file.name}](${alistUrl}${alistToPath2}/${today}/${file.name})`, clickId);
-                } else {
-                    api.appendBlock('markdown', `📄[${file.name}](${alistUrl}${alistToPath2}/${today}/${file.name})`, currentDocId);
-                }
-            }
+
         } else {
             console.log("没有文件");
             showMessage("没有文件", 1000);
