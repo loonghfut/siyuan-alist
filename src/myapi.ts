@@ -1042,6 +1042,7 @@ export async function uploadToAList(blob, filePath, insertlink: Function = async
                 const result = await response.json();
                 if (result.code === 200) {
                     showMessage('备份到alist成功', 6000, 'info', '备份到AList');
+                    await insertlink();
                     // 9/16 2024 更新：返回文件路径到剪切板
                     var markdownLink = `[${FileName}](${alistUrl}${filePath})`;
                     if (navigator.clipboard && navigator.clipboard.writeText) {
