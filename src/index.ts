@@ -218,72 +218,72 @@ export default class SiYuanAlist extends Plugin {
                             }); // 
                         } else {
                             await uploadToAList(file, alistToPath2 + "/" + today + "/" + file.name, async () => {
-                                if (file.type.startsWith('image')) {
+                                // if (file.type.startsWith('image')) {
                                     // console.log("图片");
-                                    const filesign = await myapi.alistgetSign(`${alistPIC}/${today}/${file.name}`);
-                                    let SIGN = '';
-                                    console.log(filesign, "filesign");
-                                    if (filesign.data.sign) {
-                                        SIGN = "?sign=" + filesign.data.sign;
-                                    }
-                                    if (clickId) {
-                                        api.appendBlock('markdown', `![${file.name}](${alistUrl}/d${alistPIC}/${today}/${file.name}${SIGN})`, clickId);
-                                    } else {
-                                        api.appendBlock('markdown', `![${file.name}](${alistUrl}/d${alistPIC}/${today}/${file.name}${SIGN})`, currentDocId);
-                                    }
-                                } else if (file.type.startsWith('video')) {
-                                    console.log("视频");
-                                    const generateBlockId = () => {
-                                        const date = new Date();
-                                        // 调整时间为东八区
-                                        const offset = 8 * 60 * 60 * 1000; // 东八区的偏移量（毫秒）
-                                        const localDate = new Date(date.getTime() + offset);
-                                        const dateString = localDate.toISOString().replace(/[-:.TZ]/g, '').slice(0, 14);
-                                        const randomString = Math.random().toString(36).substring(2, 9);
-                                        return `${dateString}-${randomString}`;
-                                    };
+                                    // const filesign = await myapi.alistgetSign(`${alistPIC}/${today}/${file.name}`);
+                                    // let SIGN = '';
+                                    // console.log(filesign, "filesign");
+                                    // if (filesign.data.sign) {
+                                    //     SIGN = "?sign=" + filesign.data.sign;
+                                    // }
+                                    // if (clickId) {
+                                    //     api.appendBlock('markdown', `![${file.name}](${alistUrl}/d${alistPIC}/${today}/${file.name}${SIGN})`, clickId);
+                                    // } else {
+                                    //     api.appendBlock('markdown', `![${file.name}](${alistUrl}/d${alistPIC}/${today}/${file.name}${SIGN})`, currentDocId);
+                                    // }
+                                // } else if (file.type.startsWith('video')) {
+                                    // console.log("视频");
+                                    // const generateBlockId = () => {
+                                    //     const date = new Date();
+                                    //     // 调整时间为东八区
+                                    //     const offset = 8 * 60 * 60 * 1000; // 东八区的偏移量（毫秒）
+                                    //     const localDate = new Date(date.getTime() + offset);
+                                    //     const dateString = localDate.toISOString().replace(/[-:.TZ]/g, '').slice(0, 14);
+                                    //     const randomString = Math.random().toString(36).substring(2, 9);
+                                    //     return `${dateString}-${randomString}`;
+                                    // };
 
-                                    // 示例使用
-                                    const blockId = generateBlockId();
-                                    const datePart = blockId.split('-')[0];
-                                    console.log(blockId, "kaui-id");
-                                    const filesign = await myapi.alistgetSign(`${alistToPath2}/${today}/${file.name}`);
-                                    let SIGN = '';
-                                    if (filesign.data.sign) {
-                                        SIGN = "?sign=" + filesign.data.sign;
-                                    }
-                                    if (clickId) {
-                                        api.appendBlock('dom', `
-                                            <div data-node-id="${blockId}" data-node-index="1" data-type="NodeVideo" class="iframe" updated="${datePart}">
-                                            <div class="iframe-content">
-                                            ​<video controls="controls" src="${alistUrl}/d${alistToPath2}/${today}/${file.name}${SIGN}" data-src="">
-                                            </video>
-                                            <span class="protyle-action__drag" contenteditable="false">
-                                            </span>
-                                            </div>
-                                            <div class="protyle-attr" contenteditable="false">
-                                            ​</div>
-                                            </div>`, clickId);
-                                    } else {
-                                        api.appendBlock('dom', `
-                                            <div data-node-id="${blockId}" data-node-index="1" data-type="NodeVideo" class="iframe" updated="${datePart}">
-                                            <div class="iframe-content">
-                                            ​<video controls="controls" src="${alistUrl}/d${alistToPath2}/${today}/${file.name}${SIGN}" data-src="">
-                                            </video>
-                                            <span class="protyle-action__drag" contenteditable="false">
-                                            </span>
-                                            </div>
-                                            <div class="protyle-attr" contenteditable="false">
-                                            ​</div>
-                                            </div>`, currentDocId);
-                                    }
-                                } else {
+                                    // // 示例使用
+                                    // const blockId = generateBlockId();
+                                    // const datePart = blockId.split('-')[0];
+                                    // console.log(blockId, "kaui-id");
+                                    // const filesign = await myapi.alistgetSign(`${alistToPath2}/${today}/${file.name}`);
+                                    // let SIGN = '';
+                                    // if (filesign.data.sign) {
+                                    //     SIGN = "?sign=" + filesign.data.sign;
+                                    // }
+                                    // if (clickId) {
+                                    //     api.appendBlock('dom', `
+                                    //         <div data-node-id="${blockId}" data-node-index="1" data-type="NodeVideo" class="iframe" updated="${datePart}">
+                                    //         <div class="iframe-content">
+                                    //         ​<video controls="controls" src="${alistUrl}/d${alistToPath2}/${today}/${file.name}${SIGN}" data-src="">
+                                    //         </video>
+                                    //         <span class="protyle-action__drag" contenteditable="false">
+                                    //         </span>
+                                    //         </div>
+                                    //         <div class="protyle-attr" contenteditable="false">
+                                    //         ​</div>
+                                    //         </div>`, clickId);
+                                    // } else {
+                                    //     api.appendBlock('dom', `
+                                    //         <div data-node-id="${blockId}" data-node-index="1" data-type="NodeVideo" class="iframe" updated="${datePart}">
+                                    //         <div class="iframe-content">
+                                    //         ​<video controls="controls" src="${alistUrl}/d${alistToPath2}/${today}/${file.name}${SIGN}" data-src="">
+                                    //         </video>
+                                    //         <span class="protyle-action__drag" contenteditable="false">
+                                    //         </span>
+                                    //         </div>
+                                    //         <div class="protyle-attr" contenteditable="false">
+                                    //         ​</div>
+                                    //         </div>`, currentDocId);
+                                    // }
+                                // } else {
                                     if (clickId) {
                                         api.appendBlock('markdown', `📄[${file.name}](${alistUrl}${alistToPath2}/${today}/${file.name})`, clickId);
                                     } else {
                                         api.appendBlock('markdown', `📄[${file.name}](${alistUrl}${alistToPath2}/${today}/${file.name})`, currentDocId);
                                     }
-                                }
+                                // }
                             }); // 调用上传文件的函数
                         }
                         //增加插入笔记上传的文件链接
