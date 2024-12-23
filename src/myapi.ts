@@ -1434,7 +1434,8 @@ export async function alistgetSign(filePath) {
         'Authorization': `${alistToken}`
     };
     const body = {
-        path: filePath
+        path: filePath,
+        refresh: true
     };
     try {
         const response = await fetch(url, {

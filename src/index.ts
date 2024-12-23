@@ -61,6 +61,7 @@ export let alistPIC: string | null = null;
 
 export let today: string | null = null;
 export let timeNow: string | null = null;
+export let kuai: boolean = false;
 
 export let clickId: string | null = null;
 let resizeObserver: ResizeObserver | null = null;
@@ -173,8 +174,7 @@ export default class SiYuanAlist extends Plugin {
                         const file = files[0]; // 获取选中的第一个文件
                         if (file.type.startsWith('image')) {
                             await uploadToAList(file, alistPIC + "/" + today + "/" + file.name, async () => {
-                                if (file.type.startsWith('image')) {
-                                    // console.log("图片");
+                                    console.log("图片");
                                     const filesign = await myapi.alistgetSign(`${alistPIC}/${today}/${file.name}`);
                                     let SIGN = '';
                                     console.log(filesign, "filesign");
@@ -186,27 +186,45 @@ export default class SiYuanAlist extends Plugin {
                                     } else {
                                         api.appendBlock('markdown', `![${file.name}](${alistUrl}/d${alistPIC}/${today}/${file.name}${SIGN})`, currentDocId);
                                     }
-                                } else if (file.type.startsWith('video')) {
+                            }); // 
+                        } else {
+                            await uploadToAList(file, alistToPath2 + "/" + today + "/" + file.name, async () => {
+                                if (file.type.startsWith('video')&& kuai) {
                                     console.log("视频");
-                                    const filesign = await myapi.alistgetSign(`${alistToPath2}/${today}/${file.name}`);
+                                    const generateBlockId = () => {
+                                        const date = new Date();
+                                        // 调整时间为东八区
+                                        const offset = 8 * 60 * 60 * 1000; // 东八区的偏移量（毫秒）
+                                        const localDate = new Date(date.getTime() + offset);
+                                        const dateString = localDate.toISOString().replace(/[-:.TZ]/g, '').slice(0, 14);
+                                        const randomString = Math.random().toString(36).substring(2, 9);
+                                        return `${dateString}-${randomString}`;
+                                    };
+
+                                    // 示例使用
+                                    const blockId = generateBlockId();
+                                    const datePart = blockId.split('-')[0];
+                                    console.log(blockId, "kaui-id");
+                                    let filesign;
+                                    try {
+                                        filesign = await myapi.alistgetSign(`${alistToPath2}/${today}/${file.name}`);
+                                    } catch (err) {
+                                        console.error("请求失败，重试一次：", err);
+                                        filesign = await myapi.alistgetSign(`${alistToPath2}/${today}/${file.name}`);
+                                    }
                                     let SIGN = '';
                                     if (filesign.data.sign) {
                                         SIGN = "?sign=" + filesign.data.sign;
                                     }
                                     if (clickId) {
-                                        api.appendBlock('dom', `
-                                            <div data-node-id="20241216230914-ph1t5yb" data-node-index="1" data-type="NodeVideo" class="iframe" updated="20241217095311">
-                                            <div class="iframe-content">
-                                            ​<video controls="controls" src="${file.name}](${alistUrl}/d${alistToPath2}/${today}/${file.name}${SIGN}" data-src="">
-                                            </video>
-                                            <span class="protyle-action__drag" contenteditable="false">
-                                            </span>
-                                            </div>
-                                            <div class="protyle-attr" contenteditable="false">
-                                            ​</div>
-                                            </div>`, clickId);
+                                        console.log("clickId");
+                                        api.appendBlock('markdown',
+                                            `<video controls="controls" src="${alistUrl}/d${alistToPath2}/${today}/${file.name}${SIGN}"></video>`,
+                                            clickId);
                                     } else {
-                                        api.appendBlock('markdown', `[${file.name}](${alistUrl}/d${alistToPath2}/${today}/${file.name}${SIGN})`, currentDocId);
+                                        api.appendBlock('dom',
+                                            `<video controls="controls" src="${alistUrl}/d${alistToPath2}/${today}/${file.name}${SIGN}"></video>`,
+                                            currentDocId);
                                     }
                                 } else {
                                     if (clickId) {
@@ -215,75 +233,6 @@ export default class SiYuanAlist extends Plugin {
                                         api.appendBlock('markdown', `📄[${file.name}](${alistUrl}${alistToPath2}/${today}/${file.name})`, currentDocId);
                                     }
                                 }
-                            }); // 
-                        } else {
-                            await uploadToAList(file, alistToPath2 + "/" + today + "/" + file.name, async () => {
-                                // if (file.type.startsWith('image')) {
-                                    // console.log("图片");
-                                    // const filesign = await myapi.alistgetSign(`${alistPIC}/${today}/${file.name}`);
-                                    // let SIGN = '';
-                                    // console.log(filesign, "filesign");
-                                    // if (filesign.data.sign) {
-                                    //     SIGN = "?sign=" + filesign.data.sign;
-                                    // }
-                                    // if (clickId) {
-                                    //     api.appendBlock('markdown', `![${file.name}](${alistUrl}/d${alistPIC}/${today}/${file.name}${SIGN})`, clickId);
-                                    // } else {
-                                    //     api.appendBlock('markdown', `![${file.name}](${alistUrl}/d${alistPIC}/${today}/${file.name}${SIGN})`, currentDocId);
-                                    // }
-                                // } else if (file.type.startsWith('video')) {
-                                    // console.log("视频");
-                                    // const generateBlockId = () => {
-                                    //     const date = new Date();
-                                    //     // 调整时间为东八区
-                                    //     const offset = 8 * 60 * 60 * 1000; // 东八区的偏移量（毫秒）
-                                    //     const localDate = new Date(date.getTime() + offset);
-                                    //     const dateString = localDate.toISOString().replace(/[-:.TZ]/g, '').slice(0, 14);
-                                    //     const randomString = Math.random().toString(36).substring(2, 9);
-                                    //     return `${dateString}-${randomString}`;
-                                    // };
-
-                                    // // 示例使用
-                                    // const blockId = generateBlockId();
-                                    // const datePart = blockId.split('-')[0];
-                                    // console.log(blockId, "kaui-id");
-                                    // const filesign = await myapi.alistgetSign(`${alistToPath2}/${today}/${file.name}`);
-                                    // let SIGN = '';
-                                    // if (filesign.data.sign) {
-                                    //     SIGN = "?sign=" + filesign.data.sign;
-                                    // }
-                                    // if (clickId) {
-                                    //     api.appendBlock('dom', `
-                                    //         <div data-node-id="${blockId}" data-node-index="1" data-type="NodeVideo" class="iframe" updated="${datePart}">
-                                    //         <div class="iframe-content">
-                                    //         ​<video controls="controls" src="${alistUrl}/d${alistToPath2}/${today}/${file.name}${SIGN}" data-src="">
-                                    //         </video>
-                                    //         <span class="protyle-action__drag" contenteditable="false">
-                                    //         </span>
-                                    //         </div>
-                                    //         <div class="protyle-attr" contenteditable="false">
-                                    //         ​</div>
-                                    //         </div>`, clickId);
-                                    // } else {
-                                    //     api.appendBlock('dom', `
-                                    //         <div data-node-id="${blockId}" data-node-index="1" data-type="NodeVideo" class="iframe" updated="${datePart}">
-                                    //         <div class="iframe-content">
-                                    //         ​<video controls="controls" src="${alistUrl}/d${alistToPath2}/${today}/${file.name}${SIGN}" data-src="">
-                                    //         </video>
-                                    //         <span class="protyle-action__drag" contenteditable="false">
-                                    //         </span>
-                                    //         </div>
-                                    //         <div class="protyle-attr" contenteditable="false">
-                                    //         ​</div>
-                                    //         </div>`, currentDocId);
-                                    // }
-                                // } else {
-                                    if (clickId) {
-                                        api.appendBlock('markdown', `📄[${file.name}](${alistUrl}${alistToPath2}/${today}/${file.name})`, clickId);
-                                    } else {
-                                        api.appendBlock('markdown', `📄[${file.name}](${alistUrl}${alistToPath2}/${today}/${file.name})`, currentDocId);
-                                    }
-                                // }
                             }); // 调用上传文件的函数
                         }
                         //增加插入笔记上传的文件链接
@@ -465,6 +414,19 @@ export default class SiYuanAlist extends Plugin {
                 callback: async () => {
                     // Read data in real time
                     await this.settingUtils.takeAndSave("Select");
+                    myapi.refresh();
+                }
+            }
+        });
+        this.settingUtils.addItem({
+            key: "kuai",
+            value: true,
+            type: "checkbox",
+            title: "自动插入视频块 （beta,目前不太稳定）",
+            description: "当上传视频时自动在思源中插入视频块",
+            action: {
+                callback: async () => {
+                    await this.settingUtils.takeAndSave("kuai");
                     myapi.refresh();
                 }
             }
@@ -769,6 +731,7 @@ export default class SiYuanAlist extends Plugin {
         serNum = this.settingUtils.get("Select");
         selectTOP = this.settingUtils.get("SelectTOP");
         alistPIC = this.settingUtils.get("PIC");
+        kuai = this.settingUtils.get("kuai");
 
         beta = this.settingUtils.get("beta");
         // beta_pro = this.settingUtils.get("beta_pro");
@@ -1153,10 +1116,10 @@ function insertCountdownElement() {//TODO:需要优化
         const files = inputElement.files; // 现在可以安全地访问 files
         if (files && files.length > 0) {
             const file = files[0]; // 获取选中的第一个文件
+            console.log(file);
             if (file.type.startsWith('image')) {
                 await uploadToAList(file, alistPIC + "/" + today + "/" + file.name, async () => {
-                    if (file.type.startsWith('image')) {
-                        // console.log("图片");
+                        console.log("图片");
                         const filesign = await myapi.alistgetSign(`${alistPIC}/${today}/${file.name}`);
                         let SIGN = '';
                         console.log(filesign, "filesign");
@@ -1168,76 +1131,10 @@ function insertCountdownElement() {//TODO:需要优化
                         } else {
                             api.appendBlock('markdown', `![${file.name}](${alistUrl}/d${alistPIC}/${today}/${file.name}${SIGN})`, currentDocId);
                         }
-                    } else if (file.type.startsWith('video')) {
-                        console.log("视频");
-                        const generateBlockId = () => {
-                            const date = new Date();
-                            // 调整时间为东八区
-                            const offset = 8 * 60 * 60 * 1000; // 东八区的偏移量（毫秒）
-                            const localDate = new Date(date.getTime() + offset);
-                            const dateString = localDate.toISOString().replace(/[-:.TZ]/g, '').slice(0, 14);
-                            const randomString = Math.random().toString(36).substring(2, 9);
-                            return `${dateString}-${randomString}`;
-                        };
-
-                        // 示例使用
-                        const blockId = generateBlockId();
-                        const datePart = blockId.split('-')[0];
-                        console.log(blockId, "kaui-id");
-                        const filesign = await myapi.alistgetSign(`${alistToPath2}/${today}/${file.name}`);
-                        let SIGN = '';
-                        if (filesign.data.sign) {
-                            SIGN = "?sign=" + filesign.data.sign;
-                        }
-                        if (clickId) {
-                            api.appendBlock('dom', `
-                                            <div data-node-id="${blockId}" data-node-index="1" data-type="NodeVideo" class="iframe" updated="${datePart}">
-                                            <div class="iframe-content">
-                                            ​<video controls="controls" src="${alistUrl}/d${alistToPath2}/${today}/${file.name}${SIGN}" data-src="">
-                                            </video>
-                                            <span class="protyle-action__drag" contenteditable="false">
-                                            </span>
-                                            </div>
-                                            <div class="protyle-attr" contenteditable="false">
-                                            ​</div>
-                                            </div>`, clickId);
-                        } else {
-                            api.appendBlock('dom', `
-                                            <div data-node-id="${blockId}" data-node-index="1" data-type="NodeVideo" class="iframe" updated="${datePart}">
-                                            <div class="iframe-content">
-                                            ​<video controls="controls" src="${alistUrl}/d${alistToPath2}/${today}/${file.name}${SIGN}" data-src="">
-                                            </video>
-                                            <span class="protyle-action__drag" contenteditable="false">
-                                            </span>
-                                            </div>
-                                            <div class="protyle-attr" contenteditable="false">
-                                            ​</div>
-                                            </div>`, currentDocId);
-                        }
-                    } else {
-                        if (clickId) {
-                            api.appendBlock('markdown', `📄[${file.name}](${alistUrl}${alistToPath2}/${today}/${file.name})`, clickId);
-                        } else {
-                            api.appendBlock('markdown', `📄[${file.name}](${alistUrl}${alistToPath2}/${today}/${file.name})`, currentDocId);
-                        }
-                    }
                 }); // 
             } else {
                 await uploadToAList(file, alistToPath2 + "/" + today + "/" + file.name, async () => {
-                    if (file.type.startsWith('image')) {
-                        // console.log("图片");
-                        const filesign = await myapi.alistgetSign(`${alistPIC}/${today}/${file.name}`);
-                        let SIGN = '';
-                        console.log(filesign, "filesign");
-                        if (filesign.data.sign) {
-                            SIGN = "?sign=" + filesign.data.sign;
-                        }
-                        if (clickId) {
-                            api.appendBlock('markdown', `![${file.name}](${alistUrl}/d${alistPIC}/${today}/${file.name}${SIGN})`, clickId);
-                        } else {
-                            api.appendBlock('markdown', `![${file.name}](${alistUrl}/d${alistPIC}/${today}/${file.name}${SIGN})`, currentDocId);
-                        }
-                    } else if (file.type.startsWith('video')) {
+                    if (file.type.startsWith('video')&& kuai) {
                         console.log("视频");
                         const generateBlockId = () => {
                             const date = new Date();
@@ -1253,35 +1150,26 @@ function insertCountdownElement() {//TODO:需要优化
                         const blockId = generateBlockId();
                         const datePart = blockId.split('-')[0];
                         console.log(blockId, "kaui-id");
-                        const filesign = await myapi.alistgetSign(`${alistToPath2}/${today}/${file.name}`);
+                        let filesign;
+                        try {
+                            filesign = await myapi.alistgetSign(`${alistToPath2}/${today}/${file.name}`);
+                        } catch (err) {
+                            console.error("请求失败，重试一次：", err);
+                            filesign = await myapi.alistgetSign(`${alistToPath2}/${today}/${file.name}`);
+                        }
                         let SIGN = '';
                         if (filesign.data.sign) {
                             SIGN = "?sign=" + filesign.data.sign;
                         }
                         if (clickId) {
-                            api.appendBlock('dom', `
-                                            <div data-node-id="${blockId}" data-node-index="1" data-type="NodeVideo" class="iframe" updated="${datePart}">
-                                            <div class="iframe-content">
-                                            ​<video controls="controls" src="${alistUrl}/d${alistToPath2}/${today}/${file.name}${SIGN}" data-src="">
-                                            </video>
-                                            <span class="protyle-action__drag" contenteditable="false">
-                                            </span>
-                                            </div>
-                                            <div class="protyle-attr" contenteditable="false">
-                                            ​</div>
-                                            </div>`, clickId);
+                            console.log("clickId");
+                            api.appendBlock('markdown',
+                                `<video controls="controls" src="${alistUrl}/d${alistToPath2}/${today}/${file.name}${SIGN}"></video>`,
+                                clickId);
                         } else {
-                            api.appendBlock('dom', `
-                                            <div data-node-id="${blockId}" data-node-index="1" data-type="NodeVideo" class="iframe" updated="${datePart}">
-                                            <div class="iframe-content">
-                                            ​<video controls="controls" src="${alistUrl}/d${alistToPath2}/${today}/${file.name}${SIGN}" data-src="">
-                                            </video>
-                                            <span class="protyle-action__drag" contenteditable="false">
-                                            </span>
-                                            </div>
-                                            <div class="protyle-attr" contenteditable="false">
-                                            ​</div>
-                                            </div>`, currentDocId);
+                            api.appendBlock('dom',
+                                `<video controls="controls" src="${alistUrl}/d${alistToPath2}/${today}/${file.name}${SIGN}"></video>`,
+                                currentDocId);
                         }
                     } else {
                         if (clickId) {
@@ -1322,8 +1210,7 @@ function insertCountdownElement() {//TODO:需要优化
             const file = files[0]; // 获取选中的第一个文件
             if (file.type.startsWith('image')) {
                 await uploadToAList(file, alistPIC + "/" + today + "/" + file.name, async () => {
-                    if (file.type.startsWith('image')) {
-                        // console.log("图片");
+                        console.log("图片");
                         const filesign = await myapi.alistgetSign(`${alistPIC}/${today}/${file.name}`);
                         let SIGN = '';
                         console.log(filesign, "filesign");
@@ -1335,76 +1222,10 @@ function insertCountdownElement() {//TODO:需要优化
                         } else {
                             api.appendBlock('markdown', `![${file.name}](${alistUrl}/d${alistPIC}/${today}/${file.name}${SIGN})`, currentDocId);
                         }
-                    } else if (file.type.startsWith('video')) {
-                        console.log("视频");
-                        const generateBlockId = () => {
-                            const date = new Date();
-                            // 调整时间为东八区
-                            const offset = 8 * 60 * 60 * 1000; // 东八区的偏移量（毫秒）
-                            const localDate = new Date(date.getTime() + offset);
-                            const dateString = localDate.toISOString().replace(/[-:.TZ]/g, '').slice(0, 14);
-                            const randomString = Math.random().toString(36).substring(2, 9);
-                            return `${dateString}-${randomString}`;
-                        };
-
-                        // 示例使用
-                        const blockId = generateBlockId();
-                        const datePart = blockId.split('-')[0];
-                        console.log(blockId, "kaui-id");
-                        const filesign = await myapi.alistgetSign(`${alistToPath2}/${today}/${file.name}`);
-                        let SIGN = '';
-                        if (filesign.data.sign) {
-                            SIGN = "?sign=" + filesign.data.sign;
-                        }
-                        if (clickId) {
-                            api.appendBlock('dom', `
-                                            <div data-node-id="${blockId}" data-node-index="1" data-type="NodeVideo" class="iframe" updated="${datePart}">
-                                            <div class="iframe-content">
-                                            ​<video controls="controls" src="${alistUrl}/d${alistToPath2}/${today}/${file.name}${SIGN}" data-src="">
-                                            </video>
-                                            <span class="protyle-action__drag" contenteditable="false">
-                                            </span>
-                                            </div>
-                                            <div class="protyle-attr" contenteditable="false">
-                                            ​</div>
-                                            </div>`, clickId);
-                        } else {
-                            api.appendBlock('dom', `
-                                            <div data-node-id="${blockId}" data-node-index="1" data-type="NodeVideo" class="iframe" updated="${datePart}">
-                                            <div class="iframe-content">
-                                            ​<video controls="controls" src="${alistUrl}/d${alistToPath2}/${today}/${file.name}${SIGN}" data-src="">
-                                            </video>
-                                            <span class="protyle-action__drag" contenteditable="false">
-                                            </span>
-                                            </div>
-                                            <div class="protyle-attr" contenteditable="false">
-                                            ​</div>
-                                            </div>`, currentDocId);
-                        }
-                    } else {
-                        if (clickId) {
-                            api.appendBlock('markdown', `📄[${file.name}](${alistUrl}${alistToPath2}/${today}/${file.name})`, clickId);
-                        } else {
-                            api.appendBlock('markdown', `📄[${file.name}](${alistUrl}${alistToPath2}/${today}/${file.name})`, currentDocId);
-                        }
-                    }
                 }); // 
             } else {
                 await uploadToAList(file, alistToPath2 + "/" + today + "/" + file.name, async () => {
-                    if (file.type.startsWith('image')) {
-                        // console.log("图片");
-                        const filesign = await myapi.alistgetSign(`${alistPIC}/${today}/${file.name}`);
-                        let SIGN = '';
-                        console.log(filesign, "filesign");
-                        if (filesign.data.sign) {
-                            SIGN = "?sign=" + filesign.data.sign;
-                        }
-                        if (clickId) {
-                            api.appendBlock('markdown', `![${file.name}](${alistUrl}/d${alistPIC}/${today}/${file.name}${SIGN})`, clickId);
-                        } else {
-                            api.appendBlock('markdown', `![${file.name}](${alistUrl}/d${alistPIC}/${today}/${file.name}${SIGN})`, currentDocId);
-                        }
-                    } else if (file.type.startsWith('video')) {
+                    if (file.type.startsWith('video')&& kuai) {
                         console.log("视频");
                         const generateBlockId = () => {
                             const date = new Date();
@@ -1420,35 +1241,26 @@ function insertCountdownElement() {//TODO:需要优化
                         const blockId = generateBlockId();
                         const datePart = blockId.split('-')[0];
                         console.log(blockId, "kaui-id");
-                        const filesign = await myapi.alistgetSign(`${alistToPath2}/${today}/${file.name}`);
+                        let filesign;
+                        try {
+                            filesign = await myapi.alistgetSign(`${alistToPath2}/${today}/${file.name}`);
+                        } catch (err) {
+                            console.error("请求失败，重试一次：", err);
+                            filesign = await myapi.alistgetSign(`${alistToPath2}/${today}/${file.name}`);
+                        }
                         let SIGN = '';
                         if (filesign.data.sign) {
                             SIGN = "?sign=" + filesign.data.sign;
                         }
                         if (clickId) {
-                            api.appendBlock('dom', `
-                                            <div data-node-id="${blockId}" data-node-index="1" data-type="NodeVideo" class="iframe" updated="${datePart}">
-                                            <div class="iframe-content">
-                                            ​<video controls="controls" src="${alistUrl}/d${alistToPath2}/${today}/${file.name}${SIGN}" data-src="">
-                                            </video>
-                                            <span class="protyle-action__drag" contenteditable="false">
-                                            </span>
-                                            </div>
-                                            <div class="protyle-attr" contenteditable="false">
-                                            ​</div>
-                                            </div>`, clickId);
+                            console.log("clickId");
+                            api.appendBlock('markdown',
+                                `<video controls="controls" src="${alistUrl}/d${alistToPath2}/${today}/${file.name}${SIGN}"></video>`,
+                                clickId);
                         } else {
-                            api.appendBlock('dom', `
-                                            <div data-node-id="${blockId}" data-node-index="1" data-type="NodeVideo" class="iframe" updated="${datePart}">
-                                            <div class="iframe-content">
-                                            ​<video controls="controls" src="${alistUrl}/d${alistToPath2}/${today}/${file.name}${SIGN}" data-src="">
-                                            </video>
-                                            <span class="protyle-action__drag" contenteditable="false">
-                                            </span>
-                                            </div>
-                                            <div class="protyle-attr" contenteditable="false">
-                                            ​</div>
-                                            </div>`, currentDocId);
+                            api.appendBlock('dom',
+                                `<video controls="controls" src="${alistUrl}/d${alistToPath2}/${today}/${file.name}${SIGN}"></video>`,
+                                currentDocId);
                         }
                     } else {
                         if (clickId) {
