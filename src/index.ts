@@ -7,16 +7,20 @@ import {
     getFrontend,
     // getBackend,
     IModel,
-    // IOperation,
+    IOperation,
     // Menu,
     confirm,
+    fetchSyncPost,
+    Protyle,
     // openTab
 } from "siyuan";
 import "@/index.scss";
 // import * as api from "@/api"
 import * as myapi from "@/myapi";
 import * as api from '@/api';
-
+declare global {
+    const siyuan: any;
+}
 
 import {
     downloadImage,
@@ -28,6 +32,8 @@ import {
 } from "@/myapi";
 
 import { SettingUtils } from "./libs/setting-utils";
+import { buildFilenameInputElement, getCursorBlockId, insertCountdownElement, runblockIconEvent, runblockIconEventDelete } from "./runblockIconEventDelete";
+import { svgIconsDefinition } from "./svgIconsDefinition";
 
 
 
@@ -35,7 +41,7 @@ import { SettingUtils } from "./libs/setting-utils";
 const STORAGE_NAME = "menu-config";
 const TAB_TYPE = "custom_tab";
 
-
+export let currentProtyle
 export let currentDocId: string | null = null;
 export let url: string | null = null;
 export let token: string | null = null;
@@ -118,18 +124,7 @@ export default class SiYuanAlist extends Plugin {
 
 
 
-        this.addIcons(`
-<symbol id="iconSaving"  viewBox="0 0 32 32">
-  <path d="M28 22h-24c-1.105 0-2-0.895-2-2v-12c0-1.105 0.895-2 2-2h24c1.105 0 2 0.895 2 2v12c0 1.105-0.895 2-2 2zM4 8v12h24v-12h-24zM16 18l-6-6h4v-4h4v4h4l-6 6zM26 24h-20c-1.105 0-2-0.895-2-2v-2h24v2c0 1.105-0.895 2-2 2z"></path>
-</symbol>
-<symbol id="iconCloudUpload" viewBox="0 0 32 32">
-  <path fill="currentColor" d="M6 22h24v2H6z" class="clr-i-outline clr-i-outline-path-1"/><path fill="currentColor" d="M30.84 13.37A1.94 1.94 0 0 0 28.93 12h-2.38a3 3 0 0 1-.14 2h2.54c1.05 2.94 2.77 7.65 3.05 8.48V30H4v-7.52C4.28 21.65 7.05 14 7.05 14h2.53a3 3 0 0 1-.14-2H7.07a1.92 1.92 0 0 0-1.9 1.32C2 22 2 22.1 2 22.33V30a2 2 0 0 0 2 2h28a2 2 0 0 0 2-2v-7.67c0-.23 0-.33-3.16-8.96" class="clr-i-outline clr-i-outline-path-2"/><path fill="currentColor" d="m18 19.84l6.38-6.35A1 1 0 1 0 23 12.08L19 16V4a1 1 0 1 0-2 0v12l-4-3.95a1 1 0 0 0-1.41 1.42Z" class="clr-i-outline clr-i-outline-path-3"/><path fill="none" d="M0 0h36v36H0z"/>
-</symbol>
-<symbol id="iconAlist" viewBox="0 0 1252 1252">
-  <path id="svg_2" d="m634.37,138.38c11.88,-1.36 24.25,1.3 34.18,8.09c14.96,9.66 25.55,24.41 34.49,39.51c40.59,68.03 81.45,135.91 122.02,203.96c54.02,90.99 108.06,181.97 161.94,273.06c37.28,63 74.65,125.96 112.18,188.82c24.72,41.99 50.21,83.54 73.84,126.16c10.18,17.84 15.77,38.44 14.93,59.03c-0.59,15.92 -3.48,32.28 -11.84,46.08c-11.73,19.46 -31.39,33.2 -52.71,40.36c-11.37,4.09 -23.3,6.87 -35.43,6.89c-132.32,-0.05 -264.64,0.04 -396.95,0.03c-11.38,-0.29 -22.95,-1.6 -33.63,-5.72c-7.81,-3.33 -15.5,-7.43 -21.61,-13.42c-10.43,-10.32 -17.19,-24.96 -15.38,-39.83c0.94,-10.39 3.48,-20.64 7.76,-30.16c4.15,-9.77 9.99,-18.67 15.06,-27.97c22.13,-39.47 45.31,-78.35 69.42,-116.65c7.72,-12.05 14.44,-25.07 25.12,-34.87c11.35,-10.39 25.6,-18.54 41.21,-19.6c12.55,-0.52 24.89,3.82 35.35,10.55c11.8,6.92 21.09,18.44 24.2,31.88c4.49,17.01 -0.34,34.88 -7.55,50.42c-8.09,17.65 -19.62,33.67 -25.81,52.18c-1.13,4.21 -2.66,9.52 0.48,13.23c3.19,3 7.62,4.18 11.77,5.22c12,2.67 24.38,1.98 36.59,2.06c45,-0.01 90,0 135,0c8.91,-0.15 17.83,0.3 26.74,-0.22c6.43,-0.74 13.44,-1.79 18.44,-6.28c3.3,-2.92 3.71,-7.85 2.46,-11.85c-2.74,-8.86 -7.46,-16.93 -12.12,-24.89c-119.99,-204.91 -239.31,-410.22 -360.56,-614.4c-3.96,-6.56 -7.36,-13.68 -13.03,-18.98c-2.8,-2.69 -6.95,-4.22 -10.77,-3.11c-3.25,1.17 -5.45,4.03 -7.61,6.57c-5.34,6.81 -10.12,14.06 -14.51,21.52c-20.89,33.95 -40.88,68.44 -61.35,102.64c-117.9,198.43 -235.82,396.85 -353.71,595.29c-7.31,13.46 -15.09,26.67 -23.57,39.43c-7.45,10.96 -16.49,21.23 -28.14,27.83c-13.73,7.94 -30.69,11.09 -46.08,6.54c-11.23,-3.47 -22.09,-9.12 -30.13,-17.84c-10.18,-10.08 -14.69,-24.83 -14.17,-38.94c0.52,-14.86 5.49,-29.34 12.98,-42.1c71.58,-121.59 143.62,-242.92 215.93,-364.09c37.2,-62.8 74.23,-125.69 111.64,-188.36c37.84,-63.5 75.77,-126.94 113.44,-190.54c21.02,-35.82 42.19,-71.56 64.28,-106.74c6.79,-11.15 15.58,-21.15 26.16,-28.85c8.68,-5.92 18.42,-11 29.05,-11.94z" fill="#70c6be"/>
-  <path id="svg_3" d="m628.35,608.38c17.83,-2.87 36.72,1.39 51.5,11.78c11.22,8.66 19.01,21.64 21.26,35.65c1.53,10.68 0.49,21.75 -3.44,31.84c-3.02,8.73 -7.35,16.94 -12.17,24.81c-68.76,115.58 -137.5,231.17 -206.27,346.75c-8.8,14.47 -16.82,29.47 -26.96,43.07c-7.37,9.11 -16.58,16.85 -27.21,21.89c-22.47,11.97 -51.79,4.67 -68.88,-13.33c-8.66,-8.69 -13.74,-20.63 -14.4,-32.84c-0.98,-12.64 1.81,-25.42 7.53,-36.69c5.03,-10.96 10.98,-21.45 17.19,-31.77c30.22,-50.84 60.17,-101.84 90.3,-152.73c41.24,-69.98 83.16,-139.55 124.66,-209.37c4.41,-7.94 9.91,-15.26 16.09,-21.9c8.33,-8.46 18.9,-15.3 30.8,-17.16z" fill="#1ba0d8"/>
-</symbol>
-`);
+        this.addIcons(svgIconsDefinition);
 
 
         //添加图标
@@ -147,103 +142,12 @@ export default class SiYuanAlist extends Plugin {
             }
         });
 
-        // this.addTopBar({
-        //     icon: "iconCloudUpload",
-        //     title: "测试用",
-        //     position: "left",
-        //     callback: () => {
-        //         api.appendBlock('dom', myhtml.myCardLink, clickId);
-        //     }
-        // });
-
         this.addTopBar({
             icon: "iconAlist",
             title: "附件上传",
             position: "right",
-            callback: () => {
-                const fileInput = document.createElement('input');
-                fileInput.type = 'file';
-                fileInput.accept = '*/*'; // 支持所有文件类型
-
-                // 文件选择事件处理
-                fileInput.addEventListener('change', async (event) => {
-                    // console.log(event);
-                    const inputElement = event.target as HTMLInputElement; // 类型断言
-                    const files = inputElement.files; // 现在可以安全地访问 files
-                    if (files && files.length > 0) {
-                        const file = files[0]; // 获取选中的第一个文件
-                        if (file.type.startsWith('image')) {
-                            await uploadToAList(file, alistPIC + "/" + today + "/" + file.name, async () => {
-                                    console.log("图片");
-                                    const filesign = await myapi.alistgetSign(`${alistPIC}/${today}/${file.name}`);
-                                    let SIGN = '';
-                                    console.log(filesign, "filesign");
-                                    if (filesign.data.sign) {
-                                        SIGN = "?sign=" + filesign.data.sign;
-                                    }
-                                    if (clickId) {
-                                        api.appendBlock('markdown', `![${file.name}](${alistUrl}/d${alistPIC}/${today}/${file.name}${SIGN})`, clickId);
-                                    } else {
-                                        api.appendBlock('markdown', `![${file.name}](${alistUrl}/d${alistPIC}/${today}/${file.name}${SIGN})`, currentDocId);
-                                    }
-                            }); // 
-                        } else {
-                            await uploadToAList(file, alistToPath2 + "/" + today + "/" + file.name, async () => {
-                                if (file.type.startsWith('video')&& kuai) {
-                                    console.log("视频");
-                                    const generateBlockId = () => {
-                                        const date = new Date();
-                                        // 调整时间为东八区
-                                        const offset = 8 * 60 * 60 * 1000; // 东八区的偏移量（毫秒）
-                                        const localDate = new Date(date.getTime() + offset);
-                                        const dateString = localDate.toISOString().replace(/[-:.TZ]/g, '').slice(0, 14);
-                                        const randomString = Math.random().toString(36).substring(2, 9);
-                                        return `${dateString}-${randomString}`;
-                                    };
-
-                                    // 示例使用
-                                    const blockId = generateBlockId();
-                                    const datePart = blockId.split('-')[0];
-                                    console.log(blockId, "kaui-id");
-                                    let filesign;
-                                    try {
-                                        filesign = await myapi.alistgetSign(`${alistToPath2}/${today}/${file.name}`);
-                                    } catch (err) {
-                                        console.error("请求失败，重试一次：", err);
-                                        filesign = await myapi.alistgetSign(`${alistToPath2}/${today}/${file.name}`);
-                                    }
-                                    let SIGN = '';
-                                    if (filesign.data.sign) {
-                                        SIGN = "?sign=" + filesign.data.sign;
-                                    }
-                                    if (clickId) {
-                                        console.log("clickId");
-                                        api.appendBlock('markdown',
-                                            `<video controls="controls" src="${alistUrl}/d${alistToPath2}/${today}/${file.name}${SIGN}"></video>`,
-                                            clickId);
-                                    } else {
-                                        api.appendBlock('dom',
-                                            `<video controls="controls" src="${alistUrl}/d${alistToPath2}/${today}/${file.name}${SIGN}"></video>`,
-                                            currentDocId);
-                                    }
-                                } else {
-                                    if (clickId) {
-                                        api.appendBlock('markdown', `📄[${file.name}](${alistUrl}${alistToPath2}/${today}/${file.name})`, clickId);
-                                    } else {
-                                        api.appendBlock('markdown', `📄[${file.name}](${alistUrl}${alistToPath2}/${today}/${file.name})`, currentDocId);
-                                    }
-                                }
-                            }); // 调用上传文件的函数
-                        }
-                        //增加插入笔记上传的文件链接
-                        // console.log(alistToPath2 + "/" + alistTime + "/" + file.name,"afa");
-                        //判断文件是否为图片
-
-                    }
-                });
-
-                // 触发文件输入的点击事件
-                fileInput.click();
+            callback: async () => {
+                SiYuanAlist.createFileInput();
             }
         });
 
@@ -440,14 +344,11 @@ export default class SiYuanAlist extends Plugin {
             action: {
                 callback: async () => {
                     // Return data and save it in real time
-                    // let value = !this.settingUtils.get("isdrag");
-                    // this.settingUtils.set("isdrag", value);
-                    // outLog(value);
                     await this.settingUtils.takeAndSave("isdrag");
-                    myapi.refresh();
                 }
             }
         });
+
         this.settingUtils.addItem({
             key: "alistUrl",
             value: "",
@@ -641,6 +542,84 @@ export default class SiYuanAlist extends Plugin {
         console.log(this.i18n.helloPlugin);
 
     }
+    static createFileInput() {
+        const fileInput = document.createElement('input');
+        fileInput.type = 'file';
+        fileInput.accept = '*/*'; // 支持所有文件类型
+        fileInput.multiple = true; // 支持多文件选择
+
+        // 文件选择事件处理
+        fileInput.addEventListener('change', async (event) => {
+            const inputElement = event.target as HTMLInputElement; // 类型断言
+            const files = inputElement.files; // 现在可以安全地访问 files
+            if (files && files.length > 0) {
+                for (const file of files) { // 遍历所有选中的文件
+                    if (file.type.startsWith('image')) {
+                        await SiYuanAlist.handleImageUpload(file); // 上传图片文件
+                    } else {
+                        await SiYuanAlist.handleFileUpload(file); // 上传其他类型的文件
+                    }
+                }
+            }
+        });
+
+        // 触发文件输入的点击事件
+        fileInput.click();
+    }
+
+    static async handleFileUpload(file: File) {
+        await uploadToAList(file, alistToPath2 + "/" + today + "/" + file.name, async () => {
+            if (file.type.startsWith('video') && kuai) {
+                console.log("视频");
+                // console.log(blockId, "kaui-id");
+                let filesign;
+                try {
+                    filesign = await myapi.alistgetSign(`${alistToPath2}/${today}/${file.name}`);
+                } catch (err) {
+                    console.error("请求失败，重试一次：", err);
+                    filesign = await myapi.alistgetSign(`${alistToPath2}/${today}/${file.name}`);
+                }
+                let SIGN = '';
+                if (filesign.data.sign) {
+                    SIGN = "?sign=" + filesign.data.sign;
+                }
+                if (clickId) {
+                    console.log("clickId");
+                    api.appendBlock('markdown',
+                        `<video controls="controls" src="${alistUrl}/d${alistToPath2}/${today}/${file.name}${SIGN}"></video>`,
+                        clickId);
+                } else {
+                    api.appendBlock('dom',
+                        `<video controls="controls" src="${alistUrl}/d${alistToPath2}/${today}/${file.name}${SIGN}"></video>`,
+                        currentDocId);
+                }
+            } else {
+                if (clickId) {
+                    api.appendBlock('markdown', `📄[${file.name}](${alistUrl}${alistToPath2}/${today}/${file.name})`, clickId);
+                } else {
+                    api.appendBlock('markdown', `📄[${file.name}](${alistUrl}${alistToPath2}/${today}/${file.name})`, currentDocId);
+                }
+            }
+        });
+    }
+
+    static async handleImageUpload(file: File) {
+        await uploadToAList(file, alistPIC + "/" + today + "/" + file.name, async () => {
+            console.log("图片");
+            const filesign = await myapi.alistgetSign(`${alistPIC}/${today}/${file.name}`);
+            let SIGN = '';
+            console.log(filesign, "filesign");
+            if (filesign.data.sign) {
+                SIGN = "?sign=" + filesign.data.sign;
+            }
+            if (clickId) {
+                api.appendBlock('markdown', `![${file.name}](${alistUrl}/d${alistPIC}/${today}/${file.name}${SIGN})`, clickId);
+            } else {
+                api.appendBlock('markdown', `![${file.name}](${alistUrl}/d${alistPIC}/${today}/${file.name}${SIGN})`, currentDocId);
+            }
+        });
+    }
+
     //选中菜单设置
 
 
@@ -782,10 +761,16 @@ export default class SiYuanAlist extends Plugin {
         });
         //获取当前文档ID
         this.eventBus.on("switch-protyle", (event) => {
+            // console.log(event);
+            currentProtyle = event.detail.protyle;
             currentDocId = event.detail.protyle.block.id;
-            outLog("Current document ID:", currentDocId);
+            outLog("Current document IDS:", currentDocId);
         });
-        //获取当前文档ID
+        // this.eventBus.on("loaded-protyle-static", (event) => {
+        //     currentProtyle = event.detail.protyle;
+        //     currentDocId = event.detail.protyle.block.id;
+        //     outLog("Current document ID2:", currentDocId);
+        // });     //获取当前文档ID
     }
 
 
@@ -1010,23 +995,7 @@ export default class SiYuanAlist extends Plugin {
             showMessage("请先配置备份地址！");
             return;
         }
-        confirm("请给备份文件取个名字 ^_^", `<style>
-            #alistFilename {
-                width: 100%;
-                padding: 4px;
-                color: #fff; /* 设置文字为白色 */
-                background-color: #333; /* 设置背景颜色为深色 */
-                border: 1px solid #007BFF;
-                border-radius: 4px;
-                font-size: 14px;
-                outline: none;
-            }
-            #alistFilename:focus {
-                border-color: #007BFF;
-                box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
-            }
-        </style>
-        文件名: <input type="text" id="alistFilename" value="${alistFilename}">`, () => {
+        confirm("请给备份文件取个名字 ^_^", buildFilenameInputElement(), () => {
             const inputElement = document.getElementById("alistFilename") as HTMLInputElement;
             let inputValue = inputElement.value;
             if (inputValue) {
@@ -1049,289 +1018,6 @@ export default class SiYuanAlist extends Plugin {
     }
 
 
-}
-
-
-
-function insertCountdownElement() {//TODO:需要优化
-    let toolbarDrag = document.querySelector('#toolbar > #drag');
-    if (toolbarDrag) {
-        toolbarDrag.insertAdjacentHTML(
-            "afterend",
-            `<head>
-    <style>
-        .upload-container {
-            width: 100px;
-            height: 30px;
-            border-radius: 4px;
-            background-color: var(--b3-toolbar-hover) ;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            font-size: 13px;
-            cursor: pointer;
-            text-align: center;
-            
-        }
-
-
-        .upload-input {
-            display: none;
-        }
-        .wd {
-            width: 100%;
-            height: 100%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            user-select: none; /* 防止该元素的文本被选中 */
-        }
-    </style>
-
-</head>
-<body>
-    <div id="uploadContainer" class="upload-container">
-        <div class="wd b3-list-item__text">上传<svg width="15" height="15">
-            <use xlink:href="#iconAlist"></use>
-        </svg>附件</div>
-        <input type="file" id="fileInput" class="upload-input" multiple>
-    </div>
-</body>`
-        );
-    } else {
-        console.error("找不到 #toolbar > #drag 元素");
-    }
-    const uploadContainer = document.getElementById('uploadContainer');
-    const fileInput = document.getElementById('fileInput');
-    const textElement = uploadContainer.querySelector('.wd') as HTMLElement; // 获取子元素
-    uploadContainer.addEventListener('click', () => {
-        fileInput.click();
-    });
-
-    // 文件选择事件处理
-    fileInput.addEventListener('change', async (event) => {
-        console.log(event);
-        const inputElement = event.target as HTMLInputElement; // 类型断言
-        const files = inputElement.files; // 现在可以安全地访问 files
-        if (files && files.length > 0) {
-            const file = files[0]; // 获取选中的第一个文件
-            console.log(file);
-            if (file.type.startsWith('image')) {
-                await uploadToAList(file, alistPIC + "/" + today + "/" + file.name, async () => {
-                        console.log("图片");
-                        const filesign = await myapi.alistgetSign(`${alistPIC}/${today}/${file.name}`);
-                        let SIGN = '';
-                        console.log(filesign, "filesign");
-                        if (filesign.data.sign) {
-                            SIGN = "?sign=" + filesign.data.sign;
-                        }
-                        if (clickId) {
-                            api.appendBlock('markdown', `![${file.name}](${alistUrl}/d${alistPIC}/${today}/${file.name}${SIGN})`, clickId);
-                        } else {
-                            api.appendBlock('markdown', `![${file.name}](${alistUrl}/d${alistPIC}/${today}/${file.name}${SIGN})`, currentDocId);
-                        }
-                }); // 
-            } else {
-                await uploadToAList(file, alistToPath2 + "/" + today + "/" + file.name, async () => {
-                    if (file.type.startsWith('video')&& kuai) {
-                        console.log("视频");
-                        const generateBlockId = () => {
-                            const date = new Date();
-                            // 调整时间为东八区
-                            const offset = 8 * 60 * 60 * 1000; // 东八区的偏移量（毫秒）
-                            const localDate = new Date(date.getTime() + offset);
-                            const dateString = localDate.toISOString().replace(/[-:.TZ]/g, '').slice(0, 14);
-                            const randomString = Math.random().toString(36).substring(2, 9);
-                            return `${dateString}-${randomString}`;
-                        };
-
-                        // 示例使用
-                        const blockId = generateBlockId();
-                        const datePart = blockId.split('-')[0];
-                        console.log(blockId, "kaui-id");
-                        let filesign;
-                        try {
-                            filesign = await myapi.alistgetSign(`${alistToPath2}/${today}/${file.name}`);
-                        } catch (err) {
-                            console.error("请求失败，重试一次：", err);
-                            filesign = await myapi.alistgetSign(`${alistToPath2}/${today}/${file.name}`);
-                        }
-                        let SIGN = '';
-                        if (filesign.data.sign) {
-                            SIGN = "?sign=" + filesign.data.sign;
-                        }
-                        if (clickId) {
-                            console.log("clickId");
-                            api.appendBlock('markdown',
-                                `<video controls="controls" src="${alistUrl}/d${alistToPath2}/${today}/${file.name}${SIGN}"></video>`,
-                                clickId);
-                        } else {
-                            api.appendBlock('dom',
-                                `<video controls="controls" src="${alistUrl}/d${alistToPath2}/${today}/${file.name}${SIGN}"></video>`,
-                                currentDocId);
-                        }
-                    } else {
-                        if (clickId) {
-                            api.appendBlock('markdown', `📄[${file.name}](${alistUrl}${alistToPath2}/${today}/${file.name})`, clickId);
-                        } else {
-                            api.appendBlock('markdown', `📄[${file.name}](${alistUrl}${alistToPath2}/${today}/${file.name})`, currentDocId);
-                        }
-                    }
-                }); // 调用上传文件的函数
-            }
-            //增加插入笔记上传的文件链接
-        }
-    });
-    uploadContainer.addEventListener('dragover', (event) => {
-        event.preventDefault();
-        uploadContainer.style.backgroundColor = '#70c6bea1'; // 改变背景色以显示拖拽效果
-        // uploadContainer.style.border = '12px dashed #42625f6e'; // 显示虚线边框
-        if (textElement) {
-            textElement.innerText = '松手上传'; // 或者使用 textContent
-        }
-    });
-
-    uploadContainer.addEventListener('dragleave', () => {
-        uploadContainer.style.backgroundColor = 'var(--b3-toolbar-hover)'; // 恢复原背景色
-        if (textElement) {
-            textElement.innerHTML = '上传<svg width="15" height="15"><use xlink:href="#iconAlist"></use></svg>附件'; // 或者使用 textContent
-        }
-    });
-
-    uploadContainer.addEventListener('drop', async (event) => {
-        event.preventDefault();
-        uploadContainer.style.backgroundColor = 'var(--b3-toolbar-hover)'; // 恢复原背景色
-        if (textElement) {
-            textElement.innerHTML = '上传<svg width="15" height="15"><use xlink:href="#iconAlist"></use></svg>附件'; // 或者使用 textContent
-        }
-        const files = event.dataTransfer.files; // 获取拖拽的文件列表
-        if (files && files.length > 0) {
-            const file = files[0]; // 获取选中的第一个文件
-            if (file.type.startsWith('image')) {
-                await uploadToAList(file, alistPIC + "/" + today + "/" + file.name, async () => {
-                        console.log("图片");
-                        const filesign = await myapi.alistgetSign(`${alistPIC}/${today}/${file.name}`);
-                        let SIGN = '';
-                        console.log(filesign, "filesign");
-                        if (filesign.data.sign) {
-                            SIGN = "?sign=" + filesign.data.sign;
-                        }
-                        if (clickId) {
-                            api.appendBlock('markdown', `![${file.name}](${alistUrl}/d${alistPIC}/${today}/${file.name}${SIGN})`, clickId);
-                        } else {
-                            api.appendBlock('markdown', `![${file.name}](${alistUrl}/d${alistPIC}/${today}/${file.name}${SIGN})`, currentDocId);
-                        }
-                }); // 
-            } else {
-                await uploadToAList(file, alistToPath2 + "/" + today + "/" + file.name, async () => {
-                    if (file.type.startsWith('video')&& kuai) {
-                        console.log("视频");
-                        const generateBlockId = () => {
-                            const date = new Date();
-                            // 调整时间为东八区
-                            const offset = 8 * 60 * 60 * 1000; // 东八区的偏移量（毫秒）
-                            const localDate = new Date(date.getTime() + offset);
-                            const dateString = localDate.toISOString().replace(/[-:.TZ]/g, '').slice(0, 14);
-                            const randomString = Math.random().toString(36).substring(2, 9);
-                            return `${dateString}-${randomString}`;
-                        };
-
-                        // 示例使用
-                        const blockId = generateBlockId();
-                        const datePart = blockId.split('-')[0];
-                        console.log(blockId, "kaui-id");
-                        let filesign;
-                        try {
-                            filesign = await myapi.alistgetSign(`${alistToPath2}/${today}/${file.name}`);
-                        } catch (err) {
-                            console.error("请求失败，重试一次：", err);
-                            filesign = await myapi.alistgetSign(`${alistToPath2}/${today}/${file.name}`);
-                        }
-                        let SIGN = '';
-                        if (filesign.data.sign) {
-                            SIGN = "?sign=" + filesign.data.sign;
-                        }
-                        if (clickId) {
-                            console.log("clickId");
-                            api.appendBlock('markdown',
-                                `<video controls="controls" src="${alistUrl}/d${alistToPath2}/${today}/${file.name}${SIGN}"></video>`,
-                                clickId);
-                        } else {
-                            api.appendBlock('dom',
-                                `<video controls="controls" src="${alistUrl}/d${alistToPath2}/${today}/${file.name}${SIGN}"></video>`,
-                                currentDocId);
-                        }
-                    } else {
-                        if (clickId) {
-                            api.appendBlock('markdown', `📄[${file.name}](${alistUrl}${alistToPath2}/${today}/${file.name})`, clickId);
-                        } else {
-                            api.appendBlock('markdown', `📄[${file.name}](${alistUrl}${alistToPath2}/${today}/${file.name})`, currentDocId);
-                        }
-                    }
-                }); // 调用上传文件的函数
-            }
-            // 增加插入笔记上传的文件链接
-
-        } else {
-            console.log("没有文件");
-            showMessage("没有文件", 1000);
-        }
-    });
-}
-
-
-//右键上传附件
-async function runblockIconEvent(detail: any) {
-    const file = await downloadImage(decodeURIComponent("data/" + detail.element.dataset.href))
-    // console.log(decodeURIComponent("data/" + detail.element.dataset.href));
-    const filename = detail.element.dataset.href.split("/")[1];
-    await uploadToAList(file, alistToPath2 + "/" + today + "/" + filename);
-    api.appendBlock('markdown', `📄[${filename}](${alistUrl}${alistToPath2}/${today}/${filename})`, detail.element.offsetParent.dataset.nodeId);
-    // console.log("ces1", detail.element.dataset.href);
-    // console.log("ces2", detail.element.offsetParent.dataset.nodeId);
-}
-
-//右键删除附件
-async function runblockIconEventDelete(detail: any) {
-    const filename = myapi.getFileNameFromUrl(detail.element.dataset.href, true);
-    const path = myapi.getPathFromUrl(detail.element.dataset.href);
-    console.log(filename);
-    console.log(path);
-    // console.log("ces1", detail.element.dataset.href);
-    myapi.alistDelete(path, filename);
-    myapi.deletetxt(detail.element.offsetParent.dataset.nodeId);
-    // api.deleteBlock(detail.element.offsetParent.dataset.nodeId);
-}
-
-
-
-//根据光标获取块ID
-function getCursorBlockId() {
-    outLog("getCursorBlockId");
-    const selection = window.getSelection();
-    if (!selection || !selection.rangeCount) return null;
-
-    const range = selection.getRangeAt(0);
-    let container = range.startContainer;
-
-    // 如果 startContainer 是文本节点，则获取其父元素
-    if (container.nodeType === Node.TEXT_NODE) {
-        container = container.parentElement;
-    }
-
-    // 确保 container 是一个元素节点
-    if (!(container instanceof Element)) {
-        return null;
-    }
-
-    const blockElement = container.closest('.protyle-wysiwyg [data-node-id]');
-
-    if (blockElement) {
-        return blockElement.getAttribute('data-node-id');
-    } else {
-        return null;
-    }
 }
 
 function updateTimeNow() {

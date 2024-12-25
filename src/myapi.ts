@@ -966,7 +966,7 @@ export async function importAllData(blob: Blob) {
  */
 // 9/16 2024 更新：返回文件路径到剪切板
 // 11/16 2024 更新：尝试重构(failure)（success）
-export async function uploadToAList(blob, filePath, insertlink: Function = async () => {console.log('insertlink')}) {
+export async function uploadToAList(blob, filePath, insertlink: Function = async () => { console.log('insertlink') }) {
     if (beta) {
         try {
             const FileName = filePath.split('/').pop()
@@ -991,7 +991,7 @@ export async function uploadToAList(blob, filePath, insertlink: Function = async
             });
 
             // 监听上传成功
-            xhr.onload =async () => {
+            xhr.onload = async () => {
                 if (xhr.status === 200) {
                     showMessage(`上传成功`, 3000, 'info', 'beta');
                     console.log('上传成功');
@@ -1328,8 +1328,8 @@ export async function alistDelete(dir, name, dirTo = `${alistToPath2}/回收站`
     const second = date.getSeconds();
     const time = `${year}${month}${day}${hour}${minute}${second}`;
     const newName = `${time}-${name}`;
-    const data= await alistRename(`${dir}/${name}`, newName);
-    if(data.code!==200){
+    const data = await alistRename(`${dir}/${name}`, newName);
+    if (data.code !== 200) {
         showMessage(`alist文件${name}未找到（可能已经删除过了）`, -1, 'error')
         return data;
     }
@@ -1418,7 +1418,7 @@ export async function alistRename(pathName, newName) {
     }
 }
 
-export async function deletetxt(blockId){
+export async function deletetxt(blockId) {
     const txt = await api.getBlockKramdown(blockId);
     console.log(txt);
 }
@@ -1449,8 +1449,14 @@ export async function alistgetSign(filePath) {
         }
         if (response.status === 200) {
             const data = await response.json();
+            if (data.code === 200) {
+                console.log(data, "alistgetSign");
+                showMessage(`获取链接成功`, 1, 'info', 'alistgetSign');
+                return data;
+            }
+            showMessage(`获取链接出了点问题：${data.message}，没关系，正在重试`, -1, 'info', 'alistgetSign');
             console.log(data);
-            return data;
+            return await alistgetSign(filePath);
         } else {
             throw new Error(`Request failed with status: ${response.status}`);
         }
