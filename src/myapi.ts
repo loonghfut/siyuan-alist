@@ -1275,8 +1275,12 @@ export function getFileNameFromUrl(url: string, isdecodeURIComponent = false): s
 
 export function getPathFromUrl(url: string): string {
     const parsedUrl = new URL(url);
-    const pathname = decodeURIComponent(parsedUrl.pathname);
-    // 去掉文件名，只保留文件夹路径
+    let pathname = decodeURIComponent(parsedUrl.pathname);
+    // Remove '/d' if present
+    if (pathname.startsWith('/d/')) {
+        pathname = pathname.substring(2); // Remove '/d' but keep the trailing '/'
+    }
+    // Remove filename, keep only folder path
     return pathname.substring(0, pathname.lastIndexOf('/'));
 }
 
@@ -1420,7 +1424,7 @@ export async function alistRename(pathName, newName) {
 
 export async function deletetxt(blockId) {
     const txt = await api.getBlockKramdown(blockId);
-    console.log(txt);
+    console.log(txt,"删除操作");
 }
 
 
@@ -1437,31 +1441,47 @@ export async function alistgetSign(filePath) {
         path: filePath,
         refresh: true
     };
-    try {
-        const response = await fetch(url, {
-            method: 'POST',
-            headers: headers,
-            body: JSON.stringify(body)
-        });
 
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        if (response.status === 200) {
-            const data = await response.json();
-            if (data.code === 200) {
-                console.log(data, "alistgetSign");
-                showMessage(`获取链接成功`, 1, 'info', 'alistgetSign');
-                return data;
+    const maxRetries = 10; // 最大重试次数
+    const retryDelay = 500; // 重试延时，单位为毫秒
+
+    for (let attempt = 1; attempt <= maxRetries; attempt++) {
+        try {
+            const response = await fetch(url, {
+                method: 'POST',
+                headers: headers,
+                body: JSON.stringify(body)
+            });
+
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
             }
-            showMessage(`获取链接出了点问题：${data.message}，没关系，正在重试`, -1, 'info', 'alistgetSign');
-            console.log(data);
-            return await alistgetSign(filePath);
-        } else {
-            throw new Error(`Request failed with status: ${response.status}`);
+            if (response.status === 200) {
+                const data = await response.json();
+                if (data.code === 200) {
+                    console.log(data, "alistgetSign");
+                    showMessage(`获取链接成功`, 1, 'info', 'alistgetSign');
+                    return data;
+                }
+                showMessage(`获取链接出了点问题：${data.message}，没关系，正在重试 (${attempt}/${maxRetries})`, -1, 'info', 'alistgetSign');
+                outLog(data);
+                if (attempt < maxRetries) {
+                    await new Promise(resolve => setTimeout(resolve, retryDelay));
+                } else {
+                    throw new Error(`获取链接失败：${data.message}`);
+                }
+            } else {
+                throw new Error(`Request failed with status: ${response.status}`);
+            }
+        } catch (error) {
+            if (attempt < maxRetries) {
+                showMessage(`获取链接出了点问题：${error.message}，没关系，正在重试 (${attempt}/${maxRetries})`, -1, 'info', 'alistgetSign');
+                console.error('Error fetching file info:', error);
+                await new Promise(resolve => setTimeout(resolve, retryDelay));
+            } else {
+                showMessage(`获取链接失败：${error.message}，请稍后再试`, -1, 'error', 'alistgetSign');
+                throw error;
+            }
         }
-    } catch (error) {
-        console.error('Error fetching file info:', error);
-        throw error;
     }
 }

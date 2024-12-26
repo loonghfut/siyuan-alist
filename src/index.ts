@@ -265,7 +265,7 @@ export default class SiYuanAlist extends Plugin {
             key: "kuai",
             value: true,
             type: "checkbox",
-            title: "自动插入视频块 （beta,目前不太稳定）",
+            title: "自动插入视频块 （beta）",
             description: "当上传视频时自动在思源中插入视频块",
             action: {
                 callback: async () => {
@@ -278,7 +278,7 @@ export default class SiYuanAlist extends Plugin {
             key: "isdrag",
             value: true,
             type: "checkbox",
-            title: "增加拖拽上传能力    (功能测试中...欢迎反馈bug)",
+            title: "增加拖拽上传能力",
             description: "启用后顶栏部分区域可以拖拽文件上传",
             action: {
                 callback: async () => {
@@ -475,7 +475,10 @@ export default class SiYuanAlist extends Plugin {
         fileInput.click();
     }
 
-    static async handleFileUpload(file: File) {
+    static async handleFileUpload(file: File, selectID=null) {
+        if (selectID){
+            clickId=selectID;
+        }
         await uploadToAList(file, alistToPath2 + "/" + today + "/" + file.name, async () => {
             if (file.type.startsWith('video') && kuai) {
                 console.log("视频");
@@ -511,7 +514,10 @@ export default class SiYuanAlist extends Plugin {
         });
     }
 
-    static async handleImageUpload(file: File) {
+    static async handleImageUpload(file: File , selectID=null) {
+        if (selectID){
+            clickId=selectID;
+        }
         await uploadToAList(file, alistPIC + "/" + today + "/" + file.name, async () => {
             console.log("图片");
             const filesign = await myapi.alistgetSign(`${alistPIC}/${today}/${file.name}`);
@@ -532,15 +538,23 @@ export default class SiYuanAlist extends Plugin {
 
 
     private blockIconEvent({ detail }: any) {
-        console.log("blockIconEvent", detail.element.dataset.href);
-        const linkUrl = detail.element.dataset.href;
+        // console.log(detail.element, "blockIconEvent2222");
+        let linkUrl = '';
+        const imgElement = detail.element.querySelector('img');
+        if (imgElement) {
+            console.log('imgElement');
+            linkUrl = imgElement.getAttribute('src');
+        } else {
+            console.log("blockIconEvent", detail.element.dataset.href);
+            linkUrl = detail.element.dataset.href;
+        }
         if (linkUrl.startsWith("assets")) {
             detail.menu.addItem({
                 iconHTML: uploadFileComponentHTML,
                 label: '',
                 click: async () => {
                     console.log("上传附件");
-                    runblockIconEvent(detail);
+                    runblockIconEvent(linkUrl, detail);
                 }
             });
         }
@@ -552,7 +566,8 @@ export default class SiYuanAlist extends Plugin {
                     click: async () => {
                         console.log("删除附件");
                         confirm("确定要将附件移动到回收站吗？", "移动到回收站后，请手动删除笔记中的链接", () => {
-                            runblockIconEventDelete(detail);
+                            console.log(detail.element);
+                            runblockIconEventDelete(linkUrl, detail);
                         });
                     }
                 });
@@ -608,6 +623,7 @@ export default class SiYuanAlist extends Plugin {
         if (beta) {
             this.eventBus.on("open-menu-link", this.blockIconEventBindThis);
             this.eventBus.on("click-editorcontent", this.handleSelectionChange);
+            this.eventBus.on("open-menu-image", this.blockIconEventBindThis);
         }
 
 

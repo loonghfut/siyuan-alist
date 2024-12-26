@@ -6,13 +6,19 @@ import * as myapi from "./myapi";
 import { downloadImage, outLog, uploadToAList } from "./myapi";
 
 //右键删除附件
-export async function runblockIconEventDelete(detail: any) {
-    const filename = myapi.getFileNameFromUrl(detail.element.dataset.href, true);
-    const path = myapi.getPathFromUrl(detail.element.dataset.href);
+export async function runblockIconEventDelete(linkUrl:any ,detail: any) {
+    // console.log(linkUrl,"linkUrl");
+    if (!detail || !detail.element) {
+        console.error("detail 或 detail.element 未定义");
+        return;
+    }
+    const filename = myapi.getFileNameFromUrl(linkUrl, true);
+    const path = myapi.getPathFromUrl(linkUrl);
     console.log(filename);
     console.log(path);
     // console.log("ces1", detail.element.dataset.href);
     myapi.alistDelete(path, filename);
+    // console.log("ces2", detail.element.offsetParent);
     myapi.deletetxt(detail.element.offsetParent.dataset.nodeId);
     // api.deleteBlock(detail.element.offsetParent.dataset.nodeId);
 }//根据光标获取块ID
@@ -46,12 +52,18 @@ export function getCursorBlockId() {
     }
 }
 //右键上传附件
-export async function runblockIconEvent(detail: any) {
-    const file = await downloadImage(decodeURIComponent("data/" + detail.element.dataset.href));
-    // console.log(decodeURIComponent("data/" + detail.element.dataset.href));
-    const filename = detail.element.dataset.href.split("/")[1];
+export async function runblockIconEvent(linkUrl: any, detail: any) {
+    // console.log(decodeURIComponent("data/" + linkUrl));
+    const blob = await downloadImage(decodeURIComponent("data/" + linkUrl));
+    const filename = linkUrl.split("/")[1];
+    const file = new File([blob], filename, { type: blob.type, lastModified: Date.now() });
     await uploadToAList(file, alistToPath2 + "/" + today + "/" + filename);
-    api.appendBlock('markdown', `📄[${filename}](${alistUrl}${alistToPath2}/${today}/${filename})`, detail.element.offsetParent.dataset.nodeId);
+    // api.appendBlock('markdown', `📄[${filename}](${alistUrl}${alistToPath2}/${today}/${filename})`, detail.element.offsetParent.dataset.nodeId);
+    if (file.type.startsWith('image')) {
+        await SiYuanAlist.handleImageUpload(file, detail.element.offsetParent.dataset.nodeId);
+    } else {
+        await SiYuanAlist.handleFileUpload(file, detail.element.offsetParent.dataset.nodeId);
+    }
     // console.log("ces1", detail.element.dataset.href);
     // console.log("ces2", detail.element.offsetParent.dataset.nodeId);
 }
