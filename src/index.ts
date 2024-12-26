@@ -34,12 +34,9 @@ import {
 import { SettingUtils } from "./libs/setting-utils";
 import { buildFilenameInputElement, getCursorBlockId, insertCountdownElement, runblockIconEvent, runblockIconEventDelete } from "./runblockIconEventDelete";
 import { svgIconsDefinition } from "./svgIconsDefinition";
-
-
-
+import { getAlistDockUpdateHtml, getAlistDockHtml, uploadFileComponentHTML, removeFileIconHTML } from "./fileUploadElement";
 
 const STORAGE_NAME = "menu-config";
-const TAB_TYPE = "custom_tab";
 
 export let currentProtyle
 export let currentDocId: string | null = null;
@@ -73,7 +70,7 @@ export let clickId: string | null = null;
 let resizeObserver: ResizeObserver | null = null;
 let resizeTimeout: number = 0;
 // let notePath: string | null = null;
-let targetURL: string | null = null;
+export let targetURL: string | null = null;
 let isclickalist: boolean = true;
 export default class SiYuanAlist extends Plugin {
     initalist: any;
@@ -84,18 +81,13 @@ export default class SiYuanAlist extends Plugin {
     private blockIconEventBindThis = this.blockIconEvent.bind(this);
 
 
-
-
-
     async onload() {
-
         isReadonly = window.siyuan.config.readonly;
         console.log(isReadonly, "是否只读");
         if (isReadonly) {
             // showMessage("只读模式下插件不可用", -1, "error");
             return;
         }
-
         //获取当前日期
         let date = new Date();
         let year = date.getFullYear();
@@ -107,38 +99,22 @@ export default class SiYuanAlist extends Plugin {
         timeNow = `${year}${month}${day}${hour}${minute}${second}`;
         today = year + "-" + month + "-" + day;
         console.log(today, "当前日期");
-
-
-
         //监听事件
         document.addEventListener("click", this.onlick, true);
-
-
-
 
         const frontEnd = getFrontend();
         this.isMobile = frontEnd === "mobile" || frontEnd === "browser-mobile";
         console.log(frontEnd, this.isMobile);
-
         this.data[STORAGE_NAME] = { readonlyText: "Readon" };
 
-
-
         this.addIcons(svgIconsDefinition);
-
-
         //添加图标
         this.addTopBar({
             icon: "iconCloudUpload",
             title: "全量备份到alist",
             position: "left",
             callback: () => {
-                // console.log(await getCurrentNotePathById(currentDocId));
-                // let rect = document.querySelector("#plugin_siyuan-alist_0").getBoundingClientRect();
-                // this.addMenu2(rect);
                 this.readbackup();
-                // this.runbackup();
-                // showMessage("处理中...");
             }
         });
 
@@ -150,9 +126,6 @@ export default class SiYuanAlist extends Plugin {
                 SiYuanAlist.createFileInput();
             }
         });
-
-
-
 
         this.addDock({
             config: {
@@ -172,29 +145,8 @@ export default class SiYuanAlist extends Plugin {
                 }
             },
             update() {
-                // console.log("alist-dock" + " update");
-                // console.log(this, "cehsihs8");
-
-
-                this.element.innerHTML = `
-                <div id="alist-dock" class="alist-dock-container"  >
-                <iframe 
-                allow="clipboard-read; clipboard-write"
-                sandbox="allow-forms allow-presentation allow-same-origin allow-scripts allow-modals allow-popups" 
-                src="${targetURL}" 
-                data-src="" 
-                border="1" 
-                frameborder="no" 
-                framespacing="0" 
-                allowfullscreen="true" 
-                style="height: 100% ; width: 100%;  pointer-events: auto;"
-                >
-                </iframe>
-                </div>
-                `;
+                this.element.innerHTML = getAlistDockUpdateHtml();
                 const targetElement = this.element.querySelector('#alist-dock iframe');
-
-
                 if (targetElement) {
                     resizeObserver = new ResizeObserver(() => {
                         (targetElement as HTMLElement).style.pointerEvents = 'none';
@@ -214,25 +166,9 @@ export default class SiYuanAlist extends Plugin {
                 if (alistUrl == "") {
                     showMessage("请先配置alist网址...", -1, "error");
                 }
-                dock.element.innerHTML = `
-                <div id="alist-dock" class="alist-dock-container"  >
-                <iframe 
-                allow="clipboard-read; clipboard-write"
-                sandbox="allow-forms allow-presentation allow-same-origin allow-scripts allow-modals allow-popups" 
-                src="${alistUrl}" 
-                data-src="" 
-                border="1" 
-                frameborder="no" 
-                framespacing="0" 
-                allowfullscreen="true" 
-                style="height: 100% ; width: 100%;  pointer-events: auto;"
-                >
-                </iframe>
-                </div>
-                `;
+                dock.element.innerHTML = getAlistDockHtml();
+                //拖动流畅代码
                 const targetElement = dock.element.querySelector('#alist-dock iframe');
-
-
                 if (targetElement) {
                     resizeObserver = new ResizeObserver(() => {
                         (targetElement as HTMLElement).style.pointerEvents = 'none';
@@ -245,7 +181,6 @@ export default class SiYuanAlist extends Plugin {
 
                     resizeObserver.observe(targetElement);
                 }
-
             },
             destroy() {
                 console.log("destroy dock:", "alist-dock");
@@ -259,15 +194,19 @@ export default class SiYuanAlist extends Plugin {
             }
 
         });
-
-
         //插件设置相关
         this.settingUtils = new SettingUtils({
             plugin: this, name: STORAGE_NAME
         });
+        this.initializeSettings(frontEnd);
+        try {
+            this.settingUtils.load();
+        } catch (error) {
+            console.error("Error loading settings storage, probably empty config json:", error);
+        }
+    }
 
-
-
+    private initializeSettings(frontEnd: string) {//设置相关
         this.settingUtils.addItem({
             key: "isconnect",
             value: "",
@@ -512,42 +451,13 @@ export default class SiYuanAlist extends Plugin {
                 }
             }
         });
-
-
-        // this.settingUtils.addItem({
-        //     key: "beta_pro",
-        //     value: false,
-        //     type: "checkbox",
-        //     title: "beta_pro版本【谨慎启用，建议先在新空间使用】",
-        //     description: "体验还在测试中改动较大的新功能（稳定性未知）(具体功能详见更新日志)，欢迎反馈bug ",
-        //     action: {
-        //         callback: async () => {
-        //             // Return data and save it in real time
-        //             // let value = !this.settingUtils.get("isdrag");
-        //             // this.settingUtils.set("isdrag", value);
-        //             // outLog(value);
-        //             await this.settingUtils.takeAndSave("beta_pro");
-        //             myapi.refresh();
-        //         }
-        //     }
-        // });
-
-
-        try {
-            this.settingUtils.load();
-        } catch (error) {
-            console.error("Error loading settings storage, probably empty config json:", error);
-        }
-        //插件设置相关
-        console.log(this.i18n.helloPlugin);
-
     }
+
     static createFileInput() {
         const fileInput = document.createElement('input');
         fileInput.type = 'file';
         fileInput.accept = '*/*'; // 支持所有文件类型
         fileInput.multiple = true; // 支持多文件选择
-
         // 文件选择事件处理
         fileInput.addEventListener('change', async (event) => {
             const inputElement = event.target as HTMLInputElement; // 类型断言
@@ -562,8 +472,6 @@ export default class SiYuanAlist extends Plugin {
                 }
             }
         });
-
-        // 触发文件输入的点击事件
         fileInput.click();
     }
 
@@ -628,19 +536,7 @@ export default class SiYuanAlist extends Plugin {
         const linkUrl = detail.element.dataset.href;
         if (linkUrl.startsWith("assets")) {
             detail.menu.addItem({
-                iconHTML: `<style>
-        .wd {
-            width: 100%;
-            height: 100%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            user-select: none; /* 防止该元素的文本被选中 */
-        }
-        </style>
-            <div class="wd b3-list-item__text">上传<svg width="15" height="15">
-            <use xlink:href="#iconAlist"></use>
-        </svg>附件</div>`,
+                iconHTML: uploadFileComponentHTML,
                 label: '',
                 click: async () => {
                     console.log("上传附件");
@@ -651,19 +547,7 @@ export default class SiYuanAlist extends Plugin {
         if (linkUrl.startsWith("http")) {
             if (myapi.isUrlContained(linkUrl, alistUrl)) {
                 detail.menu.addItem({
-                    iconHTML: `<style>
-        .wd {
-            width: 100%;
-            height: 100%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            user-select: none; /* 防止该元素的文本被选中 */
-        }
-        </style>
-            <div class="wd b3-list-item__text">删除<svg width="15" height="15">
-            <use xlink:href="#iconAlist"></use>
-        </svg>附件</div>`,
+                    iconHTML: removeFileIconHTML,
                     label: '',
                     click: async () => {
                         console.log("删除附件");
@@ -688,16 +572,12 @@ export default class SiYuanAlist extends Plugin {
     }
 
 
-
     onLayoutReady() {
         isReadonly = window.siyuan.config.readonly;
         if (isReadonly) {
             return;
         }
         // this.settingUtils.load();
-        // console.log(`frontend: ${getFrontend()}; backend: ${getBackend()}`);
-
-
         alistmima = this.settingUtils.get("alistToken");//TODO:后面改到前面去
         alistname = this.settingUtils.get("alistname");
         alistUrl = this.settingUtils.get("alistUrl");
@@ -741,24 +621,11 @@ export default class SiYuanAlist extends Plugin {
             console.log("无定时备份任务");
         }
 
-        if (isdrag && !this.isMobile) {//兼容移动端
+        if (isdrag && !this.isMobile) {//兼容移动端，防止报错
             insertCountdownElement();
         }
-        let tabDiv = document.createElement("div");
 
-        this.customTab = this.addTab({
-            type: TAB_TYPE,
-            init() {
-                this.element.appendChild(tabDiv);
-                console.log(this.element);
-            },
-            beforeDestroy() {
-                console.log("before destroy tab:", TAB_TYPE);
-            },
-            destroy() {
-                console.log("destroy tab:", TAB_TYPE);
-            }
-        });
+
         //获取当前文档ID
         this.eventBus.on("switch-protyle", (event) => {
             // console.log(event);
@@ -795,16 +662,6 @@ export default class SiYuanAlist extends Plugin {
         this.eventBus.off("open-menu-link", this.blockIconEventBindThis);
         this.eventBus.off("click-editorcontent", this.handleSelectionChange);
     }
-
-
-
-
-    // isCtrl(e): boolean {
-    //     return true;
-    // }
-
-
-
 
     private async runbackup(Filename: string) {
         showMessage("正在备份...", -1, "info", "备份")
@@ -1001,20 +858,12 @@ export default class SiYuanAlist extends Plugin {
             if (inputValue) {
                 outLog("正在备份..." + inputValue);
                 outLog("备份data");
-                //检测文件名中是否有${timeNow}，有则替换
-                // if (inputValue.includes("${timeNow}")) {
-                //     updateTimeNow();
-                //     inputValue = inputValue.replace("${timeNow}", timeNow);
-                // }
                 this.runbackup(inputValue);
             } else {
                 showMessage("没有输入文件名，备份取消。");
                 return;
             }
         });
-
-        // this.runbackup();
-        // this.dbug();
     }
 
 
@@ -1030,3 +879,4 @@ function updateTimeNow() {
     let second = date.getSeconds().toString().padStart(2, '0');
     timeNow = `${year}${month}${day}${hour}${minute}${second}`;
 }
+
