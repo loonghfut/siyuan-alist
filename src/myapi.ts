@@ -1479,7 +1479,7 @@ export async function alistgetSign(filePath) {
                 console.error('Error fetching file info:', error);
                 await new Promise(resolve => setTimeout(resolve, retryDelay));
             } else {
-                showMessage(`获取链接失败：${error.message}，请稍后再试`, -1, 'error', 'alistgetSign');
+                showMessage(`获取直链失败：${error.message}，自动改为插入普通链接`, -1, 'error', 'alistgetSign');
                 throw error;
             }
         }

@@ -488,7 +488,11 @@ export default class SiYuanAlist extends Plugin {
                     filesign = await myapi.alistgetSign(`${alistToPath2}/${today}/${file.name}`);
                 } catch (err) {
                     console.error("请求失败，重试一次：", err);
-                    filesign = await myapi.alistgetSign(`${alistToPath2}/${today}/${file.name}`);
+                    if (clickId) {
+                        api.appendBlock('markdown', `📄[${file.name}](${alistUrl}${alistToPath2}/${today}/${file.name})`, clickId);
+                    } else {
+                        api.appendBlock('markdown', `📄[${file.name}](${alistUrl}${alistToPath2}/${today}/${file.name})`, currentDocId);
+                    }
                 }
                 let SIGN = '';
                 if (filesign.data.sign) {
