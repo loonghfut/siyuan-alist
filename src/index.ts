@@ -538,6 +538,10 @@ export default class SiYuanAlist extends Plugin {
         });
     }
 
+    //配合STtools插件使用，保存ics文件
+    static async handleFileUploadwithoutlink(file: File) {
+        await uploadToAList(file, alistToPath2 + "/" + file.name);
+    }
     //选中菜单设置
 
 
