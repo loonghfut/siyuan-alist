@@ -3,10 +3,9 @@
 [主要功能演示视频1](https://ld246.com/article/1727347960883?r=stevehfut)
 [主要功能演示视频2](https://ld246.com/article/1732334875740?r=stevehfut)
 #### 最新版本  
--  1.1.5:  
- 增加:图片资源也支持右键上传到alist     
- 优化:优化嵌入alist视频和图片的体验  
- 重构:进一步重构部分代码，以便后续开发更多功能   
+- 1.1.7   
+ 增加：联动适配STtools插件，允许保存ics文件    
+ 修复：打开思源客户端会显示多个Alist图标 [#15](https://github.com/loonghfut/siyuan-alist/issues/15)
 
 #### 目前有的功能  （注：带beta的功能需要在插件设置页面开启beta模式才有效果）
 1. 嵌入alist网页，并自动识别alist的链接，不再跳转到浏览器  
@@ -55,7 +54,11 @@ LL_TODO:重构代码，提高代码质量
 LL_TODO:用vue写一个（或找个开源的改）alist前端，可能要很久。。    
 LL_TODO:在alist中实现PDF批注  （这个好难实现啊。。）  
 
-## 更新日志      
+## 更新日志        
+ 1.1.7:        
+ 增加：联动适配STtools插件，允许保存ics文件       
+ 修复：打开思源客户端会显示多个Alist图标 [#15](https://github.com/loonghfut/siyuan-alist/issues/15)      
+ 
  1.1.6:  
  优化:优化上传视频体验，在获取sign失效后自动插入普通链接（beta）（目前在思源插入视频块有时会变成html块）
 
