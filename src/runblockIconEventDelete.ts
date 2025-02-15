@@ -6,7 +6,7 @@ import * as myapi from "./myapi";
 import { downloadImage, outLog, uploadToAList } from "./myapi";
 
 //右键删除附件
-export async function runblockIconEventDelete(linkUrl:any ,detail: any) {
+export async function runblockIconEventDelete(linkUrl: any, detail: any) {
     // console.log(linkUrl,"linkUrl");
     if (!detail || !detail.element) {
         console.error("detail 或 detail.element 未定义");
@@ -69,19 +69,26 @@ export async function runblockIconEvent(linkUrl: any, detail: any) {
 }
 export function insertCountdownElement() {
     let toolbarDrag = document.querySelector('#toolbar > #drag');
-    if (toolbarDrag) {
-        toolbarDrag.insertAdjacentHTML(
-            "afterend",
-            fileUploadElement
-        );
-    } else {
-        console.error("找不到 #toolbar > #drag 元素");
+    // 首先检查是否已存在上传容器
+    let uploadContainer;
+    let textElement;
+    if (!document.getElementById('uploadContainer')) {
+        if (toolbarDrag) {
+            toolbarDrag.insertAdjacentHTML(
+                "afterend",
+                fileUploadElement
+            );
+        } else {
+            console.error("找不到 #toolbar > #drag 元素");
+            return; // 如果找不到toolbar，直接返回
+        }
+
+        uploadContainer = document.getElementById('uploadContainer');
+        textElement = uploadContainer.querySelector('.wd') as HTMLElement;
+        uploadContainer.addEventListener('click', () => {
+            SiYuanAlist.createFileInput();
+        });
     }
-    const uploadContainer = document.getElementById('uploadContainer');
-    const textElement = uploadContainer.querySelector('.wd') as HTMLElement; // 获取子元素
-    uploadContainer.addEventListener('click', () => {
-        SiYuanAlist.createFileInput();
-    });
 
     // 文件选择事件处理
 
