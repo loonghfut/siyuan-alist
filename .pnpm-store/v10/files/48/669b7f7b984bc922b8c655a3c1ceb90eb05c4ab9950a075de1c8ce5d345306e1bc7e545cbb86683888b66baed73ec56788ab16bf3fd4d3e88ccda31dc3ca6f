@@ -1,0 +1,53 @@
+{
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "https://github.com/siyuan-community/siyuan-sdk/raw/main/schemas/kernel/api/export/exportMdContent/response.schema.json",
+    "$comment": "v2.9.2",
+    "$ref": "#/$defs/root",
+    "$defs": {
+        "root": {
+            "title": "response body",
+            "description": "Exports the specified document block as Markdown",
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+                "code",
+                "msg",
+                "data"
+            ],
+            "properties": {
+                "code": {
+                    "type": "integer",
+                    "description": "status code"
+                },
+                "msg": {
+                    "type": "string",
+                    "description": "status message"
+                },
+                "data": {
+                    "$ref": "#/$defs/data"
+                }
+            }
+        },
+        "data": {
+            "title": "IData",
+            "description": "exported content",
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+                "content",
+                "hPath"
+            ],
+            "properties": {
+                "hPath": {
+                    "type": "string",
+                    "description": "human friendly path (relative to the notebook directory)",
+                    "pattern": "^(/[^/]+)+$"
+                },
+                "content": {
+                    "type": "string",
+                    "description": "Markdown content"
+                }
+            }
+        }
+    }
+}

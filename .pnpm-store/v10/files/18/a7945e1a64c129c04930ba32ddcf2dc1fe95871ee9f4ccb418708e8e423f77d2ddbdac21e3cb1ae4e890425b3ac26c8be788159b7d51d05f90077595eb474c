@@ -1,0 +1,77 @@
+/**
+ * schemas/kernel/api/history/getDocHistoryContent/response.schema.json5
+ * 从历史文档文件绝对路径获取文档历史
+ * REF: https://github.com/siyuan-note/siyuan/blob/v2.9.7/kernel/api/history.go#L135-L163
+ * @pathname: /api/history/getDocHistoryContent
+ * @version: 2.9.7
+ */
+{
+    $schema: 'https://json-schema.org/draft/2020-12/schema',
+    $id: 'https://github.com/siyuan-community/siyuan-sdk/raw/main/schemas/kernel/api/history/getDocHistoryContent/response.schema.json5',
+    $comment: 'v2.9.7',
+    $ref: '#/$defs/root',
+    $defs: {
+        root: {
+            title: 'response body',
+            description: 'Get document history content from history document file absolute path',
+
+            type: 'object',
+            additionalProperties: false,
+            required: [
+                'code',
+                'msg',
+                'data',
+            ],
+            properties: {
+                code: {
+                    type: 'integer',
+                    description: 'status code',
+                },
+                msg: {
+                    type: 'string',
+                    description: 'status message',
+                },
+                data: {
+                    $ref: '#/$defs/data',
+                },
+            },
+        },
+        data: {
+            title: 'IData',
+            description: 'Response information',
+
+            type: 'object',
+            additionalProperties: false,
+            required: [
+                'id',
+                'rootID',
+                'isLargeDoc',
+                'content',
+            ],
+            properties: {
+                id: {
+                    // 块 ID
+                    type: 'string',
+                    description: 'Block ID',
+                    pattern: '^\\d{14}-[0-9a-z]{7}$',
+                },
+                rootID: {
+                    // 文档块 ID
+                    type: 'string',
+                    description: 'Document block ID',
+                    pattern: '^\\d{14}-[0-9a-z]{7}$',
+                },
+                isLargeDoc: {
+                    // 是否为大文档, 大文档返回 markdown, 其他返回块 DOM
+                    type: 'boolean',
+                    description: 'is a large document?\nlarge document return markdown\nothers return block DOM',
+                },
+                content: {
+                    // 文档内容
+                    type: 'string',
+                    description: 'document content',
+                },
+            },
+        },
+    },
+}

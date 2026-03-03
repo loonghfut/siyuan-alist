@@ -1,0 +1,84 @@
+/**
+ * schemas/kernel/api/history/getDocHistoryContent/response.schema.json5
+ * 打开快照中仓库中的文档
+ * REF: https://github.com/siyuan-note/siyuan/blob/v3.1.11/kernel/api/repo.go#L63-L86
+ * @pathname: /api/repo/openRepoSnapshotDoc
+ * @version: 3.1.11
+ */
+{
+    $schema: 'https://json-schema.org/draft/2020-12/schema',
+    $id: 'https://github.com/siyuan-community/siyuan-sdk/raw/main/schemas/kernel/api/history/getDocHistoryContent/response.schema.json5',
+    $comment: 'v3.1.11',
+    $ref: '#/$defs/root',
+    $defs: {
+        root: {
+            title: 'response body',
+            description: 'Open document in repository snapshot',
+
+            type: 'object',
+            additionalProperties: false,
+            required: [
+                'code',
+                'msg',
+                'data',
+            ],
+            properties: {
+                code: {
+                    type: 'integer',
+                    description: 'status code',
+                },
+                msg: {
+                    type: 'string',
+                    description: 'status message',
+                },
+                data: {
+                    $ref: '#/$defs/data',
+                },
+            },
+        },
+        data: {
+            title: 'IData',
+            description: 'Response information',
+
+            type: 'object',
+            additionalProperties: false,
+            required: [
+                'content',
+                'displayInText',
+                'title',
+                'updated',
+            ],
+            properties: {
+                content: {
+                    // 快照文件内容
+                    type: 'string',
+                    description: 'snapshot file content',
+                    examples: [
+                        '<div data-node-id="20230725221731-6g59iid" data-node-index="1" data-type="NodeParagraph" class="p" updated="20230725221745"><div contenteditable="false" spellcheck="false">123</div><div class="protyle-attr" contenteditable="false"></div></div><div data-node-id="20230725224810-naky2y2" data-node-index="2" data-type="NodeParagraph" class="p"><div contenteditable="false" spellcheck="false"></div><div class="protyle-attr" contenteditable="false"></div></div>', // 文档文件
+                        '{}', // json 文件
+                        '/plugins/open-api/README.md', // 其他文件
+                        '/plugins/open-api/icon.png', // 其他文件
+                    ],
+                },
+                displayInText: {
+                    // 内容是否渲染为字符串, true: 原始文本/文件路径, false: 块 DOM 字符串
+                    type: 'boolean',
+                    description: 'Whether the content is rendered as a string\n- `true`: original text/file path\n- `false`: block DOM string',
+                },
+                title: {
+                    // 标题 (资源文件: 文件路径; 文档文件: 文档标题)
+                    type: 'string',
+                    description: 'title (asset file: file path; document file: document title)',
+                },
+                updated: {
+                    // 更新时间 (Unix 时间戳, 单位: ms)
+                    type: 'integer',
+                    description: 'update time (Unix timestamp, ms)',
+                    examples: [
+                        1690296491237,
+                    ],
+                },
+            },
+        },
+    },
+}

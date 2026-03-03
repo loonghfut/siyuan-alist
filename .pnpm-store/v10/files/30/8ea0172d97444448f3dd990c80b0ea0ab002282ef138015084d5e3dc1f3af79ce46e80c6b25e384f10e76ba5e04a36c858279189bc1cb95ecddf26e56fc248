@@ -1,0 +1,63 @@
+/**
+ * schemas/kernel/api/block/moveBlock/payload.schema.json5
+ * 移动块
+ * REF: https://github.com/siyuan-note/siyuan/blob/master/API.md#move-a-block
+ * REF: https://github.com/siyuan-note/siyuan/blob/v2.9.3/kernel/api/block_op.go#L32-L85
+ * @pathname: /api/block/moveBlock
+ * @version: 2.9.3
+ */
+{
+    $schema: 'https://json-schema.org/draft/2020-12/schema',
+    $id: 'https://github.com/siyuan-community/siyuan-sdk/raw/main/schemas/kernel/api/block/moveBlock/payload.schema.json5',
+    $comment: 'v2.9.3',
+    $ref: '#/$defs/root',
+    $defs: {
+        root: {
+            title: 'payload body',
+            description: 'Move a block',
+
+            type: 'object',
+            additionalProperties: false,
+            properties: {
+                id: {
+                    // 待移动的块
+                    type: 'string',
+                    description: 'Block ID to move',
+                    pattern: '^\\d{14}-[0-9a-z]{7}$',
+                },
+                previousID: {
+                    /**
+                     * 前一个块的块 ID (移动到该块后)
+                     * 用于锚定插入位置
+                     */
+                    type: 'string',
+                    description: 'block ID: insert after this block',
+                    pattern: '^\\d{14}-[0-9a-z]{7}$',
+                },
+                parentID: {
+                    /**
+                     * 上级块的块 ID (移动到该块内的首部)
+                     * 用于锚定插入位置
+                     */
+                    type: 'string',
+                    description: 'block ID: insert into this block head',
+                    pattern: '^\\d{14}-[0-9a-z]{7}$',
+                },
+            },
+            oneOf: [
+                {
+                    required: [
+                        'id',
+                        'previousID',
+                    ],
+                },
+                {
+                    required: [
+                        'id',
+                        'parentID',
+                    ],
+                },
+            ],
+        },
+    },
+}

@@ -1,0 +1,64 @@
+{
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "https://github.com/siyuan-community/siyuan-sdk/raw/main/schemas/kernel/api/history/getDocHistoryContent/response.schema.json",
+    "$comment": "v2.9.7",
+    "$ref": "#/$defs/root",
+    "$defs": {
+        "root": {
+            "title": "response body",
+            "description": "Get document history content from history document file absolute path",
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+                "code",
+                "msg",
+                "data"
+            ],
+            "properties": {
+                "code": {
+                    "type": "integer",
+                    "description": "status code"
+                },
+                "msg": {
+                    "type": "string",
+                    "description": "status message"
+                },
+                "data": {
+                    "$ref": "#/$defs/data"
+                }
+            }
+        },
+        "data": {
+            "title": "IData",
+            "description": "Response information",
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+                "id",
+                "rootID",
+                "isLargeDoc",
+                "content"
+            ],
+            "properties": {
+                "id": {
+                    "type": "string",
+                    "description": "Block ID",
+                    "pattern": "^\\d{14}-[0-9a-z]{7}$"
+                },
+                "rootID": {
+                    "type": "string",
+                    "description": "Document block ID",
+                    "pattern": "^\\d{14}-[0-9a-z]{7}$"
+                },
+                "isLargeDoc": {
+                    "type": "boolean",
+                    "description": "is a large document?\nlarge document return markdown\nothers return block DOM"
+                },
+                "content": {
+                    "type": "string",
+                    "description": "document content"
+                }
+            }
+        }
+    }
+}

@@ -1,0 +1,39 @@
+{
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "https://github.com/siyuan-community/siyuan-sdk/raw/main/schemas/kernel/api/snippet/getSnippet/payload.schema.json",
+    "$comment": "v2.9.7",
+    "$ref": "#/$defs/root",
+    "$defs": {
+        "root": {
+            "title": "payload body",
+            "description": "Get code snippet list",
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+                "type",
+                "enabled"
+            ],
+            "properties": {
+                "type": {
+                    "title": "TSnippetType",
+                    "type": "string",
+                    "description": "Get code snippets of a specified type",
+                    "enum": [
+                        "js",
+                        "css",
+                        "all"
+                    ]
+                },
+                "enabled": {
+                    "type": "integer",
+                    "description": "Get code snippets of a enabled state\n0: disabled\n1: enabled\n2: all",
+                    "enum": [
+                        0,
+                        1,
+                        2
+                    ]
+                }
+            }
+        }
+    }
+}

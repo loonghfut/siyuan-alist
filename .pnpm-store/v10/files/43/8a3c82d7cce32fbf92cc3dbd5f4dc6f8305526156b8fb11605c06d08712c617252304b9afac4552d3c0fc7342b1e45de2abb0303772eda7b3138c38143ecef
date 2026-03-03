@@ -1,0 +1,43 @@
+/**
+ * schemas/kernel/api/storage/setLocalStorageVal/payload.schema.json5
+ * 持久化一项本地存储数据
+ * REF: https://github.com/siyuan-note/siyuan/blob/v2.10.13/kernel/api/storage.go#L127-L150
+ * @pathname: /api/storage/setLocalStorageVal
+ * @version: 2.10.13
+ */
+{
+    $schema: 'https://json-schema.org/draft/2020-12/schema',
+    $id: 'https://github.com/siyuan-community/siyuan-sdk/raw/main/schemas/kernel/api/storage/setLocalStorageVal/payload.schema.json5',
+    $comment: 'v2.10.13',
+    $ref: '#/$defs/root',
+    $defs: {
+        root: {
+            title: 'payload body',
+            description: 'Persist a piece of local storage data',
+
+            type: 'object',
+            additionalProperties: false,
+            required: [
+                'val',
+            ],
+            properties: {
+                app: {
+                    // Web 页面应用的 ID
+                    // globalThis.siyuan.ws.app.appId
+                    type: 'string',
+                    description: 'App ID',
+                    pattern: '^[0-9a-z]{5}$',
+                },
+                key: {
+                    // 本地存储数据键值对的键名
+                    type: 'string',
+                    description: 'The key of the key-value pair',
+                },
+                val: {
+                    // 本地存储数据键值对的键值
+                    description: 'The value of the key-value pair',
+                },
+            },
+        },
+    },
+}

@@ -1,0 +1,56 @@
+/**
+ * schemas/kernel/api/export/exportHTML/payload.schema.json5
+ * 导出指定文档块为 HTML
+ * REF: https://github.com/siyuan-note/siyuan/blob/v3.0.7/kernel/api/export.go#L419-L436
+ * @pathname: /api/export/exportHTML
+ * @version: 3.0.7
+ */
+{
+    $schema: 'https://json-schema.org/draft/2020-12/schema',
+    $id: 'https://github.com/siyuan-community/siyuan-sdk/raw/main/schemas/kernel/api/export/exportHTML/payload.schema.json5',
+    $comment: 'v3.0.7',
+    $ref: '#/$defs/root',
+    $defs: {
+        root: {
+            title: 'payload body',
+            description: 'Exports the specified document block as HTML',
+            type: 'object',
+            additionalProperties: false,
+            required: [
+                'id',
+                'pdf',
+                'savePath',
+            ],
+            properties: {
+                id: {
+                    // 要导出的块 ID
+                    type: 'string',
+                    description: 'doc block ID',
+                    pattern: '^\\d{14}-[0-9a-z]{7}$',
+                },
+                pdf: {
+                    // 是否导出玩 PDF
+                    type: 'boolean',
+                    description: 'Whether the export format is PDF',
+                },
+                savePath: {
+                    // 导出时创建的文件的位置
+                    type: 'string',
+                    description: 'The location where the file is saved',
+                },
+                keepFold: {
+                    // 是否保持折叠状态
+                    type: 'boolean',
+                    description: 'Whether to keep the folding state',
+                    default: false,
+                },
+                merge: {
+                    // 是否合并下级文档内容
+                    type: 'boolean',
+                    description: 'Whether to merge the content of the sub-document',
+                    default: false,
+                },
+            },
+        },
+    },
+}

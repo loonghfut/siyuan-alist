@@ -1,0 +1,33 @@
+/**
+ * schemas/kernel/api/notebook/openNotebook/payload.schema.json5
+ * 打开笔记本
+ * REF: https://github.com/siyuan-note/siyuan/blob/master/API.md#open-a-notebook
+ * REF: https://github.com/siyuan-note/siyuan/blob/v2.9.3/kernel/api/notebook.go#L165-L204
+ * @pathname: /api/notebook/openNotebook
+ * @version: 2.9.3
+ */
+{
+    $schema: 'https://json-schema.org/draft/2020-12/schema',
+    $id: 'https://github.com/siyuan-community/siyuan-sdk/raw/main/schemas/kernel/api/notebook/openNotebook/payload.schema.json5',
+    $comment: 'v2.9.3',
+    $ref: '#/$defs/root',
+    $defs: {
+        root: {
+            title: 'payload body',
+            description: 'Open a notebook',
+
+            type: 'object',
+            additionalProperties: false,
+            required: [
+                'notebook',
+            ],
+            properties: {
+                notebook: {
+                    type: 'string',
+                    description: 'notebook ID',
+                    pattern: '^\\d{14}-[0-9a-z]{7}$',
+                },
+            },
+        },
+    },
+}

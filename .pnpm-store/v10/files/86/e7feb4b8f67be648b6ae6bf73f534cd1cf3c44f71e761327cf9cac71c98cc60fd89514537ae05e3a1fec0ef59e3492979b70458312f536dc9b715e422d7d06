@@ -1,0 +1,39 @@
+{
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "https://github.com/siyuan-community/siyuan-sdk/raw/main/schemas/kernel/api/filetree/createDocWithMd/payload.schema.json",
+    "$comment": "v2.9.3",
+    "$ref": "#/$defs/root",
+    "$defs": {
+        "root": {
+            "title": "payload body",
+            "description": "Create a document with Markdown",
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+                "notebook",
+                "path",
+                "markdown"
+            ],
+            "properties": {
+                "notebook": {
+                    "type": "string",
+                    "description": "notebook ID",
+                    "pattern": "^\\d{14}-[0-9a-z]{7}$"
+                },
+                "path": {
+                    "type": "string",
+                    "description": "Document path, which needs to start with / and separate levels with /\npath here corresponds to the database hpath field",
+                    "pattern": "^(/[^/\\t\\r\\n\\u2028\\u2029]+)+$",
+                    "examples": [
+                        "/doc-name",
+                        "/parent-doc-name/doc-name"
+                    ]
+                },
+                "markdown": {
+                    "type": "string",
+                    "description": "Markdown text (GitLab Flavored Markdown, GFM)\nREF: https://github.github.com/gfm/"
+                }
+            }
+        }
+    }
+}

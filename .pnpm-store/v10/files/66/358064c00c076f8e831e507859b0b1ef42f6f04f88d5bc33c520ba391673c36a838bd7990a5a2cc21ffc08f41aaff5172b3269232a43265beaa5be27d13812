@@ -1,0 +1,4259 @@
+/**
+ * schemas/kernel/api/system/getConf/response.schema.json5
+ * 获取工作空间完整配置
+ * REF: https://github.com/siyuan-note/siyuan/blob/v3.1.13/kernel/api/system.go#L415-L447
+ * @pathname: /api/system/getConf
+ * @version: 3.1.13
+ */
+{
+    $schema: 'https://json-schema.org/draft/2020-12/schema',
+    $id: 'https://github.com/siyuan-community/siyuan-sdk/raw/main/schemas/kernel/api/system/getConf/response.schema.json5',
+    $comment: 'v3.1.13',
+    $ref: '#/$defs/root',
+    $defs: {
+        root: {
+            title: 'response body',
+            description: 'Get the full configuration of the workspace',
+
+            type: 'object',
+            additionalProperties: false,
+            required: [
+                'code',
+                'msg',
+                'data',
+            ],
+            properties: {
+                code: {
+                    type: 'integer',
+                    description: 'status code',
+                },
+                msg: {
+                    type: 'string',
+                    description: 'status message',
+                },
+                data: {
+                    $ref: '#/$defs/data',
+                },
+            },
+        },
+        data: {
+            title: 'IData',
+            description: 'response data',
+
+            type: 'object',
+            additionalProperties: false,
+            required: [
+                'conf',
+                'isPublish',
+                'start',
+            ],
+            properties: {
+                start: {
+                    // 是否未加载用户界面
+                    type: 'boolean',
+                    description: 'Whether the user interface is not loaded',
+                },
+                isPublish: {
+                    // 是否为发布模式
+                    type: 'boolean',
+                    description: 'Whether it is in publish mode',
+                },
+                conf: {
+                    // 配置对象
+                    $ref: '#/$defs/conf',
+                },
+            },
+        },
+        conf: {
+            title: 'IConf',
+            description: 'Configuration object',
+
+            type: 'object',
+            additionalProperties: false,
+            required: [
+                'accessAuthCode',
+                'account',
+                'ai',
+                'api',
+                'appearance',
+                'bazaar',
+                'cloudRegion',
+                'dataIndexState',
+                'editor',
+                'export',
+                'fileTree',
+                'flashcard',
+                'graph',
+                'keymap',
+                'lang',
+                'langs',
+                'localIPs',
+                'logLevel',
+                'openHelp',
+                'publish',
+                'readonly',
+                'repo',
+                'search',
+                'showChangelog',
+                'snippet',
+                'stat',
+                'sync',
+                'system',
+                'tag',
+                'uiLayout',
+                'userData',
+            ],
+            properties: {
+                accessAuthCode: {
+                    // 访问授权码
+                    type: 'string',
+                    title: 'TAccessAuthCode',
+                    description: 'Access authorization code',
+                    default: '',
+                    enum: [
+                        '',
+                        '*******',
+                    ],
+                },
+                account: {
+                    // 账户相关设置项
+                    $ref: '#/$defs/account',
+                },
+                ai: {
+                    // AI 相关设置项
+                    $ref: '#/$defs/ai',
+                },
+                api: {
+                    // 思源 API 相关设置项
+                    $ref: '#/$defs/api',
+                },
+                appearance: {
+                    // 外观相关设置项
+                    $ref: '#/$defs/appearance',
+                },
+                bazaar: {
+                    // 思源集市相关设置项
+                    $ref: '#/$defs/bazaar',
+                },
+                cloudRegion: {
+                    // 云服务供应商地区
+                    type: 'integer',
+                    description: 'Cloud Service Provider Region\n- `0`: Chinese mainland\n- `1`: North America',
+                    enum: [
+                        0,
+                        1,
+                    ],
+                },
+                community: {
+                    // 社区版相关设置项
+                    type: 'object',
+                },
+                dataIndexState: {
+                    // 数据索引状态
+                    type: 'integer',
+                    description: 'Data index status\n- `0`: Indexed\n- `1`: Not indexed',
+                    enum: [
+                        0, // 已索引
+                        1, // 未索引
+                    ],
+                },
+                editor: {
+                    // 编辑器相关设置项
+                    $ref: '#/$defs/editor',
+                },
+                export: {
+                    // 导出相关设置项
+                    $ref: '#/$defs/export',
+                },
+                fileTree: {
+                    // 文档树相关设置项
+                    $ref: '#/$defs/fileTree',
+                },
+                flashcard: {
+                    // 闪卡相关设置项
+                    $ref: '#/$defs/flashcard',
+                },
+                graph: {
+                    // 图谱相关设置项
+                    $ref: '#/$defs/graph',
+                },
+                keymap: {
+                    // 快捷键设置项
+                    $ref: '#/$defs/keymap',
+                },
+                langs: {
+                    // 支持的语言列表
+                    type: 'array',
+                    description: 'List of supported languages',
+                    items: {
+                        $ref: '#/$defs/lang',
+                    },
+                },
+                lang: {
+                    // 界面语言
+                    type: 'string',
+                    title: 'TLang',
+                    description: 'User interface language  \nSame as {@link IAppearance.lang}',
+                    enum: [
+                        'en_US', // 英文
+                        'es_ES', // 西班牙文
+                        'fr_FR', // 法文
+                        'zh_CHT', // 繁体中文
+                        'zh_CN', // 简体中文
+                    ],
+                },
+                localIPs: {
+                    // 内核所在设备 IP 列表
+                    type: 'array',
+                    description: 'A list of the IP addresses of the devices on which the kernel resides',
+                    items: {
+                        type: 'string',
+                        description: 'IP addresses (IPv4 & IPv6)',
+                        examples: [
+                            '127.0.0.1', //
+                            '192.168.1.1', //
+                            '10.0.0.1', //
+                            '[::1]', //
+                            '[fe80::8cc:2a8:23fc:daf3]', //
+                        ],
+                    },
+                },
+                logLevel: {
+                    // 日志级别
+                    type: 'string',
+                    title: 'TLogLevel',
+                    description: 'Log level',
+                    enum: [
+                        'off', // 无日志
+                        'trace', // 少量
+                        'debug', // 调试
+                        'info', // 信息
+                        'warn', // 警告
+                        'error', // 错误
+                        'fatal', // 致命
+                    ],
+                },
+                openHelp: {
+                    // 启动后是否需要打开用户指南
+                    type: 'boolean',
+                    description: 'Whether to open the user guide after startup',
+                },
+                publish: {
+                    // 发布服务相关设置项
+                    $ref: '#/$defs/publish',
+                },
+                readonly: {
+                    // 是否是以只读模式运行
+                    type: 'boolean',
+                    description: 'Whether it is running in read-only mode',
+                },
+                repo: {
+                    // 快照仓库相关设置项
+                    $ref: '#/$defs/repo',
+                },
+                search: {
+                    // 搜索相关设置项
+                    $ref: '#/$defs/search',
+                },
+                showChangelog: {
+                    // 是否显示本版本更新日志
+                    type: 'boolean',
+                    description: 'Whether to display the changelog for this release version',
+                },
+                snippet: {
+                    // 代码片段相关设置项
+                    $ref: '#/$defs/snippet',
+                },
+                stat: {
+                    // 工作空间内容统计
+                    $ref: '#/$defs/stat',
+                },
+                sync: {
+                    // 同步相关设置项
+                    $ref: '#/$defs/sync',
+                },
+                system: {
+                    // 系统相关信息
+                    $ref: '#/$defs/system',
+                },
+                tag: {
+                    // 思源标签面板相关设置项
+                    $ref: '#/$defs/tag',
+                },
+                uiLayout: {
+                    // 思源界面布局相关配置项
+                    $ref: '#/$defs/uiLayout',
+                },
+                userData: {
+                    // 社区用户信息
+                    type: 'string',
+                    description: 'Community user data (Encrypted)',
+                    default: '',
+                },
+            },
+        },
+        account: {
+            title: 'IAccount',
+            description: 'Account configuration',
+
+            type: 'object',
+            additionalProperties: false,
+            required: [
+                'displayTitle',
+                'displayVIP',
+            ],
+            properties: {
+                displayTitle: {
+                    // 顶栏显示头衔
+                    type: 'boolean',
+                    description: 'Display the title icon',
+                },
+                displayVIP: {
+                    // 顶栏显示 VIP 图标
+                    type: 'boolean',
+                    description: 'Display the VIP icon',
+                },
+            },
+        },
+        ai: {
+            title: 'IAI',
+            type: 'object',
+
+            description: 'Artificial Intelligence (AI) related configuration',
+            additionalProperties: false,
+            required: [
+                'openAI',
+            ],
+            properties: {
+                openAI: {
+                    $ref: '#/$defs/ai_openAI',
+                },
+            },
+        },
+        ai_openAI: {
+            // Open AI 的 API 配置项
+            title: 'IOpenAI',
+            description: 'Open AI related configuration',
+
+            type: 'object',
+            additionalProperties: false,
+            required: [
+                'apiBaseURL',
+                'apiKey',
+                'apiMaxContexts',
+                'apiMaxTokens',
+                'apiModel',
+                'apiProvider',
+                'apiProxy',
+                'apiTemperature',
+                'apiTimeout',
+                'apiUserAgent',
+                'apiVersion',
+            ],
+            properties: {
+                apiBaseURL: {
+                    // API 基础 URL 地址
+                    type: 'string',
+                    description: 'API base URL',
+                    format: 'uri',
+                    examples: [
+                        'https://api.openai.com/v1',
+                    ],
+                },
+                apiKey: {
+                    // API 密钥
+                    type: 'string',
+                    description: 'API key',
+                    examples: [
+                        'sk-0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKL',
+                    ],
+                },
+                apiMaxContexts: {
+                    // 请求 API 时传入的最大上下文数
+                    type: 'integer',
+                    description: 'The maximum number of contexts passed when requesting the API',
+                    minimum: 0,
+                },
+                apiMaxTokens: {
+                    // 最大 Token 数 (0 表示无限制)
+                    type: 'integer',
+                    description: 'Maximum number of tokens (0 means no limit)',
+                    minimum: 0,
+                },
+                apiModel: {
+                    // API 所调用的模型名称
+                    type: 'string',
+                    title: 'TOpenAIAPIModel',
+                    description: 'The model name called by the API',
+                    examples: [
+                        'gpt-4',
+                        'gpt-4-32k',
+                        'gpt-3.5-turbo',
+                        'gpt-3.5-turbo-16k',
+                    ],
+                },
+                apiProvider: {
+                    // API 供应商
+                    type: 'string',
+                    title: 'TOpenAIApiProvider',
+                    description: 'API Provider',
+                    enum: [
+                        'OpenAI',
+                        'Azure',
+                    ],
+                },
+                apiProxy: {
+                    // API 请求代理地址
+                    type: 'string',
+                    description: 'API request proxy address',
+                    examples: [
+                        'http://127.0.0.1:1080',
+                        'socks://127.0.0.1:1080',
+                        'socks5://127.0.0.1:1080',
+                    ],
+                },
+                apiTemperature: {
+                    // 控制生成的文本随机性的参数 `temperature`
+                    type: 'number',
+                    description: 'Parameter `temperature` that controls the randomness of the generated text',
+                },
+                apiTimeout: {
+                    // API 请求超时时间 (单位: 秒)
+                    type: 'integer',
+                    description: 'API request timeout (unit: seconds)',
+                    minimum: 0,
+                },
+                apiUserAgent: {
+                    // API 请求附加的用户代理字段
+                    type: 'string',
+                    description: 'API request additional user agent field',
+                },
+                apiVersion: {
+                    // API 版本号
+                    type: 'string',
+                    description: 'API version number',
+                },
+            },
+        },
+        api: {
+            title: 'IApi',
+            type: 'object',
+
+            description: 'SiYuan API related configuration',
+            additionalProperties: false,
+            required: [
+                'token',
+            ],
+            properties: {
+                token: {
+                    type: 'string',
+                    description: 'API Token',
+                    examples: [
+                        '',
+                        '0123456789abcdef',
+                    ],
+                },
+            },
+        },
+        appearance: {
+            title: 'IAppearance',
+            type: 'object',
+
+            description: 'SiYuan appearance related configuration',
+            additionalProperties: false,
+            required: [
+                'closeButtonBehavior',
+                'codeBlockThemeDark',
+                'codeBlockThemeLight',
+                'darkThemes',
+                'hideStatusBar',
+                'icon',
+                'iconVer',
+                'icons',
+                'lang',
+                'lightThemes',
+                'mode',
+                'modeOS',
+                'themeDark',
+                'themeJS',
+                'themeLight',
+                'themeVer',
+            ],
+            properties: {
+                closeButtonBehavior: {
+                    // 关闭按钮行为
+                    type: 'integer',
+                    description: 'Close button behavior\n- `0`: Exit application\n- `1`: Minimize to pallets',
+                    enum: [
+                        0, // 退出应用
+                        1, // 最小化到托盘
+                    ],
+                },
+                codeBlockThemeDark: {
+                    // 暗色代码块主题
+                    type: 'string',
+                    description: 'Dark code block theme',
+                },
+                codeBlockThemeLight: {
+                    // 亮色代码块主题
+                    type: 'string',
+                    description: 'Light code block theme',
+                },
+                darkThemes: {
+                    // 已安装的暗色主题名称列表
+                    type: 'array',
+                    description: 'List of installed dark themes',
+                    items: {
+                        $ref: '#/$defs/appearance_theme_item',
+                    },
+                },
+                hideStatusBar: {
+                    // 是否隐藏状态栏
+                    type: 'boolean',
+                    description: 'Whether to hide status bar',
+                },
+                icon: {
+                    // 当前使用的图标名称
+                    type: 'string',
+                    description: 'The name of the icon currently in use',
+                },
+                iconVer: {
+                    // 当前使用的图标的版本号
+                    type: 'string',
+                    description: 'The version number of the icon currently in use',
+                },
+                icons: {
+                    // 已安装的图标名称列表
+                    type: 'array',
+                    description: 'List of installed icon names',
+                    items: {
+                        type: 'string',
+                        description: 'Icon name',
+                    },
+                },
+                lang: {
+                    // 当前用户界面所使用的语言
+                    type: 'string',
+                    title: 'TLang',
+                    description: 'The language used by the current user',
+                    enum: [
+                        'en_US', // 英文
+                        'es_ES', // 西班牙文
+                        'fr_FR', // 法文
+                        'zh_CHT', // 繁体中文
+                        'zh_CN', // 简体中文
+                    ],
+                },
+                lightThemes: {
+                    // 已安装的亮色主题名称列表
+                    type: 'array',
+                    description: 'List of installed light themes',
+                    items: {
+                        $ref: '#/$defs/appearance_theme_item',
+                    },
+                },
+                mode: {
+                    // 当前使用的主题模式
+                    type: 'integer',
+                    description: 'The current theme mode\n- `0`: Light theme\n- `1`: Dark theme',
+                    enum: [
+                        0, // 亮色主题
+                        1, // 暗色主题
+                    ],
+                },
+                modeOS: {
+                    // 主题模式是否跟随系统主题
+                    type: 'boolean',
+                    description: 'Whether the theme mode follows the system theme',
+                },
+                themeDark: {
+                    // 当前使用的暗色主题名称
+                    type: 'string',
+                    description: 'The name of the dark theme currently in use',
+                },
+                themeJS: {
+                    // 当前主题是否启用了主题 JavaScript
+                    type: 'boolean',
+                    description: 'Whether the current theme has enabled theme JavaScript',
+                },
+                themeLight: {
+                    // 当前使用的亮色主题名称
+                    type: 'string',
+                    description: 'The name of the light theme currently in use',
+                },
+                themeVer: {
+                    // 当前使用的主题的版本号
+                    type: 'string',
+                    description: 'The version number of the theme currently in use',
+                },
+            },
+        },
+        appearance_theme_item: {
+            title: 'IAppearanceThemeItem',
+            description: 'Theme item',
+
+            type: 'object',
+            additionalProperties: false,
+            required: [
+                'label',
+                'name',
+            ],
+            properties: {
+                label: {
+                    // 外观主题标注
+                    type: 'string',
+                    description: 'Appearance theme label',
+                },
+                name: {
+                    // 外观主题名称
+                    type: 'string',
+                    description: 'Appearance theme name',
+                },
+            },
+        },
+        bazaar: {
+            title: 'IBazaar',
+            type: 'object',
+
+            description: 'SiYuan bazaar related configuration',
+            additionalProperties: false,
+            required: [
+                'petalDisabled',
+                'trust',
+            ],
+            properties: {
+                petalDisabled: {
+                    // 是否禁用所有插件
+                    type: 'boolean',
+                    description: 'Whether to disable all plug-ins',
+                },
+                trust: {
+                    // 是否信任(启用)集市资源
+                    type: 'boolean',
+                    description: 'Whether to trust (enable) the resources for the bazaar',
+                },
+            },
+        },
+        editor: {
+            title: 'IEditor',
+            type: 'object',
+
+            description: 'SiYuan editor related configuration',
+            additionalProperties: false,
+            required: [
+                'allowHTMLBLockScript',
+                'backlinkContainChildren',
+                'backlinkExpandCount',
+                'backmentionExpandCount',
+                'blockRefDynamicAnchorTextMaxLen',
+                'codeLigatures',
+                'codeLineWrap',
+                'codeSyntaxHighlightLineNum',
+                'codeTabSpaces',
+                'displayBookmarkIcon',
+                'displayNetImgMark',
+                'dynamicLoadBlocks',
+                'embedBlockBreadcrumb',
+                'emoji',
+                'floatWindowMode',
+                'fontFamily',
+                'fontSize',
+                'fontSizeScrollZoom',
+                'fullWidth',
+                'generateHistoryInterval',
+                'historyRetentionDays',
+                'justify',
+                'katexMacros',
+                'listItemDotNumberClickFocus',
+                'listLogicalOutdent',
+                'markdown',
+                'onlySearchForDoc',
+                'plantUMLServePath',
+                'readOnly',
+                'rtl',
+                'spellcheck',
+                'virtualBlockRef',
+                'virtualBlockRefExclude',
+                'virtualBlockRefInclude',
+            ],
+            properties: {
+                allowHTMLBLockScript: {
+                    // 是否允许 HTML 块运行脚本
+                    type: 'boolean',
+                    description: 'Allow HTML blocks to run scripts',
+                },
+                backlinkContainChildren: {
+                    // 反向链接面板是否包含下级节点
+                    type: 'boolean',
+                    description: 'Whether the backlink panel contains children',
+                },
+                backlinkExpandCount: {
+                    // 反向链接默认展开数量
+                    type: 'integer',
+                    description: 'The default number of backlinks to expand',
+                },
+                backmentionExpandCount: {
+                    // 反向链接提及默认展开数量
+                    type: 'integer',
+                    description: 'The default number of backlinks to mention',
+                },
+                blockRefDynamicAnchorTextMaxLen: {
+                    // 块引用的动态锚文本最大长度
+                    type: 'integer',
+                    description: 'The maximum length of the dynamic anchor text for block references',
+                },
+                codeLigatures: {
+                    // 代码块是否启用连字符号
+                    type: 'boolean',
+                    description: 'Whether the code block has enabled ligatures',
+                },
+                codeLineWrap: {
+                    // 代码块是否自动折行
+                    type: 'boolean',
+                    description: 'Whether the code block is automatically wrapped',
+                },
+                codeSyntaxHighlightLineNum: {
+                    // 代码块是否显示行号
+                    type: 'boolean',
+                    description: 'Whether the code block displays line numbers',
+                },
+                codeTabSpaces: {
+                    // 代码块中 Tab 键生成的空格数，配置为 0 则表示不转换为空格
+                    type: 'integer',
+                    description: 'The number of spaces generated by the Tab key in the code block, configured as 0 means no conversion to spaces',
+                    minimum: 0,
+                },
+                displayBookmarkIcon: {
+                    // 是否显示书签图标
+                    type: 'boolean',
+                    description: 'Whether to display the bookmark icon',
+                },
+                displayNetImgMark: {
+                    // 是否显示网络图片标记
+                    type: 'boolean',
+                    description: 'Whether to display the network image mark',
+                },
+                dynamicLoadBlocks: {
+                    // 每次动态加载时加载的块数量
+                    type: 'integer',
+                    description: 'The number of blocks loaded each time they are dynamically loaded',
+                    minimum: 48,
+                    maximum: 1024,
+                },
+                embedBlockBreadcrumb: {
+                    // 嵌入块是否显示面包屑
+                    type: 'boolean',
+                    description: 'Whether the embedded block displays breadcrumbs',
+                },
+                emoji: {
+                    // 常用的表情图标
+                    type: 'array',
+                    description: 'Common emoji icons',
+                    items: {
+                        type: 'string',
+                        description: 'Emoji icon',
+                        examples: [
+                            '1f4da', // Emoji 字符的十六进制 Unicode 编码
+                            'material/folder-project.svg', // 引用的自定义图标的路径
+                        ],
+                    },
+                },
+                floatWindowMode: {
+                    // 预览浮窗的触发模式
+                    type: 'integer',
+                    description: 'The trigger mode of the preview window\n- `0`: Hover over the cursor\n- `1`: Hover over the cursor while holding down Ctrl\n- `2`: Do not trigger the floating window',
+                    enum: [
+                        0, // 光标悬停
+                        1, // 按住 Ctrl 悬停
+                        2, // 不触发浮窗
+                    ],
+                },
+                fontFamily: {
+                    // 编辑器中所使用的字体
+                    type: 'string',
+                    description: 'The font used in the editor',
+                },
+                fontSize: {
+                    // 编辑器中所使用的字号
+                    type: 'integer',
+                    description: 'The font size used in the editor',
+                },
+                fontSizeScrollZoom: {
+                    // 是否开启使用鼠标滚轮调整编辑器字号
+                    type: 'boolean',
+                    description: 'Whether to enable the use of the mouse wheel to adjust the font size of the editor',
+                },
+                fullWidth: {
+                    // 编辑器是否使用最大宽度
+                    type: 'boolean',
+                    description: 'Whether the editor uses maximum width',
+                },
+                generateHistoryInterval: {
+                    // 生成文档历史的时间间隔, 设置为 0 禁用文档历史 (单位: 分钟)
+                    type: 'integer',
+                    description: 'The time interval for generating document history, set to 0 to disable document history (unit: minutes)',
+                    minimum: 0,
+                },
+                historyRetentionDays: {
+                    // 历史保留天数
+                    type: 'integer',
+                    description: 'History retention days',
+                },
+                justify: {
+                    // 是否启用文本两端对齐
+                    type: 'boolean',
+                    description: 'Whether to enable text justification',
+                },
+                katexMacros: {
+                    // KeTex 宏定义 (JSON 字符串)
+                    type: 'string',
+                    description: 'KeTex macro definition (JSON string)',
+                },
+                listItemDotNumberClickFocus: {
+                    // 是否启用单击列表项标记聚焦
+                    type: 'boolean',
+                    description: 'Whether to enable single-click list item mark focus',
+                },
+                listLogicalOutdent: {
+                    // 是否启用列表逻辑反向缩进方案
+                    type: 'boolean',
+                    description: 'Whether to enable the list logical reverse indentation scheme',
+                },
+                markdown: {
+                    // Markdown 语法输入
+                    $ref: '#/$defs/editor_markdown',
+                },
+                onlySearchForDoc: {
+                    // 是否启用 [[ 符号仅搜索文档块
+                    type: 'boolean',
+                    description: 'Whether to enable the `[[` symbol to search only for document blocks',
+                },
+                plantUMLServePath: {
+                    // PlantUML 渲染服务地址
+                    type: 'string',
+                    description: 'PlantUML rendering service address',
+                },
+                readOnly: {
+                    // 是否启用只读模式
+                    type: 'boolean',
+                    description: 'Whether to enable read-only mode',
+                },
+                rtl: {
+                    // 是否启用 RTL (左向书写) 模式
+                    type: 'boolean',
+                    description: 'Whether to enable RTL (left-to-right chirography) mode',
+                },
+                spellcheck: {
+                    // 是否启用拼写检查
+                    type: 'boolean',
+                    description: 'Whether to enable spell checking',
+                },
+                virtualBlockRef: {
+                    // 是否启用虚拟引用
+                    type: 'boolean',
+                    description: 'Whether to enable virtual references',
+                },
+                virtualBlockRefExclude: {
+                    // 虚拟引用关键字排除列表 (关键字之间使用 , 符号分隔)
+                    type: 'string',
+                    description: 'Virtual reference keyword exclusion list (separated by commas `,`)',
+                },
+                virtualBlockRefInclude: {
+                    // 虚拟引用关键字包含列表 (关键字之间使用 , 符号分隔)
+                    type: 'string',
+                    description: 'Virtual reference keyword inclusion list (separated by commas `,`)',
+                },
+            },
+        },
+        editor_markdown: {
+            title: 'IEditorMarkdown',
+            type: 'object',
+
+            description: 'Markdown syntax configuration',
+            additionalProperties: false,
+            required: [
+                'inlineAsterisk',
+                'inlineMath',
+                'inlineStrikethrough',
+                'inlineSub',
+                'inlineSup',
+                'inlineTag',
+                'inlineUnderscore',
+            ],
+            properties: {
+                inlineAsterisk: {
+                    // 是否启用星号语法 *foo* **bar**
+                    type: 'boolean',
+                    description: 'Whether to enable asterisk syntax `*foo*` `**bar**`',
+                },
+                inlineMath: {
+                    // 是否启用行内公式语法 $foo$
+                    type: 'boolean',
+                    description: 'Whether to enable inline formula syntax `$foo$`',
+                },
+                inlineStrikethrough: {
+                    // 是否启用删除线语法 ~~foo~~
+                    type: 'boolean',
+                    description: 'Whether to enable strikethrough syntax `~~foo~~`',
+                },
+                inlineSub: {
+                    // 是否启用下标语法 ~foo~
+                    type: 'boolean',
+                    description: 'Whether to enable subscript syntax `~foo~`',
+                },
+                inlineSup: {
+                    // 是否启用上标语法 ^foo^
+                    type: 'boolean',
+                    description: 'Whether to enable superscript syntax `^foo^`',
+                },
+                inlineTag: {
+                    // 是否启用标签语法 #foo#
+                    type: 'boolean',
+                    description: 'Whether to enable tag syntax `#foo#`',
+                },
+                inlineUnderscore: {
+                    // 是否启用下划线语法 _foo_ __bar__
+                    type: 'boolean',
+                    description: 'Whether to enable underscore syntax `_foo_` `__bar__`',
+                },
+            },
+        },
+        export: {
+            title: 'IExport',
+            type: 'object',
+
+            description: 'SiYuan export related configuration',
+            additionalProperties: false,
+            required: [
+                'paragraphBeginningSpace',
+                'addTitle',
+                'blockRefMode',
+                'blockEmbedMode',
+                'blockRefTextLeft',
+                'blockRefTextRight',
+                'tagOpenMarker',
+                'tagCloseMarker',
+                'fileAnnotationRefMode',
+                'pandocBin',
+                'markdownYFM',
+                'pdfFooter',
+                'docxTemplate',
+                'pdfWatermarkStr',
+                'pdfWatermarkDesc',
+                'imageWatermarkStr',
+                'imageWatermarkDesc',
+            ],
+            properties: {
+                paragraphBeginningSpace: {
+                    // 段落开头是否空两格 (段首插入两个全宽空格 `U+3000`)
+                    type: 'boolean',
+                    description: 'Whether the beginning of the paragraph is empty two spaces.\nInsert two full-width spaces `U+3000` at the beginning of the paragraph.',
+                },
+                addTitle: {
+                    // 添加文章标题 (将文章标题作为第一级标题插入文档首部)
+                    type: 'boolean',
+                    description: 'Add article title (insert the article title as a first-level title at the beginning of the document)',
+                },
+                blockRefMode: {
+                    // 内容块引用导出模式
+                    type: 'integer',
+                    description: 'Content block reference export mode\n- `0`: Original text (deprecated)\n- `1`: Quotation block (deprecated)\n- `2`: Anchor text block link\n- `3`: Anchor text only\n- `4`: Footnote\n- `5`: Anchor hash\n',
+                    enum: [
+                        0, // 原始文本 (已废弃)
+                        1, // 引述块 (已废弃)
+                        2, // 锚文本块链接
+                        3, // 仅锚文本
+                        4, // 脚注
+                        5, // 锚点哈希
+                    ],
+                },
+                blockEmbedMode: {
+                    // 嵌入块导出模式
+                    type: 'integer',
+                    description: 'Embedded block export mode\n- `0`: Original block content\n- `1`: Quotation block',
+                    enum: [
+                        0, // 原始块内容
+                        1, // 引述块
+                    ],
+                },
+                blockRefTextLeft: {
+                    // 导出时块引用锚文本左侧符号
+                    type: 'string',
+                    description: 'The symbol on the left side of the block reference anchor text during export',
+                },
+                blockRefTextRight: {
+                    // 导出时块引用锚文本右侧符号
+                    type: 'string',
+                    description: 'The symbol on the right side of the block reference anchor text during export',
+                },
+                tagOpenMarker: {
+                    // 标签开始标记符号
+                    type: 'string',
+                    description: 'Tag start marker symbol',
+                },
+                tagCloseMarker: {
+                    // 标签闭合标记符号
+                    type: 'string',
+                    description: 'Tag close marker symbol',
+                },
+                fileAnnotationRefMode: {
+                    // 文件标注引用导出模式
+                    type: 'integer',
+                    description: 'File annotation reference export mode\n- `0`: File name - page number - anchor text\n- `1`: Anchor text only',
+                    enum: [
+                        0, // 文件名 - 页码 - 锚文本
+                        1, // 仅锚文本
+                    ],
+                },
+                pandocBin: {
+                    // Pandoc 可执行文件路径
+                    type: 'string',
+                    description: 'Pandoc executable file path',
+                },
+                markdownYFM: {
+                    // Markdown 导出时是否添加 YAML Front Matter
+                    type: 'boolean',
+                    description: 'Whether to add YAML Front Matter when exporting to Markdown',
+                },
+                pdfFooter: {
+                    // 自定义 PDF 导出时的页脚内容
+                    type: 'string',
+                    description: 'Custom footer content when exporting to PDF',
+                },
+                docxTemplate: {
+                    // Docx 导出时所使用的模板文件路径
+                    type: 'string',
+                    description: 'The path of the template file used when exporting to Docx',
+                },
+                pdfWatermarkStr: {
+                    // 导出 PDF 时所使用的水印文本或水印文件路径
+                    type: 'string',
+                    description: 'The watermark text or watermark file path used when exporting to PDF',
+                },
+                pdfWatermarkDesc: {
+                    // 自定义导出 PDF 时水印的位置、大小和样式等
+                    type: 'string',
+                    description: 'Custom watermark position, size, style, etc. when exporting to PDF',
+                },
+                imageWatermarkStr: {
+                    // 导出图片时所使用的水印文本或水印文件路径
+                    type: 'string',
+                    description: 'The watermark text or watermark file path used when exporting to an image',
+                },
+                imageWatermarkDesc: {
+                    // 自定义导出图片时水印的位置、大小和样式等
+                    type: 'string',
+                    description: 'Custom watermark position, size, style, etc. when exporting to an image',
+                },
+            },
+        },
+        fileTree: {
+            title: 'IFileTree',
+            type: 'object',
+
+            description: 'Document tree related configuration',
+            additionalProperties: false,
+            required: [
+                'allowCreateDeeper',
+                'alwaysSelectOpenedFile',
+                'closeTabsOnStart',
+                'docCreateSaveBox',
+                'docCreateSavePath',
+                'maxListCount',
+                'maxOpenTabCount',
+                'openFilesUseCurrentTab',
+                'refCreateSaveBox',
+                'refCreateSavePath',
+                'removeDocWithoutConfirm',
+                'sort',
+                'useSingleLineSave',
+            ],
+            properties: {
+                allowCreateDeeper: {
+                    // 是否允许创建超过 7 层深度的子文档
+                    type: 'boolean',
+                    description: 'Whether to allow the creation of sub-documents deeper than 7 levels',
+                },
+                alwaysSelectOpenedFile: {
+                    // 是否在文档树中自动定位当前打开的文档
+                    type: 'boolean',
+                    description: 'Whether to automatically locate the currently open document in the document tree',
+                },
+                closeTabsOnStart: {
+                    // 是否在启动时关闭所有页签
+                    type: 'boolean',
+                    description: 'Whether to close all tabs when starting',
+                },
+                docCreateSaveBox: {
+                    // 新建文档的存储笔记本
+                    type: 'string',
+                    description: 'The notebook to storage the new document',
+                },
+                docCreateSavePath: {
+                    // 新建文档的存储路径
+                    type: 'string',
+                    description: 'The storage path of the new document',
+                },
+                maxListCount: {
+                    // 文档的最大列出数量
+                    type: 'integer',
+                    description: 'The maximum number of documents listed',
+                },
+                maxOpenTabCount: {
+                    // 最大打开页签数量
+                    type: 'integer',
+                    description: 'The maximum number of open tabs',
+                },
+                openFilesUseCurrentTab: {
+                    // 是否在当前页签打开文件
+                    type: 'boolean',
+                    description: 'Whether to open the file in the current tab',
+                },
+                refCreateSaveBox: {
+                    // 使用块引用新建文档的存储笔记本
+                    type: 'string',
+                    description: 'The notebook to storage the new document created using block references',
+                },
+                refCreateSavePath: {
+                    // 使用块引用新建文档的存储路径
+                    type: 'string',
+                    description: 'The storage path of the new document created using block references',
+                },
+                removeDocWithoutConfirm: {
+                    // 关闭删除文档时的二次确认
+                    type: 'boolean',
+                    description: 'Close the secondary confirmation when deleting a document',
+                },
+                sort: {
+                    // 文档排序方式
+                    type: 'integer',
+                    description: 'Document sorting method\n- `0`: File name ascending\n- `1`: File name descending\n- `2`: File update time ascending\n- `3`: File update time descending\n- `4`: File name natural number ascending\n- `5`: File name natural number descending\n- `6`: Custom sorting\n- `7`: Reference count ascending\n- `8`: Reference count descending\n- `9`: File creation time ascending\n- `10`: File creation time descending\n- `11`: File size ascending\n- `12`: File size descending\n- `13`: Sub-document count ascending\n- `14`: Sub-document count descending\n- `15`: Use document tree sorting rules\n- `256`: Unspecified sorting rules, according to the notebook priority over the document tree to obtain sorting rules',
+                    enum: [
+                        0, // 文件名字母升序
+                        1, // 文件名字母降序
+                        2, // 文件更新时间升序
+                        3, // 文件更新时间降序
+                        4, // 文件名自然数升序
+                        5, // 文件名自然数降序
+                        6, // 自定义排序
+                        7, // 引用数升序
+                        8, // 引用数降序
+                        9, // 文件创建时间升序
+                        10, // 文件创建时间降序
+                        11, // 文件大小升序
+                        12, // 文件大小降序
+                        13, // 子文档数升序
+                        14, // 子文档数降序
+                        15, // 使用文档树排序规则
+                        256, // 未指定排序规则，按照笔记本优先于文档树获取排序规则
+                    ],
+                },
+                useSingleLineSave: {
+                    // 是否将 .sy 文件的内容保存为单行的 JSON 对象
+                    type: 'boolean',
+                    description: 'Whether to save the content of the .sy file as a single-line JSON object',
+                },
+            },
+        },
+        flashcard: {
+            title: 'IFlashCard',
+            type: 'object',
+
+            description: 'Flashcard related configuration',
+            additionalProperties: false,
+            required: [
+                'deck',
+                'heading',
+                'list',
+                'mark',
+                'maximumInterval',
+                'newCardLimit',
+                'requestRetention',
+                'reviewCardLimit',
+                'reviewMode',
+                'superBlock',
+                'weights',
+            ],
+            properties: {
+                deck: {
+                    // 是否启用卡包制卡
+                    type: 'boolean',
+                    description: 'Whether to enable deck card making',
+                },
+                heading: {
+                    // 是否启用标题块制卡
+                    type: 'boolean',
+                    description: 'Whether to enable heading block card making',
+                },
+                list: {
+                    // 是否启用列表块制卡
+                    type: 'boolean',
+                    description: 'Whether to enable list block card making',
+                },
+                mark: {
+                    // 是否启用标记元素制卡
+                    type: 'boolean',
+                    description: 'Whether to enable mark element card making',
+                },
+                maximumInterval: {
+                    // 最大间隔天数
+                    type: 'integer',
+                    description: 'Maximum interval days',
+                },
+                newCardLimit: {
+                    // 新卡上限
+                    type: 'integer',
+                    description: 'New card limit',
+                },
+                requestRetention: {
+                    // FSRS 请求保留参数
+                    type: 'number',
+                    description: 'FSRS request retention parameter',
+                },
+                reviewCardLimit: {
+                    // 复习卡上限
+                    type: 'integer',
+                    description: 'Review card limit',
+                },
+                reviewMode: {
+                    // 复习模式
+                    type: 'integer',
+                    description: 'Review mode\n- `0`: New and old mixed\n- `1`: New card priority\n- `2`: Old card priority',
+                    enum: [
+                        0, // 新旧混合
+                        1, // 新卡优先
+                        2, // 旧卡优先
+                    ],
+                },
+                superBlock: {
+                    // 是否启用超级块制卡
+                    type: 'boolean',
+                    description: 'Whether to enable super block card making',
+                },
+                weights: {
+                    // FSRS 权重参数列表
+                    type: 'string',
+                    description: 'FSRS weight parameter list',
+                },
+            },
+        },
+        graph: {
+            title: 'IGraph',
+            type: 'object',
+
+            description: 'SiYuan graph related configuration',
+            additionalProperties: false,
+            required: [
+                'global',
+                'local',
+                'maxBlocks',
+            ],
+            properties: {
+                global: {
+                    // 全局图谱配置
+                    $ref: '#/$defs/graph_global',
+                },
+                local: {
+                    // 当前文档图谱配置
+                    $ref: '#/$defs/graph_local',
+                },
+                maxBlocks: {
+                    // 内容块最大显示数
+                    type: 'integer',
+                    description: 'Maximum number of content blocks displayed',
+                },
+            },
+        },
+        graph_global: {
+            title: 'IGraphGlobal',
+            type: 'object',
+
+            description: 'Global graph configuration',
+            additionalProperties: false,
+            required: [
+                'd3',
+                'dailyNote',
+                'minRefs',
+                'type',
+            ],
+            properties: {
+                d3: {
+                    // d3.js 关系图谱配置
+                    $ref: '#/$defs/graph_d3',
+                },
+                dailyNote: {
+                    // 是否展示每日笔记中的节点
+                    type: 'boolean',
+                    description: 'Whether to display nodes in daily notes',
+                },
+                minRefs: {
+                    // 所展示节点的最小引用次数
+                    type: 'integer',
+                    description: 'The minimum number of references to the displayed node',
+                },
+                type: {
+                    // 节点类型过滤
+                    $ref: '#/$defs/graph_type',
+                },
+            },
+        },
+        graph_local: {
+            title: 'IGraphLocal',
+            type: 'object',
+
+            description: 'Local graph configuration',
+            additionalProperties: false,
+            required: [
+                'd3',
+                'dailyNote',
+                'type',
+            ],
+            properties: {
+                d3: {
+                    // d3.js 关系图谱配置
+                    $ref: '#/$defs/graph_d3',
+                },
+                dailyNote: {
+                    // 是否展示每日笔记中的节点
+                    type: 'boolean',
+                    description: 'Whether to display nodes in daily notes',
+                },
+                type: {
+                    // 节点类型过滤
+                    $ref: '#/$defs/graph_type',
+                },
+            },
+        },
+        graph_d3: {
+            title: 'IGraphD3',
+            type: 'object',
+
+            description: 'd3.js graph configuration',
+            additionalProperties: false,
+            required: [
+                'arrow',
+                'centerStrength',
+                'collideRadius',
+                'collideStrength',
+                'lineOpacity',
+                'linkDistance',
+                'linkWidth',
+                'nodeSize',
+            ],
+            properties: {
+                arrow: {
+                    // 是否显示箭头
+                    type: 'boolean',
+                    description: 'Whether to display the arrow',
+                },
+                centerStrength: {
+                    // 中心引力强度
+                    type: 'number',
+                    description: 'Central gravity intensity',
+                },
+                collideRadius: {
+                    // 斥力半径
+                    type: 'number',
+                    description: 'Repulsion radius',
+                },
+                collideStrength: {
+                    // 斥力强度
+                    type: 'number',
+                    description: 'Repulsion intensity',
+                },
+                lineOpacity: {
+                    // 连线透明度
+                    type: 'number',
+                    description: 'Line opacity',
+                },
+                linkDistance: {
+                    // 链接距离
+                    type: 'integer',
+                    description: 'Link distance',
+                },
+                linkWidth: {
+                    // 连线宽度
+                    type: 'number',
+                    description: 'Line width',
+                },
+                nodeSize: {
+                    // 节点大小
+                    type: 'number',
+                    description: 'Node size',
+                },
+            },
+        },
+        graph_type: {
+            title: 'IGraphType',
+            type: 'object',
+
+            description: 'SiYuan node type filter',
+            additionalProperties: false,
+            required: [
+                'blockquote',
+                'code',
+                'heading',
+                'list',
+                'listItem',
+                'math',
+                'paragraph',
+                'super',
+                'table',
+                'tag',
+            ],
+            properties: {
+                blockquote: {
+                    // 显示引述块
+                    type: 'boolean',
+                    description: 'Display quote block',
+                },
+                code: {
+                    // 显示代码块
+                    type: 'boolean',
+                    description: 'Display code block',
+                },
+                heading: {
+                    // 显示标题块
+                    type: 'boolean',
+                    description: 'Display heading block',
+                },
+                list: {
+                    // 显示列表块
+                    type: 'boolean',
+                    description: 'Display list block',
+                },
+                listItem: {
+                    // 显示列表项
+                    type: 'boolean',
+                    description: 'Display list item',
+                },
+                math: {
+                    // 显示公式块
+                    type: 'boolean',
+                    description: 'Display formula block',
+                },
+                paragraph: {
+                    // 显示段落块
+                    type: 'boolean',
+                    description: 'Display paragraph block',
+                },
+                super: {
+                    // 显示超级块
+                    type: 'boolean',
+                    description: 'Display super block',
+                },
+                table: {
+                    // 显示表格块
+                    type: 'boolean',
+                    description: 'Display table block',
+                },
+                tag: {
+                    // 显示标签
+                    type: 'boolean',
+                    description: 'Display tag',
+                },
+            },
+        },
+        keymap: {
+            title: 'IKeymap',
+            type: 'object',
+
+            description: 'SiYuan keymap related configuration',
+            additionalProperties: false,
+            required: [
+                'editor',
+                'general',
+                'plugin',
+            ],
+            properties: {
+                editor: {
+                    // 编辑器快捷键
+                    $ref: '#/$defs/keymap_editor',
+                },
+                general: {
+                    // 全局快捷键
+                    $ref: '#/$defs/keymap_general',
+                },
+                plugin: {
+                    // 插件快捷键
+                    $ref: '#/$defs/keymap_plugin',
+                },
+            },
+        },
+        keymap_editor: {
+            title: 'IKeymapEditor',
+            type: 'object',
+
+            description: 'SiYuan editor shortcut keys',
+            additionalProperties: false,
+            required: [
+                'general',
+                'heading',
+                'insert',
+                'list',
+                'table',
+            ],
+            properties: {
+                general: {
+                    // 通用
+                    $ref: '#/$defs/keymap_editor_general',
+                },
+                heading: {
+                    // 标题
+                    $ref: '#/$defs/keymap_editor_heading',
+                },
+                insert: {
+                    // 插入元素
+                    $ref: '#/$defs/keymap_editor_insert',
+                },
+                list: {
+                    // 列表
+                    $ref: '#/$defs/keymap_editor_list',
+                },
+                table: {
+                    // 表格
+                    $ref: '#/$defs/keymap_editor_table',
+                },
+            },
+        },
+        keymap_editor_general: {
+            title: 'IKeymapEditorGeneral',
+            type: 'object',
+
+            description: 'SiYuan editor general shortcut keys',
+            additionalProperties: false,
+            required: [
+                'ai',
+                'alignCenter',
+                'alignLeft',
+                'alignRight',
+                'attr',
+                'backlinks',
+                'collapse',
+                'copyBlockEmbed',
+                'copyBlockRef',
+                'copyHPath',
+                'copyID',
+                'copyPlainText',
+                'copyProtocol',
+                'copyProtocolInMd',
+                'copyText',
+                'duplicate',
+                'duplicateCompletely',
+                'exitFocus',
+                'expand',
+                'expandDown',
+                'expandUp',
+                'fullscreen',
+                'graphView',
+                'hLayout',
+                'insertAfter',
+                'insertBefore',
+                'insertBottom',
+                'insertRight',
+                'jumpToParent',
+                'jumpToParentNext',
+                'jumpToParentPrev',
+                'moveToDown',
+                'moveToUp',
+                'netAssets2LocalAssets',
+                'netImg2LocalAsset',
+                'newContentFile',
+                'newNameFile',
+                'newNameSettingFile',
+                'openBy',
+                'optimizeTypography',
+                'outline',
+                'preview',
+                'quickMakeCard',
+                'redo',
+                'refPopover',
+                'refTab',
+                'refresh',
+                'rename',
+                'showInFolder',
+                'spaceRepetition',
+                'switchReadonly',
+                'undo',
+                'vLayout',
+                'wysiwyg',
+            ],
+            properties: {
+                ai: {
+                    $ref: '#/$defs/key',
+                },
+                alignCenter: {
+                    $ref: '#/$defs/key',
+                },
+                alignLeft: {
+                    $ref: '#/$defs/key',
+                },
+                alignRight: {
+                    $ref: '#/$defs/key',
+                },
+                attr: {
+                    $ref: '#/$defs/key',
+                },
+                backlinks: {
+                    $ref: '#/$defs/key',
+                },
+                collapse: {
+                    $ref: '#/$defs/key',
+                },
+                copyBlockEmbed: {
+                    $ref: '#/$defs/key',
+                },
+                copyBlockRef: {
+                    $ref: '#/$defs/key',
+                },
+                copyHPath: {
+                    $ref: '#/$defs/key',
+                },
+                copyID: {
+                    $ref: '#/$defs/key',
+                },
+                copyPlainText: {
+                    $ref: '#/$defs/key',
+                },
+                copyProtocol: {
+                    $ref: '#/$defs/key',
+                },
+                copyProtocolInMd: {
+                    $ref: '#/$defs/key',
+                },
+                copyText: {
+                    $ref: '#/$defs/key',
+                },
+                duplicate: {
+                    $ref: '#/$defs/key',
+                },
+                duplicateCompletely: {
+                    $ref: '#/$defs/key',
+                },
+                exitFocus: {
+                    $ref: '#/$defs/key',
+                },
+                expand: {
+                    $ref: '#/$defs/key',
+                },
+                expandDown: {
+                    $ref: '#/$defs/key',
+                },
+                expandUp: {
+                    $ref: '#/$defs/key',
+                },
+                fullscreen: {
+                    $ref: '#/$defs/key',
+                },
+                graphView: {
+                    $ref: '#/$defs/key',
+                },
+                hLayout: {
+                    $ref: '#/$defs/key',
+                },
+                insertAfter: {
+                    $ref: '#/$defs/key',
+                },
+                insertBefore: {
+                    $ref: '#/$defs/key',
+                },
+                insertBottom: {
+                    $ref: '#/$defs/key',
+                },
+                insertRight: {
+                    $ref: '#/$defs/key',
+                },
+                jumpToParent: {
+                    $ref: '#/$defs/key',
+                },
+                jumpToParentNext: {
+                    $ref: '#/$defs/key',
+                },
+                jumpToParentPrev: {
+                    $ref: '#/$defs/key',
+                },
+                moveToDown: {
+                    $ref: '#/$defs/key',
+                },
+                moveToUp: {
+                    $ref: '#/$defs/key',
+                },
+                netAssets2LocalAssets: {
+                    $ref: '#/$defs/key',
+                },
+                netImg2LocalAsset: {
+                    $ref: '#/$defs/key',
+                },
+                newContentFile: {
+                    $ref: '#/$defs/key',
+                },
+                newNameFile: {
+                    $ref: '#/$defs/key',
+                },
+                newNameSettingFile: {
+                    $ref: '#/$defs/key',
+                },
+                openBy: {
+                    $ref: '#/$defs/key',
+                },
+                optimizeTypography: {
+                    $ref: '#/$defs/key',
+                },
+                outline: {
+                    $ref: '#/$defs/key',
+                },
+                preview: {
+                    $ref: '#/$defs/key',
+                },
+                quickMakeCard: {
+                    $ref: '#/$defs/key',
+                },
+                redo: {
+                    $ref: '#/$defs/key',
+                },
+                refPopover: {
+                    $ref: '#/$defs/key',
+                },
+                refTab: {
+                    $ref: '#/$defs/key',
+                },
+                refresh: {
+                    $ref: '#/$defs/key',
+                },
+                rename: {
+                    $ref: '#/$defs/key',
+                },
+                showInFolder: {
+                    $ref: '#/$defs/key',
+                },
+                spaceRepetition: {
+                    $ref: '#/$defs/key',
+                },
+                switchReadonly: {
+                    $ref: '#/$defs/key',
+                },
+                undo: {
+                    $ref: '#/$defs/key',
+                },
+                vLayout: {
+                    $ref: '#/$defs/key',
+                },
+                wysiwyg: {
+                    $ref: '#/$defs/key',
+                },
+            },
+        },
+        keymap_editor_heading: {
+            title: 'IKeymapEditorHeading',
+            type: 'object',
+
+            description: 'SiYuan editor heading shortcut keys',
+            additionalProperties: false,
+            required: [
+                'heading1',
+                'heading2',
+                'heading3',
+                'heading4',
+                'heading5',
+                'heading6',
+                'paragraph',
+            ],
+            properties: {
+                heading1: {
+                    $ref: '#/$defs/key',
+                },
+                heading2: {
+                    $ref: '#/$defs/key',
+                },
+                heading3: {
+                    $ref: '#/$defs/key',
+                },
+                heading4: {
+                    $ref: '#/$defs/key',
+                },
+                heading5: {
+                    $ref: '#/$defs/key',
+                },
+                heading6: {
+                    $ref: '#/$defs/key',
+                },
+                paragraph: {
+                    $ref: '#/$defs/key',
+                },
+            },
+        },
+        keymap_editor_insert: {
+            title: 'IKeymapEditorInsert',
+            type: 'object',
+
+            description: 'SiYuan editor insert shortcut keys',
+            additionalProperties: false,
+            required: [
+                'appearance',
+                'bold',
+                'check',
+                'clearInline',
+                'code',
+                'inline-code',
+                'inline-math',
+                'italic',
+                'kbd',
+                'lastUsed',
+                'link',
+                'list',
+                'mark',
+                'memo',
+                'ordered-list',
+                'quote',
+                'ref',
+                'strike',
+                'sub',
+                'sup',
+                'table',
+                'tag',
+                'underline',
+            ],
+            properties: {
+                appearance: {
+                    $ref: '#/$defs/key',
+                },
+                bold: {
+                    $ref: '#/$defs/key',
+                },
+                check: {
+                    $ref: '#/$defs/key',
+                },
+                clearInline: {
+                    $ref: '#/$defs/key',
+                },
+                code: {
+                    $ref: '#/$defs/key',
+                },
+                'inline-code': {
+                    $ref: '#/$defs/key',
+                },
+                'inline-math': {
+                    $ref: '#/$defs/key',
+                },
+                italic: {
+                    $ref: '#/$defs/key',
+                },
+                kbd: {
+                    $ref: '#/$defs/key',
+                },
+                lastUsed: {
+                    $ref: '#/$defs/key',
+                },
+                link: {
+                    $ref: '#/$defs/key',
+                },
+                list: {
+                    $ref: '#/$defs/key',
+                },
+                mark: {
+                    $ref: '#/$defs/key',
+                },
+                'ordered-list': {
+                    $ref: '#/$defs/key',
+                },
+                quote: {
+                    $ref: '#/$defs/key',
+                },
+                memo: {
+                    $ref: '#/$defs/key',
+                },
+                ref: {
+                    $ref: '#/$defs/key',
+                },
+                strike: {
+                    $ref: '#/$defs/key',
+                },
+                sub: {
+                    $ref: '#/$defs/key',
+                },
+                sup: {
+                    $ref: '#/$defs/key',
+                },
+                table: {
+                    $ref: '#/$defs/key',
+                },
+                tag: {
+                    $ref: '#/$defs/key',
+                },
+                underline: {
+                    $ref: '#/$defs/key',
+                },
+            },
+        },
+        keymap_editor_list: {
+            title: 'IKeymapEditorList',
+            type: 'object',
+
+            description: 'SiYuan editor list shortcut keys',
+            additionalProperties: false,
+            required: [
+                'checkToggle',
+                'indent',
+                'outdent',
+            ],
+            properties: {
+                checkToggle: {
+                    $ref: '#/$defs/key',
+                },
+                indent: {
+                    $ref: '#/$defs/key',
+                },
+                outdent: {
+                    $ref: '#/$defs/key',
+                },
+            },
+        },
+        keymap_editor_table: {
+            title: 'IKeymapEditorTable',
+            type: 'object',
+
+            description: 'SiYuan editor table shortcut keys',
+            additionalProperties: false,
+            required: [
+                'delete-column',
+                'delete-row',
+                'insertColumnLeft',
+                'insertColumnRight',
+                'insertRowAbove',
+                'insertRowBelow',
+                'moveToDown',
+                'moveToLeft',
+                'moveToRight',
+                'moveToUp',
+            ],
+            properties: {
+                'delete-column': {
+                    $ref: '#/$defs/key',
+                },
+                'delete-row': {
+                    $ref: '#/$defs/key',
+                },
+                insertColumnLeft: {
+                    $ref: '#/$defs/key',
+                },
+                insertColumnRight: {
+                    $ref: '#/$defs/key',
+                },
+                insertRowAbove: {
+                    $ref: '#/$defs/key',
+                },
+                insertRowBelow: {
+                    $ref: '#/$defs/key',
+                },
+                moveToDown: {
+                    $ref: '#/$defs/key',
+                },
+                moveToLeft: {
+                    $ref: '#/$defs/key',
+                },
+                moveToRight: {
+                    $ref: '#/$defs/key',
+                },
+                moveToUp: {
+                    $ref: '#/$defs/key',
+                },
+            },
+        },
+        keymap_general: {
+            title: 'IKeymapGeneral',
+            type: 'object',
+
+            description: 'SiYuan general shortcut keys',
+            additionalProperties: false,
+            required: [
+                'addToDatabase',
+                'backlinks',
+                'bookmark',
+                'closeAll',
+                'closeLeft',
+                'closeOthers',
+                'closeRight',
+                'closeTab',
+                'closeUnmodified',
+                'commandPanel',
+                'config',
+                'dailyNote',
+                'dataHistory',
+                'editReadonly',
+                'enter',
+                'enterBack',
+                'fileTree',
+                'globalGraph',
+                'globalSearch',
+                'goBack',
+                'goForward',
+                'goToEditTabNext',
+                'goToEditTabPrev',
+                'goToTab1',
+                'goToTab2',
+                'goToTab3',
+                'goToTab4',
+                'goToTab5',
+                'goToTab6',
+                'goToTab7',
+                'goToTab8',
+                'goToTab9',
+                'goToTabNext',
+                'goToTabPrev',
+                'graphView',
+                'inbox',
+                'lockScreen',
+                'mainMenu',
+                'move',
+                'newFile',
+                'outline',
+                'recentDocs',
+                'replace',
+                'riffCard',
+                'search',
+                'selectOpen1',
+                'splitLR',
+                'splitMoveB',
+                'splitMoveR',
+                'splitTB',
+                'stickSearch',
+                'syncNow',
+                'tabToWindow',
+                'tag',
+                'toggleDock',
+                'toggleWin',
+                'unsplit',
+                'unsplitAll',
+            ],
+            properties: {
+                addToDatabase: {
+                    $ref: '#/$defs/key',
+                },
+                backlinks: {
+                    $ref: '#/$defs/key',
+                },
+                bookmark: {
+                    $ref: '#/$defs/key',
+                },
+                closeAll: {
+                    $ref: '#/$defs/key',
+                },
+                closeLeft: {
+                    $ref: '#/$defs/key',
+                },
+                closeOthers: {
+                    $ref: '#/$defs/key',
+                },
+                closeRight: {
+                    $ref: '#/$defs/key',
+                },
+                closeTab: {
+                    $ref: '#/$defs/key',
+                },
+                closeUnmodified: {
+                    $ref: '#/$defs/key',
+                },
+                commandPanel: {
+                    $ref: '#/$defs/key',
+                },
+                config: {
+                    $ref: '#/$defs/key',
+                },
+                dailyNote: {
+                    $ref: '#/$defs/key',
+                },
+                dataHistory: {
+                    $ref: '#/$defs/key',
+                },
+                editReadonly: {
+                    $ref: '#/$defs/key',
+                },
+                enter: {
+                    $ref: '#/$defs/key',
+                },
+                enterBack: {
+                    $ref: '#/$defs/key',
+                },
+                fileTree: {
+                    $ref: '#/$defs/key',
+                },
+                globalGraph: {
+                    $ref: '#/$defs/key',
+                },
+                globalSearch: {
+                    $ref: '#/$defs/key',
+                },
+                goBack: {
+                    $ref: '#/$defs/key',
+                },
+                goForward: {
+                    $ref: '#/$defs/key',
+                },
+                goToEditTabNext: {
+                    $ref: '#/$defs/key',
+                },
+                goToEditTabPrev: {
+                    $ref: '#/$defs/key',
+                },
+                goToTab1: {
+                    $ref: '#/$defs/key',
+                },
+                goToTab2: {
+                    $ref: '#/$defs/key',
+                },
+                goToTab3: {
+                    $ref: '#/$defs/key',
+                },
+                goToTab4: {
+                    $ref: '#/$defs/key',
+                },
+                goToTab5: {
+                    $ref: '#/$defs/key',
+                },
+                goToTab6: {
+                    $ref: '#/$defs/key',
+                },
+                goToTab7: {
+                    $ref: '#/$defs/key',
+                },
+                goToTab8: {
+                    $ref: '#/$defs/key',
+                },
+                goToTab9: {
+                    $ref: '#/$defs/key',
+                },
+                goToTabNext: {
+                    $ref: '#/$defs/key',
+                },
+                goToTabPrev: {
+                    $ref: '#/$defs/key',
+                },
+                graphView: {
+                    $ref: '#/$defs/key',
+                },
+                inbox: {
+                    $ref: '#/$defs/key',
+                },
+                lockScreen: {
+                    $ref: '#/$defs/key',
+                },
+                mainMenu: {
+                    $ref: '#/$defs/key',
+                },
+                move: {
+                    $ref: '#/$defs/key',
+                },
+                newFile: {
+                    $ref: '#/$defs/key',
+                },
+                outline: {
+                    $ref: '#/$defs/key',
+                },
+                recentDocs: {
+                    $ref: '#/$defs/key',
+                },
+                replace: {
+                    $ref: '#/$defs/key',
+                },
+                riffCard: {
+                    $ref: '#/$defs/key',
+                },
+                search: {
+                    $ref: '#/$defs/key',
+                },
+                selectOpen1: {
+                    $ref: '#/$defs/key',
+                },
+                splitLR: {
+                    $ref: '#/$defs/key',
+                },
+                splitMoveB: {
+                    $ref: '#/$defs/key',
+                },
+                splitMoveR: {
+                    $ref: '#/$defs/key',
+                },
+                splitTB: {
+                    $ref: '#/$defs/key',
+                },
+                stickSearch: {
+                    $ref: '#/$defs/key',
+                },
+                syncNow: {
+                    $ref: '#/$defs/key',
+                },
+                tabToWindow: {
+                    $ref: '#/$defs/key',
+                },
+                tag: {
+                    $ref: '#/$defs/key',
+                },
+                toggleDock: {
+                    $ref: '#/$defs/key',
+                },
+                toggleWin: {
+                    $ref: '#/$defs/key',
+                },
+                unsplit: {
+                    $ref: '#/$defs/key',
+                },
+                unsplitAll: {
+                    $ref: '#/$defs/key',
+                },
+            },
+        },
+        keymap_plugin: {
+            title: 'IKeymapPlugin',
+            type: 'object',
+
+            description: 'SiYuan plugin shortcut keys',
+            propertyNames: {
+                type: 'string',
+                description: 'SiYuan plugin name',
+                minLength: 1,
+            },
+            additionalProperties: {
+                $ref: '#/$defs/keys',
+            },
+        },
+        keys: {
+            title: 'IKeys',
+            type: 'object',
+
+            description: 'SiYuan shortcut keys',
+            // REF: https://opis.io/json-schema/2.x/object.html#propertynames
+            propertyNames: {
+                type: 'string',
+                minLength: 1,
+            },
+            // REF: https://json-schema.org/understanding-json-schema/reference/object.html#additional-properties
+            additionalProperties: {
+                $ref: '#/$defs/key',
+            },
+        },
+        key: {
+            title: 'IKey',
+            type: 'object',
+
+            description: 'SiYuan shortcut key',
+            additionalProperties: false,
+            required: [
+                'custom',
+                'default',
+            ],
+            properties: {
+                custom: {
+                    // 自定义快捷键
+                    type: 'string',
+                    description: 'Custom shortcut key',
+                },
+                default: {
+                    // 默认快捷键
+                    type: 'string',
+                    description: 'Default shortcut key',
+                },
+            },
+        },
+        lang: {
+            title: 'ILang',
+            type: 'object',
+
+            description: 'Supported language',
+            additionalProperties: false,
+            required: [
+                'label',
+                'name',
+            ],
+            properties: {
+                label: {
+                    // 语言名称
+                    type: 'string',
+                    description: 'Language name',
+                    examples: [
+                        '简体中文',
+                        '繁体中文',
+                        'English',
+                    ],
+                },
+                name: {
+                    // 语言标识
+                    type: 'string',
+                    description: 'Language identifier',
+                    pattern: '^[a-z]{2}_[A-Z]{2,}$',
+                    examples: [
+                        'zh_CN',
+                        'zh_CHT',
+                        'en_US',
+                    ],
+                },
+            },
+        },
+        publish: {
+            title: 'IPublish',
+            type: 'object',
+
+            description: 'Publish service related configuration',
+            additionalProperties: false,
+            required: [
+                'auth',
+                'enable',
+                'port',
+            ],
+            properties: {
+                auth: {
+                    // 发布服务 Basic 认证配置
+                    description: 'Publish service basic auth configuration',
+                    $ref: '#/$defs/publish_auth',
+                },
+                enable: {
+                    // 是否开启发布服务
+                    type: 'boolean',
+                    description: 'Whether to enable the publishing service',
+                },
+                port: {
+                    // 发布服务所使用的端口
+                    type: 'integer',
+                    description: 'The port used by the publishing service',
+                },
+            },
+        },
+        publish_auth: {
+            title: 'IPublishAuth',
+            type: 'object',
+
+            description: 'Publish service basic auth related configuration',
+            additionalProperties: false,
+            required: [
+                'accounts',
+                'enable',
+            ],
+            properties: {
+                accounts: {
+                    // 发布服务 Basic 认证用户名/密码列表
+                    type: 'array',
+                    description: 'Publish service Basic authentication username/password list',
+                    items: {
+                        $ref: '#/$defs/publish_auth_account',
+                    },
+                },
+                enable: {
+                    // 是否开启发布服务 Basic 认证
+                    type: 'boolean',
+                    description: 'Whether to enable publishing service basic authentication',
+                },
+            },
+        },
+        publish_auth_account: {
+            title: 'IPublishAuthAccount',
+            type: 'object',
+
+            description: 'Publish service basic auth account',
+            additionalProperties: false,
+            required: [
+                'memo',
+                'password',
+                'username',
+            ],
+            properties: {
+                memo: {
+                    // 备注信息
+                    type: 'string',
+                    description: 'Remarks information',
+                },
+                password: {
+                    // Basic 认证密码
+                    type: 'string',
+                    description: 'Basic authentication password',
+                },
+                username: {
+                    // Basic 认证用户名
+                    type: 'string',
+                    description: 'Basic authentication username',
+                },
+            },
+        },
+        repo: {
+            title: 'IRepo',
+            type: 'object',
+
+            description: 'Snapshot repository related configuration',
+            additionalProperties: false,
+            required: [
+                'indexRetentionDays',
+                'key',
+                'retentionIndexesDaily',
+                'syncIndexTiming',
+            ],
+            properties: {
+                indexRetentionDays: {
+                    // 快照索引保留天数
+                    type: 'integer',
+                    description: 'Snapshot index retention days',
+                },
+                key: {
+                    // 快照加密密钥 (base64 编码的 256 位密钥)
+                    type: 'string',
+                    description: 'Snapshot encryption key (base64 encoded 256-bit key)',
+                    pattern: '^[A-Za-z0-9+/]{43}=$',
+                },
+                retentionIndexesDaily: {
+                    // 每日保留快照索引数量
+                    type: 'integer',
+                    description: 'Number of snapshot indexes retained daily',
+                },
+                syncIndexTiming: {
+                    // 同步索引计时，超过该时间则提示用户索引性能下降 (单位: 毫秒)
+                    type: 'integer',
+                    description: 'Synchronous index timing, if it exceeds this time, the user is prompted that the index performance is degraded (unit: milliseconds)',
+                },
+            },
+        },
+        search: {
+            title: 'ISearch',
+            type: 'object',
+
+            description: 'SiYuan search related configuration',
+            additionalProperties: false,
+            required: [
+                'alias',
+                'audioBlock',
+                'backlinkMentionAlias',
+                'backlinkMentionAnchor',
+                'backlinkMentionDoc',
+                'backlinkMentionKeywordsLimit',
+                'backlinkMentionName',
+                'blockquote',
+                'caseSensitive',
+                'codeBlock',
+                'databaseBlock',
+                'document',
+                'embedBlock',
+                'heading',
+                'htmlBlock',
+                'ial',
+                'iframeBlock',
+                'indexAssetPath',
+                'limit',
+                'list',
+                'listItem',
+                'mathBlock',
+                'memo',
+                'name',
+                'paragraph',
+                'superBlock',
+                'table',
+                'videoBlock',
+                'virtualRefAlias',
+                'virtualRefAnchor',
+                'virtualRefDoc',
+                'virtualRefName',
+                'widgetBlock',
+            ],
+            properties: {
+                alias: {
+                    // 是否在块别名中搜索
+                    type: 'boolean',
+                    description: 'Whether to search in block aliases',
+                },
+                audioBlock: {
+                    // 是否在音频块中搜索
+                    type: 'boolean',
+                    description: 'Whether to search in audio blocks',
+                },
+                backlinkMentionAlias: {
+                    // 从块别名中提取反向链接提及关键字
+                    type: 'boolean',
+                    description: 'Extract backlink mention keywords from block aliases',
+                },
+                backlinkMentionAnchor: {
+                    // 从块引用锚文本中提取反向链接提及关键字
+                    type: 'boolean',
+                    description: 'Extract backlink mention keywords from block reference anchor text',
+                },
+                backlinkMentionDoc: {
+                    // 从文档名中提取反向链接提及关键字
+                    type: 'boolean',
+                    description: 'Extract backlink mention keywords from document names',
+                },
+                backlinkMentionKeywordsLimit: {
+                    // 反向链接提及关键字数量上限
+                    type: 'integer',
+                    description: 'Maximum number of backlink mention keywords',
+                },
+                backlinkMentionName: {
+                    // 从块命名中提取反向链接提及关键字
+                    type: 'boolean',
+                    description: 'Extract backlink mention keywords from block names',
+                },
+                blockquote: {
+                    // 是否搜索引述块
+                    type: 'boolean',
+                    description: 'Whether to search quote blocks',
+                },
+                caseSensitive: {
+                    // 搜索时是否区分大小写字母
+                    type: 'boolean',
+                    description: 'Whether to distinguish between uppercase and lowercase letters when searching',
+                },
+                codeBlock: {
+                    // 是否搜索代码块
+                    type: 'boolean',
+                    description: 'Whether to search code blocks',
+                },
+                databaseBlock: {
+                    // 是否搜索数据库块
+                    type: 'boolean',
+                    description: 'Whether to search database blocks',
+                },
+                document: {
+                    // 是否搜索文档块
+                    type: 'boolean',
+                    description: 'Whether to search document blocks',
+                },
+                embedBlock: {
+                    // 是否搜索嵌入块
+                    type: 'boolean',
+                    description: 'Whether to search embedded blocks',
+                },
+                heading: {
+                    // 是否搜索标题块
+                    type: 'boolean',
+                    description: 'Whether to search heading blocks',
+                },
+                htmlBlock: {
+                    // 是否搜索 HTML 块
+                    type: 'boolean',
+                    description: 'Whether to search HTML blocks',
+                },
+                ial: {
+                    // 是否搜索块属性
+                    type: 'boolean',
+                    description: 'Whether to search block attributes',
+                },
+                iframeBlock: {
+                    // 是否在 iframe 块中搜索
+                    type: 'boolean',
+                    description: 'Whether to search in iframe blocks',
+                },
+                indexAssetPath: {
+                    // 是否搜索资源文件路径
+                    type: 'boolean',
+                    description: 'Whether to search resource file paths',
+                },
+                limit: {
+                    // 搜索结果显示数
+                    type: 'integer',
+                    description: 'Number of search results displayed',
+                },
+                list: {
+                    // 是否搜索列表块
+                    type: 'boolean',
+                    description: 'Whether to search list blocks',
+                },
+                listItem: {
+                    // 是否搜索列表项
+                    type: 'boolean',
+                    description: 'Whether to search list items',
+                },
+                mathBlock: {
+                    // 是否搜索公式块
+                    type: 'boolean',
+                    description: 'Whether to search formula blocks',
+                },
+                memo: {
+                    // 是否搜索块备注
+                    type: 'boolean',
+                    description: 'Whether to search block notes',
+                },
+                name: {
+                    // 是否搜索块命名
+                    type: 'boolean',
+                    description: 'Whether to search block names',
+                },
+                paragraph: {
+                    // 是否搜索段落块
+                    type: 'boolean',
+                    description: 'Whether to search paragraph blocks',
+                },
+                superBlock: {
+                    // 是否搜索超级块
+                    type: 'boolean',
+                    description: 'Whether to search super blocks',
+                },
+                table: {
+                    // 是否搜索表格块
+                    type: 'boolean',
+                    description: 'Whether to search table blocks',
+                },
+                videoBlock: {
+                    // 是否在视频块中搜索
+                    type: 'boolean',
+                    description: 'Whether to search in video blocks',
+                },
+                virtualRefAlias: {
+                    // 是否从块别名中获取虚拟引用关键字
+                    type: 'boolean',
+                    description: 'Whether to get virtual reference keywords from block aliases',
+                },
+                virtualRefAnchor: {
+                    // 是否从块引用锚文本中获取虚拟引用关键字
+                    type: 'boolean',
+                    description: 'Whether to get virtual reference keywords from block reference anchor text',
+                },
+                virtualRefDoc: {
+                    // 是否从文档名中获取虚拟引用关键字
+                    type: 'boolean',
+                    description: 'Whether to get virtual reference keywords from document names',
+                },
+                virtualRefName: {
+                    // 是否从块命名中获取虚拟引用关键字
+                    type: 'boolean',
+                    description: 'Whether to get virtual reference keywords from block names',
+                },
+                widgetBlock: {
+                    // 是否在挂件块中搜索
+                    type: 'boolean',
+                    description: 'Whether to search in widget blocks',
+                },
+            },
+        },
+        snippet: {
+            title: 'ISnippet',
+            type: 'object',
+
+            description: 'SiYuan code snippets related configuration',
+            additionalProperties: false,
+            required: [
+                'enabledCSS',
+                'enabledJS',
+            ],
+            properties: {
+                enabledCSS: {
+                    // 是否启用 CSS 代码片段
+                    type: 'boolean',
+                    description: 'Whether to enable CSS code snippets',
+                },
+                enabledJS: {
+                    // 是否启用 JavaScript 代码片段
+                    type: 'boolean',
+                    description: 'Whether to enable JavaScript code snippets',
+                },
+            },
+        },
+        stat: {
+            title: 'IStat',
+            type: 'object',
+
+            description: 'SiYuan workspace content statistics',
+            additionalProperties: false,
+            required: [
+                'assetsSize',
+                'blockCount',
+                'cAssetsSize',
+                'cBlockCount',
+                'cDataSize',
+                'cTreeCount',
+                'dataSize',
+                'treeCount',
+            ],
+            properties: {
+                assetsSize: {
+                    // 资源文件大小 (单位: 字节)
+                    type: 'integer',
+                    description: 'Asset file size (unit: bytes)',
+                },
+                blockCount: {
+                    // 内容块数量
+                    type: 'integer',
+                    description: 'Number of content blocks',
+                },
+                cAssetsSize: {
+                    // 分块加密后的资源文件大小 (单位: 字节)
+                    type: 'integer',
+                    description: 'Size of resource files after chunk encryption (unit: bytes)',
+                },
+                cBlockCount: {
+                    // 分块加密后的内容块数量
+                    type: 'integer',
+                    description: 'Number of content blocks after chunk encryption',
+                },
+                cDataSize: {
+                    // 分块加密后的数据目录大小 (单位: 字节)
+                    type: 'integer',
+                    description: 'Size of the data directory after chunk encryption (unit: bytes)',
+                },
+                cTreeCount: {
+                    // 分块加密后的内容块树数量 (文档数量)
+                    type: 'integer',
+                    description: 'Number of content block trees after chunk encryption (number of documents)',
+                },
+                dataSize: {
+                    // 数据目录大小 (单位: 字节)
+                    type: 'integer',
+                    description: 'Data directory size (unit: bytes)',
+                },
+                treeCount: {
+                    // 内容块树数量 (文档数量)
+                    type: 'integer',
+                    description: 'Number of content block trees (number of documents)',
+                },
+            },
+        },
+        sync: {
+            title: 'ISync',
+            type: 'object',
+
+            description: 'SiYuan synchronization related configuration',
+            additionalProperties: false,
+            required: [
+                'cloudName',
+                'enabled',
+                'generateConflictDoc',
+                'mode',
+                'perception',
+                'provider',
+                's3',
+                'stat',
+                'synced',
+                'webdav',
+            ],
+            properties: {
+                cloudName: {
+                    // 云工作空间名称
+                    type: 'string',
+                    description: 'Cloud workspace name',
+                },
+                enabled: {
+                    // 是否启用同步功能
+                    type: 'boolean',
+                    description: 'Whether to enable synchronization',
+                },
+                generateConflictDoc: {
+                    // 同步出现冲突时是否创建冲突文档
+                    type: 'boolean',
+                    description: 'Whether to create a conflict document when a conflict occurs during synchronization',
+                },
+                mode: {
+                    // 同步模式
+                    type: 'integer',
+                    description: 'Synchronization mode\n- `0`: Not set\n- `1`: Automatic synchronization\n- `2`: Manual synchronization\n- `3`: Completely manual synchronization',
+                    enum: [
+                        0, // 未设置
+                        1, // 自动同步
+                        2, // 手动同步
+                        3, // 完全手动同步
+                    ],
+                },
+                perception: {
+                    // 是否启用同步感知功能
+                    type: 'boolean',
+                    description: 'Whether to enable synchronization perception',
+                },
+                provider: {
+                    // 云端存储服务提供者
+                    type: 'integer',
+                    description: 'Cloud storage service provider\n- `0`: SiYuan official cloud storage service\n- `2`: Object storage service compatible with S3 protocol\n- `3`: Network storage service using WebDAV protocol',
+                    enum: [
+                        0, // 思源官方提供的云端存储服务
+                        2, // 兼容 S3 协议的对象存储服务
+                        3, // 使用 WebDAV 协议的网络存储服务
+                    ],
+                },
+                s3: {
+                    // S3 兼容对象存储相关设置项
+                    $ref: '#/$defs/sync_s3',
+                },
+                stat: {
+                    // 最近一次同步的提示信息
+                    type: 'string',
+                    description: 'The prompt information of the last synchronization',
+                },
+                synced: {
+                    // 最近一次同步的时间 (Unix 时间戳)
+                    type: 'integer',
+                    description: 'The time of the last synchronization (Unix timestamp)',
+                    examples: [
+                        1700000000000,
+                    ],
+                },
+                webdav: {
+                    // WebDAV 相关设置项
+                    $ref: '#/$defs/sync_webdav',
+                },
+            },
+        },
+        sync_s3: {
+            title: 'ISyncS3',
+            type: 'object',
+
+            description: 'S3 compatible object storage related configuration',
+            additionalProperties: false,
+            required: [
+                'accessKey',
+                'bucket',
+                'concurrentReqs',
+                'endpoint',
+                'pathStyle',
+                'region',
+                'secretKey',
+                'skipTlsVerify',
+                'timeout',
+            ],
+            properties: {
+                accessKey: {
+                    // 访问密钥
+                    type: 'string',
+                    description: 'Access key',
+                },
+                bucket: {
+                    // 存储桶名
+                    type: 'string',
+                    description: 'Bucket name',
+                },
+                concurrentReqs: {
+                    // 连接并发数
+                    type: 'integer',
+                    description: 'Connection concurrency',
+                },
+                endpoint: {
+                    // 服务端点
+                    type: 'string',
+                    description: 'Service endpoint',
+                },
+                pathStyle: {
+                    // 是否使用路径风格的 URL
+                    type: 'boolean',
+                    description: 'Whether to use path-style URLs',
+                },
+                region: {
+                    // 存储区域
+                    type: 'string',
+                    description: 'Storage region',
+                },
+                secretKey: {
+                    // 安全密钥
+                    type: 'string',
+                    description: 'Security key',
+                },
+                skipTlsVerify: {
+                    // 是否跳过 TLS 验证
+                    type: 'boolean',
+                    description: 'Whether to skip TLS verification',
+                },
+                timeout: {
+                    // 超时时间 (单位: 秒)
+                    type: 'integer',
+                    description: 'Timeout (unit: seconds)',
+                },
+            },
+        },
+        sync_webdav: {
+            title: 'ISyncWebDAV',
+            type: 'object',
+
+            description: 'WebDAV related configuration',
+            additionalProperties: false,
+            required: [
+                'concurrentReqs',
+                'endpoint',
+                'password',
+                'skipTlsVerify',
+                'timeout',
+                'username',
+            ],
+            properties: {
+                concurrentReqs: {
+                    // 连接并发数
+                    type: 'integer',
+                    description: 'Connection concurrency',
+                    minimum: 1,
+                },
+                endpoint: {
+                    // 服务端点
+                    type: 'string',
+                    description: 'Service endpoint',
+                    format: 'uri',
+                    examples: [
+                        'https://webdav.example.com/siyuan/',
+                    ],
+                },
+                password: {
+                    // 密码
+                    type: 'string',
+                    description: 'Password',
+                },
+                skipTlsVerify: {
+                    // 是否跳过 TLS 验证
+                    type: 'boolean',
+                    description: 'Whether to skip TLS verification',
+                },
+                timeout: {
+                    // 超时时间 (单位: 秒)
+                    type: 'integer',
+                    description: 'Timeout (unit: seconds)',
+                },
+                username: {
+                    // 用户名
+                    type: 'string',
+                    description: 'Username',
+                },
+            },
+        },
+        system: {
+            title: 'ISystem',
+            type: 'object',
+
+            description: 'System related information',
+            additionalProperties: false,
+            required: [
+                'appDir',
+                'autoLaunch2',
+                'confDir',
+                'container',
+                'dataDir',
+                'disableGoogleAnalytics',
+                'disabledFeatures',
+                'downloadInstallPkg',
+                'homeDir',
+                'id',
+                'isInsider',
+                'isMicrosoftStore',
+                'kernelVersion',
+                'lockScreenMode',
+                'name',
+                'networkProxy',
+                'networkServe',
+                'os',
+                'osPlatform',
+                'uploadErrLog',
+                'workspaceDir',
+            ],
+            properties: {
+                appDir: {
+                    // 思源安装目录下的 `resources` 目录的绝对路径
+                    type: 'string',
+                    description: 'The absolute path of the `resources` directory under the SiYuan installation directory',
+                },
+                autoLaunch2: {
+                    // 开机自启动模式
+                    type: 'integer',
+                    description: 'Boot automatically mode\n- `0`: Close automatically start\n- `1`: Auto start\n- `2`: Silent auto start',
+                    enum: [
+                        0, // 关闭自启动
+                        1, // 自启动
+                        2, // 静默自启动
+                    ],
+                },
+                confDir: {
+                    // 当前工作空间 `conf` 目录的绝对路径
+                    type: 'string',
+                    description: 'The absolute path of the `conf` directory of the current workspace',
+                },
+                container: {
+                    // 内核运行环境
+                    type: 'string',
+                    title: 'TSystemContainer',
+                    description: 'Kernel operating environment\n- `docker`: Docker container\n- `android`: Android device\n- `ios`: iOS device\n- `std`: Desktop Electron environment',
+                    enum: [
+                        'docker', // Docker 容器
+                        'android', // Android 设备
+                        'ios', // iOS 设备
+                        'std', // 桌面端 Electron 环境
+                    ],
+                },
+                dataDir: {
+                    // 当前工作空间 `data` 目录的绝对路径
+                    type: 'string',
+                    description: 'The absolute path of the `data` directory of the current workspace',
+                },
+                disableGoogleAnalytics: {
+                    // 是否禁用 Google Analytics
+                    type: 'boolean',
+                    description: 'Whether to disable Google Analytics',
+                },
+                disabledFeatures: {
+                    // 禁用的功能名称列表
+                    type: 'array',
+                    description: 'List of disabled feature names',
+                    items: {
+                        type: 'string',
+                    },
+                },
+                downloadInstallPkg: {
+                    // 是否自动下载新版本的安装包
+                    type: 'boolean',
+                    description: 'Whether to automatically download the installation package for the new version',
+                },
+                homeDir: {
+                    // 当前操作系统用户的用户主目录的绝对路径
+                    type: 'string',
+                    description: "The absolute path of the user's home directory for the current operating system user",
+                },
+                id: {
+                    // 当前会话的 UUID
+                    type: 'string',
+                    description: 'The UUID of the current session',
+                    pattern: '^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$',
+                },
+                isInsider: {
+                    // 当前版本是否是内部测试版
+                    type: 'boolean',
+                    description: 'Whether the current version is an internal test version',
+                },
+                isMicrosoftStore: {
+                    // 当前版本是否为微软商店版
+                    type: 'boolean',
+                    description: 'Whether the current version is a Microsoft Store version',
+                },
+                kernelVersion: {
+                    // 内核版本号
+                    type: 'string',
+                    description: 'Kernel version number',
+                    pattern: '^\\d+\\.\\d+\\.\\d+$',
+                },
+                lockScreenMode: {
+                    // 锁屏模式
+                    type: 'integer',
+                    description: 'Lock screen mode\n- `0`: Manual\n- `1`: Manual + Follow the operating system',
+                    enum: [
+                        0, // 手动
+                        1, // 手动 + 跟随操作系统
+                    ],
+                },
+                name: {
+                    // 当前设备名称
+                    type: 'string',
+                    description: 'The name of the current device',
+                },
+                networkProxy: {
+                    // 网络代理配置
+                    $ref: '#/$defs/system_networkProxy',
+                },
+                networkServe: {
+                    // 是否开启网络伺服 (是否允许来自其他设备的连接)
+                    type: 'boolean',
+                    description: 'Whether to enable network serve (whether to allow connections from other devices)',
+                },
+                os: {
+                    // 编译时确定的操作系统名称 (使用命令 `go tool dist list` 获取)
+                    type: 'string',
+                    title: 'TSystemOS',
+                    description: '\
+The operating system name determined at compile time\
+\n(obtained using the command `go tool dist list`)\
+\n- `android`: Android\
+\n- `darwin`: macOS\
+\n- `ios`: iOS\
+\n- `linux`: Linux\
+\n- `windows`: Windows\
+',
+                    enum: [
+                        'android', // Android
+                        'darwin', // macOS
+                        'ios', // iOS
+                        'linux', // Linux
+                        'windows', // Windows
+                    ],
+                },
+                osPlatform: {
+                    // 操作系统平台名称
+                    type: 'string',
+                    description: 'Operating system platform name',
+                },
+                uploadErrLog: {
+                    // 是否上传错误日志
+                    type: 'boolean',
+                    description: 'Whether to upload error logs',
+                },
+                workspaceDir: {
+                    // 工作空间目录的绝对路径
+                    type: 'string',
+                    description: 'The absolute path of the workspace directory',
+                },
+            },
+        },
+        system_networkProxy: {
+            title: 'INetworkProxy',
+            type: 'object',
+
+            description: 'SiYuan Network proxy configuration',
+            additionalProperties: false,
+            required: [
+                'host',
+                'port',
+                'scheme',
+            ],
+            properties: {
+                host: {
+                    // 主机名或主机地址
+                    type: 'string',
+                    description: 'Host name or host address',
+                },
+                port: {
+                    // 代理服务端口号
+                    type: 'string',
+                    description: 'Proxy server port number',
+                    pattern: '^\\d+$',
+                },
+                scheme: {
+                    // 代理服务所使用的协议
+                    type: 'string',
+                    title: 'TSystemNetworkProxyScheme',
+                    description: 'The protocol used by the proxy server\n- Empty String: Use the system proxy settings\n- `http`: HTTP\n- `https`: HTTPS\n- `socks5`: SOCKS5',
+                    enum: [
+                        '', // 使用系统代理设置
+                        'http', // HTTP
+                        'https', // HTTPS
+                        'socks5', // SOCKS5
+                    ],
+                },
+            },
+        },
+        tag: {
+            title: 'ITag',
+            type: 'object',
+
+            description: 'SiYuan tag dock related configuration',
+            additionalProperties: false,
+            required: [
+                'sort',
+            ],
+            properties: {
+                sort: {
+                    type: 'integer',
+                    description: 'Tag sorting scheme\n- `0`: Name alphabetically ascending\n- `1`: Name alphabetically descending\n- `4`: Name natural ascending\n- `5`: Name natural descending\n- `7`: Reference count ascending\n- `8`: Reference count descending',
+                    default: 4,
+                    enum: [
+                        0, // 名称字母升序
+                        1, // 名称字母降序
+                        4, // 名称自然数升序
+                        5, // 名称自然数降序
+                        7, // 引用数升序
+                        8, // 引用数降序
+                    ],
+                },
+            },
+        },
+        uiLayout: {
+            title: 'IUILayout',
+            type: 'object',
+
+            description: 'SiYuan UI layout related configuration',
+            additionalProperties: false,
+            required: [
+                'bottom',
+                'hideDock',
+                'layout',
+                'left',
+                'right',
+            ],
+            properties: {
+                bottom: {
+                    // 底部停靠栏
+                    $ref: '#/$defs/uiLayout_dock',
+                },
+                hideDock: {
+                    // 是否隐藏侧边栏
+                    type: 'boolean',
+                    description: 'Whether to hide the sidebar',
+                },
+                layout: {
+                    // 编辑器布局
+                    $ref: '#/$defs/uiLayout_layout',
+                },
+                left: {
+                    // 左侧停靠栏
+                    $ref: '#/$defs/uiLayout_dock',
+                },
+                right: {
+                    // 右侧停靠栏
+                    $ref: '#/$defs/uiLayout_dock',
+                },
+            },
+        },
+        uiLayout_layout: {
+            title: 'IUILayoutLayout',
+            type: 'object',
+
+            description: 'SiYuan panel layout',
+            additionalProperties: false,
+            required: [
+                'children',
+                'instance',
+            ],
+            properties: {
+                children: {
+                    // 内部元素
+                    type: 'array',
+                    title: 'IUILayoutLayoutChildren',
+                    description: 'Internal elements',
+                    items: {
+                        title: 'IUILayoutLayoutChild',
+                        oneOf: [
+                            {
+                                // 嵌套布局
+                                $ref: '#/$defs/uiLayout_layout',
+                            },
+                            {
+                                // 窗口元素
+                                $ref: '#/$defs/uiLayout_wnd',
+                            },
+                        ],
+                    },
+                },
+                direction: {
+                    // 面板内容布局方向
+                    type: 'string',
+                    title: 'TUiLayoutDirection',
+                    description: 'Panel content layout direction\n- `tb`: Top and bottom layout\n- `lr`: Left and right layout',
+                    enum: [
+                        'tb', // 上下布局
+                        'lr', // 左右布局
+                    ],
+                },
+                instance: {
+                    // 对象名称
+                    type: 'string',
+                    title: 'TUiLayoutInstanceLayout',
+                    description: 'Object name',
+                    const: 'Layout',
+                },
+                type: {
+                    // 布局类型
+                    type: 'string',
+                    title: 'TUiLayoutType',
+                    description: 'Layout type\n- `normal`: Normal panel\n- `center`: Center panel\n- `top`: Top panel\n- `bottom`: Bottom panel\n- `left`: Left panel\n- `right`: Right panel',
+                    enum: [
+                        'normal', // 普通面板
+                        'center', // 中央面板
+                        'top', // 顶部面板
+                        'bottom', // 底部面板
+                        'left', // 左部面板
+                        'right', // 右部面板
+                    ],
+                },
+                size: {
+                    // 面板尺寸
+                    type: 'string',
+                    description: 'Panel size',
+                    examples: [
+                        'auto', // 自动调整尺寸
+                        '128px', // 固定尺寸
+                    ],
+                },
+                resize: {
+                    // 尺寸可调整的方向
+                    type: 'string',
+                    title: 'TUiLayoutDirection',
+                    description: 'The direction in which the size can be adjusted\n- `tb`: Can adjust the size up and down\n- `lr`: Can adjust the size left and right',
+                    enum: [
+                        'tb', // 可上下调整尺寸
+                        'lr', // 可左右调整尺寸
+                    ],
+                },
+            },
+        },
+        uiLayout_wnd: {
+            title: 'IUILayoutWnd',
+            type: 'object',
+
+            description: 'SiYuan window layout',
+            additionalProperties: false,
+            required: [
+                'children',
+                'instance',
+            ],
+            properties: {
+                children: {
+                    // 内部元素
+                    type: 'array',
+                    description: 'Internal elements',
+                    items: {
+                        // 页签元素
+                        $ref: '#/$defs/uiLayout_tab',
+                    },
+                },
+                instance: {
+                    // 对象名称
+                    type: 'string',
+                    title: 'TUiLayoutWndInstance',
+                    description: 'Object name',
+                    const: 'Wnd',
+                },
+                height: {
+                    // 窗口高度
+                    type: 'string',
+                    description: 'Panel height',
+                    examples: [
+                        '128px',
+                    ],
+                },
+                width: {
+                    // 窗口宽度
+                    type: 'string',
+                    description: 'Panel width',
+                    examples: [
+                        '128px',
+                    ],
+                },
+                resize: {
+                    // 尺寸可调整的方向
+                    type: 'string',
+                    title: 'TUiLayoutDirection',
+                    description: 'The direction in which the size can be adjusted\n- `tb`: Can adjust the size up and down\n- `lr`: Can adjust the size left and right',
+                    enum: [
+                        'tb', // 可上下调整尺寸
+                        'lr', // 可左右调整尺寸
+                    ],
+                },
+            },
+        },
+        uiLayout_tab: {
+            title: 'IUILayoutTab',
+            type: 'object',
+
+            description: 'SiYuan tab',
+            additionalProperties: false,
+            required: [
+                'children',
+                'instance',
+            ],
+            properties: {
+                activeTime: {
+                    // 页签激活时间 (Unix 时间戳)
+                    type: 'string',
+                    description: 'Tab activation time (Unix timestamp)',
+                    examples: [
+                        '1700000000000',
+                    ],
+                },
+                active: {
+                    // 该页签是否激活
+                    type: 'boolean',
+                    description: 'Whether the tab is active',
+                },
+                children: {
+                    // 页签内容
+                    title: 'IUILayoutTabContent',
+                    description: 'Tab content',
+
+                    oneOf: [
+                        {
+                            // 无
+                            $ref: '#/$defs/uiLayout_tab_none',
+                        },
+                        {
+                            // 编辑器
+                            $ref: '#/$defs/uiLayout_tab_editor',
+                        },
+                        {
+                            // 资源文件
+                            $ref: '#/$defs/uiLayout_tab_asset',
+                        },
+                        {
+                            // 自定义
+                            $ref: '#/$defs/uiLayout_tab_custom',
+                        },
+                        {
+                            // 反向链接
+                            $ref: '#/$defs/uiLayout_tab_backlink',
+                        },
+                        {
+                            // 书签
+                            $ref: '#/$defs/uiLayout_tab_bookmark',
+                        },
+                        {
+                            // 文档树
+                            $ref: '#/$defs/uiLayout_tab_files',
+                        },
+                        {
+                            // 关系图
+                            $ref: '#/$defs/uiLayout_tab_graph',
+                        },
+                        {
+                            // 大纲
+                            $ref: '#/$defs/uiLayout_tab_outline',
+                        },
+                        {
+                            // 标签
+                            $ref: '#/$defs/uiLayout_tab_tag',
+                        },
+                        {
+                            // 搜索
+                            $ref: '#/$defs/uiLayout_tab_search',
+                        },
+                    ],
+                },
+                docIcon: {
+                    // 页签图标
+                    type: 'string',
+                    description: 'Tab icon',
+                    examples: [
+                        '1f4a1', // Emoji 字符代码
+                        'folder/icon.png', // 页签图标路径
+                        'iconCode', // 图标引用 ID
+                    ],
+                },
+                icon: {
+                    // 图标引用 ID
+                    type: 'string',
+                    description: 'Icon reference ID',
+                    examples: [
+                        'iconCode',
+                    ],
+                },
+                instance: {
+                    // 对象名称
+                    type: 'string',
+                    title: 'TUiLayoutInstance',
+                    description: 'Object name',
+                    const: 'Tab',
+                },
+                lang: {
+                    // 本地化字段键名
+                    type: 'string',
+                    description: 'Localization field key name',
+                },
+                pin: {
+                    // 该页签是否被钉住
+                    type: 'boolean',
+                    description: 'Whether the tab is pinned',
+                },
+                title: {
+                    // 页签标题
+                    type: 'string',
+                    description: 'Tab title',
+                },
+            },
+        },
+        uiLayout_tab_none: {
+            title: 'IUILayoutTabNone',
+            type: 'object',
+
+            description: 'SiYuan tab without content',
+            additionalProperties: false,
+            required: [],
+            properties: {},
+        },
+        uiLayout_tab_editor: {
+            title: 'IUILayoutTabEditor',
+            type: 'object',
+
+            description: 'SiYuan editor tab',
+            additionalProperties: false,
+            required: [
+                'blockId',
+                'instance',
+                'mode',
+                'notebookId',
+                'rootId',
+            ],
+            properties: {
+                action: {
+                    // 页签加载完成后需要执行的动作
+                    type: 'string',
+                    description: '(Editor) Actions to be performed after the tab is loaded',
+                    examples: [
+                        'cb-get-scroll', // 滚动到文档指定位置
+                    ],
+                },
+                blockId: {
+                    // 块 ID
+                    type: 'string',
+                    description: '(Editor) Block ID',
+                    pattern: '^\\d{14}-[0-9a-z]{7}$',
+                },
+                instance: {
+                    // 对象名称
+                    type: 'string',
+                    title: 'TUiLayoutTabContentInstance',
+                    description: 'Object name',
+                    const: 'Editor',
+                },
+                mode: {
+                    // 编辑器模式
+                    type: 'string',
+                    title: 'TUiLayoutTabEditorMode',
+                    description: '(Editor) Editor mode\n- `wysiwyg`: WYSIWYG mode\n- `preview`: Export preview mode',
+                    enum: [
+                        'wysiwyg', // 所见即所得模式
+                        'preview', // 导出预览模式
+                    ],
+                },
+                notebookId: {
+                    // 文档所在笔记本 ID
+                    type: 'string',
+                    description: '(Editor) Notebook ID',
+                    pattern: '^\\d{14}-[0-9a-z]{7}$',
+                },
+                rootId: {
+                    // 文档块 ID
+                    type: 'string',
+                    description: '(Editor) Document block ID',
+                    pattern: '^\\d{14}-[0-9a-z]{7}$',
+                },
+            },
+        },
+        uiLayout_tab_asset: {
+            title: 'IUILayoutTabAsset',
+            type: 'object',
+
+            description: 'SiYuan asset file tab',
+            additionalProperties: false,
+            required: [
+                'instance',
+                'path',
+            ],
+            properties: {
+                instance: {
+                    // 对象名称
+                    type: 'string',
+                    title: 'TUiLayoutTabContentInstance',
+                    description: 'Object name',
+                    const: 'Asset',
+                },
+                path: {
+                    // 资源文件引用路径
+                    type: 'string',
+                    description: '(Asset) Asset reference path',
+                    examples: [
+                        'assets/filename-20210604092205-djd749a.png',
+                    ],
+                },
+                page: {
+                    // PDF 文件页码
+                    type: 'integer',
+                    description: '(Asset) PDF file page number',
+                },
+            },
+        },
+        uiLayout_tab_custom: {
+            title: 'IUILayoutTabCustom',
+            type: 'object',
+
+            description: 'SiYuan custom tab',
+            additionalProperties: false,
+            required: [
+                'customModelData',
+                'customModelType',
+                'instance',
+            ],
+            properties: {
+                customModelData: {
+                    // 自定义页签的数据
+                    description: '(Custom) Data of the custom tab',
+                },
+                customModelType: {
+                    // 自定义页签的类型
+                    type: 'string',
+                    description: '(Custom) Type of the custom tab',
+                },
+                instance: {
+                    // 对象名称
+                    type: 'string',
+                    title: 'TUiLayoutTabContentInstance',
+                    description: 'Object name',
+                    const: 'Custom',
+                },
+            },
+        },
+        uiLayout_tab_backlink: {
+            title: 'IUILayoutTabBacklink',
+            type: 'object',
+
+            description: 'SiYuan back link tab',
+            additionalProperties: false,
+            required: [
+                'blockId',
+                'instance',
+                'rootId',
+                'type',
+            ],
+            properties: {
+                blockId: {
+                    // 块 ID
+                    type: 'string',
+                    description: '(Backlink) Block ID',
+                    pattern: '^\\d{14}-[0-9a-z]{7}$',
+                },
+                instance: {
+                    // 对象名称
+                    type: 'string',
+                    title: 'TUiLayoutTabContentInstance',
+                    description: 'Object name',
+                    const: 'Backlink',
+                },
+                rootId: {
+                    // 文档块 ID
+                    type: 'string',
+                    description: '(Backlink) Document block ID',
+                    pattern: '^\\d{14}-[0-9a-z]{7}$',
+                },
+                type: {
+                    // 反向链接页签类型
+                    type: 'string',
+                    title: 'TUILayoutTabBacklinkType',
+                    description: '(Backlink) Tab type\n- `pin`: Pinned backlink panel\n- `local`: The backlink panel of the current editor',
+                    enum: [
+                        'pin', // 钉住的反链面板
+                        'local', // 当前编辑器的反链面板
+                    ],
+                },
+            },
+        },
+        uiLayout_tab_bookmark: {
+            title: 'IUILayoutTabBookmark',
+            type: 'object',
+
+            description: 'SiYuan bookmark tab',
+            additionalProperties: false,
+            required: [
+                'instance',
+            ],
+            properties: {
+                instance: {
+                    // 对象名称
+                    type: 'string',
+                    title: 'TUiLayoutTabContentInstance',
+                    description: 'Object name',
+                    const: 'Bookmark',
+                },
+            },
+        },
+        uiLayout_tab_files: {
+            title: 'IUILayoutTabFiles',
+            type: 'object',
+
+            description: 'SiYuan filetree tab',
+            additionalProperties: false,
+            required: [
+                'instance',
+            ],
+            properties: {
+                instance: {
+                    // 对象名称
+                    type: 'string',
+                    title: 'TUiLayoutTabContentInstance',
+                    description: 'Object name',
+                    const: 'Files',
+                },
+            },
+        },
+        uiLayout_tab_graph: {
+            title: 'IUILayoutTabGraph',
+            type: 'object',
+
+            description: 'SiYuan graph tab',
+            additionalProperties: false,
+            required: [
+                'blockId',
+                'instance',
+                'rootId',
+                'type',
+            ],
+            properties: {
+                blockId: {
+                    // 块 ID
+                    type: 'string',
+                    description: '(Graph) Block ID',
+                    pattern: '^\\d{14}-[0-9a-z]{7}$',
+                },
+                instance: {
+                    // 对象名称
+                    type: 'string',
+                    title: 'TUiLayoutTabContentInstance',
+                    description: 'Object name',
+                    const: 'Graph',
+                },
+                rootId: {
+                    // 文档块 ID
+                    type: 'string',
+                    description: '(Graph) Document block ID',
+                    pattern: '^\\d{14}-[0-9a-z]{7}$',
+                },
+                type: {
+                    // 反向链接页签类型
+                    type: 'string',
+                    title: 'TUILayoutTabGraphType',
+                    description: '(Graph) Tab type\n- `pin`: Pinned graph\n- `local`: Graph of the current editor\n- `global`: Global graph',
+                    enum: [
+                        'pin', // 钉住的关系图
+                        'local', // 当前编辑器的关系图
+                        'global', // 全局关系图
+                    ],
+                },
+            },
+        },
+        uiLayout_tab_outline: {
+            title: 'IUILayoutTabOutline',
+            type: 'object',
+
+            description: 'SiYuan outline tab',
+            additionalProperties: false,
+            required: [
+                'blockId',
+                'instance',
+                'isPreview',
+                'type',
+            ],
+            properties: {
+                blockId: {
+                    // 块 ID
+                    type: 'string',
+                    description: '(Outline) Block ID',
+                    pattern: '^\\d{14}-[0-9a-z]{7}$',
+                },
+                instance: {
+                    // 对象名称
+                    type: 'string',
+                    title: 'TUiLayoutTabContentInstance',
+                    description: 'Object name',
+                    const: 'Outline',
+                },
+                isPreview: {
+                    // 关联的编辑器是否为预览模式
+                    type: 'boolean',
+                    description: '(Outline) Whether the associated editor is in preview mode',
+                },
+                type: {
+                    // 大纲页签类型
+                    type: 'string',
+                    title: 'TUILayoutTabOutlineType',
+                    description: '(Outline) Tab type\n- `pin`: Pinned outline panel\n- `local`: The outline panel of the current editor',
+                    enum: [
+                        'pin', // 钉住的大纲面板
+                        'local', // 当前编辑器的大纲面板
+                    ],
+                },
+            },
+        },
+        uiLayout_tab_tag: {
+            title: 'IUILayoutTabTag',
+            type: 'object',
+
+            description: 'SiYuan tag tab',
+            additionalProperties: false,
+            required: [
+                'instance',
+            ],
+            properties: {
+                instance: {
+                    // 对象名称
+                    type: 'string',
+                    title: 'TUiLayoutTabContentInstance',
+                    description: 'Object name',
+                    const: 'Tag',
+                },
+            },
+        },
+        uiLayout_tab_search: {
+            title: 'IUILayoutTabSearch',
+            type: 'object',
+
+            description: 'SiYuan search tab',
+            additionalProperties: false,
+            required: [
+                'config',
+                'instance',
+            ],
+            properties: {
+                config: {
+                    // 搜索设置
+                    $ref: '#/$defs/uiLayout_tab_search_config',
+                },
+                instance: {
+                    // 对象名称
+                    type: 'string',
+                    title: 'TUiLayoutTabContentInstance',
+                    description: 'Object name',
+                    const: 'Search',
+                },
+            },
+        },
+        uiLayout_tab_search_config: {
+            title: 'IUILayoutTabSearchConfig',
+            type: 'object',
+
+            description: 'SiYuan search tab configuration',
+            additionalProperties: false,
+            required: [
+                'group',
+                'hPath',
+                'hasReplace',
+                'idPath',
+                'k',
+                'method',
+                'page',
+                'r',
+                'replaceTypes',
+                'sort',
+                'types',
+            ],
+            properties: {
+                group: {
+                    // 分组策略
+                    type: 'integer',
+                    description: 'Grouping strategy\n- `0`: No grouping\n- `1`: Group by document',
+                    enum: [
+                        0, // 不分组
+                        1, // 按文档分组
+                    ],
+                },
+                hPath: {
+                    // 可读的路径列表
+                    type: 'string',
+                    description: 'Readable path list',
+                },
+                hasReplace: {
+                    // TODO
+                },
+                idPath: {
+                    // 在指定路径列表下搜索
+                    type: 'array',
+                    description: 'Search in the specified paths',
+                    items: {
+                        type: 'string',
+                        pattern: '^(\\d{14}-[0-9a-z]{7})((/\\d{14}-[0-9a-z]{7})+(?:\\.sy)?)?$',
+                        examples: [
+                            '20210808180117-czj9bvb', // 笔记本
+                            '20210808180117-czj9bvb/20200812220555-lj3enxa', // 包含下级文档
+                            '20210808180117-czj9bvb/20200812220555-lj3enxa.sy', // 不包含下级文档
+                        ],
+                    },
+                },
+                k: {
+                    // 搜索内容
+                    type: 'string',
+                    description: 'Search content',
+                },
+                method: {
+                    // 搜索方案
+                    type: 'integer',
+                    description: 'Search scheme\n- `0`: Keyword (default)\n- `1`: Query syntax\n- `2`: SQL\n- `3`: Regular expression\n@defaultValue 0',
+                    enum: [
+                        0, // 关键字
+                        1, // 查询语法
+                        2, // SQL
+                        3, // 正则表达式
+                    ],
+                    default: 0,
+                },
+                name: {
+                    // 查询条件组的自定义名称
+                    type: 'string',
+                    description: 'Custom name of the query condition group',
+                },
+                page: {
+                    // 当前页码
+                    type: 'integer',
+                    description: 'Current page number',
+                },
+                r: {
+                    // 替换内容
+                    type: 'string',
+                    description: 'Replace content',
+                },
+                removed: {
+                    // 移除当前所使用的查询条件组后是否清空搜索框
+                    type: 'boolean',
+                    description: 'Whether to clear the search box after removing the currently used query condition group',
+                },
+                replaceTypes: {
+                    // 替换类型过滤
+                    $ref: '#/$defs/uiLayout_tab_search_config_replaceTypes',
+                },
+                sort: {
+                    // 查询结果排序方案
+                    type: 'integer',
+                    description: 'Search result sorting scheme\n- `0`: Block type (default)\n- `1`: Ascending by creation time\n- `2`: Descending by creation time\n- `3`: Ascending by update time\n- `4`: Descending by update time\n- `5`: By content order (only valid when grouping by document)\n- `6`: Ascending by relevance\n- `7`: Descending by relevance\n@defaultValue 0',
+                    enum: [
+                        0, // 按块类型
+                        1, // 按创建时间升序
+                        2, // 按创建时间降序
+                        3, // 按更新时间升序
+                        4, // 按更新时间降序
+                        5, // 按内容顺序 (仅按文档分组时有效)
+                        6, // 按相关度升序
+                        7, // 按相关度降序
+                    ],
+                    default: 0,
+                },
+                types: {
+                    // 搜索类型过滤
+                    $ref: '#/$defs/uiLayout_tab_search_config_types',
+                },
+            },
+        },
+        uiLayout_tab_search_config_replaceTypes: {
+            title: 'IUILayoutTabSearchConfigReplaceTypes',
+            description: 'Replace type filtering',
+
+            type: 'object',
+            additionalProperties: false,
+            required: [],
+            properties: {
+                aHref: {
+                    // 超链接地址
+                    type: 'boolean',
+                    description: 'Replace hyperlinks\n@defaultValue false',
+                    default: false,
+                },
+                aText: {
+                    // 超链接锚文本
+                    type: 'boolean',
+                    description: 'Replace hyperlink anchor text\n@defaultValue true',
+                    default: true,
+                },
+                aTitle: {
+                    // 超链接标题
+                    type: 'boolean',
+                    description: 'Replace hyperlink title\n@defaultValue true',
+                    default: true,
+                },
+                code: {
+                    // 行内代码
+                    type: 'boolean',
+                    description: 'Replace inline code\n@defaultValue false',
+                    default: false,
+                },
+                codeBlock: {
+                    // 代码块
+                    type: 'boolean',
+                    description: 'Replace code blocks\n@defaultValue false',
+                    default: false,
+                },
+                docTitle: {
+                    // 文档标题
+                    type: 'boolean',
+                    description: 'Replace document title\n@defaultValue true',
+                    default: true,
+                },
+                em: {
+                    // 斜体元素
+                    type: 'boolean',
+                    description: 'Replace italic elements\n@defaultValue true',
+                    default: true,
+                },
+                htmlBlock: {
+                    // HTML 块
+                    type: 'boolean',
+                    description: 'Replace HTML blocks\n@defaultValue false',
+                    default: false,
+                },
+                imgSrc: {
+                    // 图片地址
+                    type: 'boolean',
+                    description: 'Replace image addresses\n@defaultValue false',
+                    default: false,
+                },
+                imgText: {
+                    // 图标锚文本
+                    type: 'boolean',
+                    description: 'Replace image anchor text\n@defaultValue true',
+                    default: true,
+                },
+                imgTitle: {
+                    // 图片标题
+                    type: 'boolean',
+                    description: 'Replace image titles\n@defaultValue true',
+                    default: true,
+                },
+                inlineMath: {
+                    // 行内公式
+                    type: 'boolean',
+                    description: 'Replace inline formulas\n@defaultValue false',
+                    default: false,
+                },
+                inlineMemo: {
+                    // 行内备注
+                    type: 'boolean',
+                    description: 'Replace inline memos\n@defaultValue true',
+                    default: true,
+                },
+                kbd: {
+                    // 按键元素
+                    type: 'boolean',
+                    description: 'Replace kdb elements\n@defaultValue true',
+                    default: true,
+                },
+                mark: {
+                    // 标记元素
+                    type: 'boolean',
+                    description: 'Replace mark elements\n@defaultValue true',
+                    default: true,
+                },
+                mathBlock: {
+                    // 公式块
+                    type: 'boolean',
+                    description: 'Replace formula blocks\n@defaultValue false',
+                    default: false,
+                },
+                s: {
+                    // 删除元素
+                    type: 'boolean',
+                    description: 'Replace delete elements\n@defaultValue true',
+                    default: true,
+                },
+                strong: {
+                    // 粗体元素
+                    type: 'boolean',
+                    description: 'Replace bold elements\n@defaultValue true',
+                    default: true,
+                },
+                sub: {
+                    // 下标元素
+                    type: 'boolean',
+                    description: 'Replace subscript elements\n@defaultValue true',
+                    default: true,
+                },
+                sup: {
+                    // 上标元素
+                    type: 'boolean',
+                    description: 'Replace superscript elements\n@defaultValue true',
+                    default: true,
+                },
+                tag: {
+                    // 标签元素
+                    type: 'boolean',
+                    description: 'Replace tag elements\n@defaultValue true',
+                    default: true,
+                },
+                text: {
+                    // 富文本元素
+                    type: 'boolean',
+                    description: 'Replace rich text elements\n@defaultValue true',
+                    default: true,
+                },
+                u: {
+                    // 下划线元素
+                    type: 'boolean',
+                    description: 'Replace underline elements\n@defaultValue true',
+                    default: true,
+                },
+            },
+        },
+        uiLayout_tab_search_config_types: {
+            title: 'IUILayoutTabSearchConfigTypes',
+            description: 'Search type filtering',
+
+            type: 'object',
+            additionalProperties: false,
+            required: [
+                'blockquote',
+                'codeBlock',
+                'databaseBlock',
+                'document',
+                'embedBlock',
+                'heading',
+                'htmlBlock',
+                'list',
+                'listItem',
+                'mathBlock',
+                'paragraph',
+                'superBlock',
+                'table',
+            ],
+            properties: {
+                audioBlock: {
+                    type: 'boolean',
+                    description: 'Search results contain audio blocks\n@defaultValue false',
+                    default: false,
+                },
+                blockquote: {
+                    type: 'boolean',
+                    description: 'Search results contain blockquote blocks\n@defaultValue false',
+                    default: false,
+                },
+                codeBlock: {
+                    type: 'boolean',
+                    description: 'Search results contain code blocks\n@defaultValue false',
+                    default: false,
+                },
+                databaseBlock: {
+                    type: 'boolean',
+                    description: 'Search results contain database blocks\n@defaultValue false',
+                    default: false,
+                },
+                document: {
+                    type: 'boolean',
+                    description: 'Search results contain document blocks\n@defaultValue false',
+                    default: false,
+                },
+                embedBlock: {
+                    type: 'boolean',
+                    description: 'Search results contain embed blocks\n@defaultValue false',
+                    default: false,
+                },
+                heading: {
+                    type: 'boolean',
+                    description: 'Search results contain heading blocks\n@defaultValue false',
+                    default: false,
+                },
+                htmlBlock: {
+                    type: 'boolean',
+                    description: 'Search results contain html blocks\n@defaultValue false',
+                    default: false,
+                },
+                iframeBlock: {
+                    type: 'boolean',
+                    description: 'Search results contain iframe blocks\n@defaultValue false',
+                    default: false,
+                },
+                list: {
+                    type: 'boolean',
+                    description: 'Search results contain list blocks\n@defaultValue false',
+                    default: false,
+                },
+                listItem: {
+                    type: 'boolean',
+                    description: 'Search results contain list item blocks\n@defaultValue false',
+                    default: false,
+                },
+                mathBlock: {
+                    type: 'boolean',
+                    description: 'Search results contain math blocks\n@defaultValue false',
+                    default: false,
+                },
+                paragraph: {
+                    type: 'boolean',
+                    description: 'Search results contain paragraph blocks\n@defaultValue false',
+                    default: false,
+                },
+                superBlock: {
+                    type: 'boolean',
+                    description: 'Search results contain super blocks\n@defaultValue false',
+                    default: false,
+                },
+                table: {
+                    type: 'boolean',
+                    description: 'Search results contain table blocks\n@defaultValue false',
+                    default: false,
+                },
+                videoBlock: {
+                    type: 'boolean',
+                    description: 'Search results contain video blocks\n@defaultValue false',
+                    default: false,
+                },
+                widgetBlock: {
+                    type: 'boolean',
+                    description: 'Search results contain widget blocks\n@defaultValue false',
+                    default: false,
+                },
+            },
+        },
+        uiLayout_dock: {
+            title: 'IUILayoutDock',
+            type: 'object',
+
+            description: 'SiYuan dock related configuration',
+            additionalProperties: false,
+            required: [
+                'data',
+                'pin',
+            ],
+            properties: {
+                data: {
+                    // 停靠栏区域列表
+                    type: 'array',
+                    description: 'Dock area list',
+                    items: {
+                        // 停靠栏面板列表
+                        type: 'array',
+                        items: {
+                            $ref: '#/$defs/uiLayout_dock_tab',
+                        },
+                    },
+                },
+                pin: {
+                    // 是否钉住该停靠栏
+                    type: 'boolean',
+                    description: 'Whether to pin the dock',
+                },
+            },
+        },
+        uiLayout_dock_tab: {
+            title: 'IUILayoutDockTab',
+            type: 'object',
+
+            description: 'SiYuan dock tab data',
+            additionalProperties: false,
+            required: [
+                'hotkey',
+                'icon',
+                'show',
+                'size',
+                'title',
+                'type',
+            ],
+            properties: {
+                hotkey: {
+                    // 面板快捷键
+                    type: 'string',
+                    description: 'Dock tab hotkey',
+                    examples: [
+                        '', // 未设置快捷键
+                        '⌥2', // Option + 2 / Alt + 2
+                    ],
+                },
+                hotkeyLangId: {
+                    // 快捷键描述 ID
+                    type: 'string',
+                    description: 'Hotkey description ID',
+                },
+                icon: {
+                    // 面板图标 ID
+                    type: 'string',
+                    description: 'Tab icon ID',
+                },
+                show: {
+                    // 是否显示该面板
+                    type: 'boolean',
+                    description: 'Whether to display the tab',
+                },
+                size: {
+                    // 面板尺寸
+                    $ref: '#/$defs/uiLayout_dock_tab_size',
+                },
+                title: {
+                    // 面板标题
+                    type: 'string',
+                    description: 'Tab title',
+                },
+                type: {
+                    // 面板类型
+                    type: 'string',
+                    description: 'Tab type',
+                },
+            },
+        },
+        uiLayout_dock_tab_size: {
+            title: 'IUILayoutDockPanelSize',
+            type: 'object',
+
+            description: 'SiYuan dock tab size',
+            additionalProperties: false,
+            required: [
+                'height',
+                'width',
+            ],
+            properties: {
+                height: {
+                    // 面板高度 (单位: px)
+                    type: [
+                        'integer',
+                        'null',
+                    ],
+                    description: 'Tab height (unit: px)',
+                },
+                width: {
+                    // 面板宽度 (单位: px)
+                    type: [
+                        'integer',
+                        'null',
+                    ],
+                    description: 'Tab width (unit: px)',
+                },
+            },
+        },
+    },
+}

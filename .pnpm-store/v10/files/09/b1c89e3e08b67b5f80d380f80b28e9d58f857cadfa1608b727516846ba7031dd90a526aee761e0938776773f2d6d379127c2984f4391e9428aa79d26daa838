@@ -1,0 +1,119 @@
+/**
+ * schemas/kernel/api/network/forwardProxy/payload.schema.json5
+ * 正向代理
+ * REF: https://github.com/siyuan-note/siyuan/blob/master/API.md#Forward-proxy
+ * REF: https://github.com/siyuan-note/siyuan/blob/v2.10.3/kernel/api/network.go#L36-L200
+ * @pathname: /api/network/forwardProxy
+ * @version: 2.10.3
+ */
+{
+    $schema: 'https://json-schema.org/draft/2020-12/schema',
+    $id: 'https://github.com/siyuan-community/siyuan-sdk/raw/main/schemas/kernel/api/network/forwardProxy/payload.schema.json5',
+    $comment: 'v2.10.3',
+    $ref: '#/$defs/root',
+    $defs: {
+        root: {
+            title: 'payload body',
+            description: 'Forward proxy',
+
+            type: 'object',
+            additionalProperties: false,
+            required: [
+                'url',
+                'headers',
+            ],
+            properties: {
+                url: {
+                    // 请求 URL
+                    type: 'string',
+                    description: 'URL to request',
+
+                    format: 'uri',
+                },
+                method: {
+                    // HTTP 请求方法
+                    title: 'TRequestMethod',
+                    type: 'string',
+                    description: 'HTTP method to request\n@defaultValue "GET"',
+
+                    enum: [
+                        'GET',
+                        'HEAD',
+                        'POST',
+                        'PUT',
+                        'PATCH',
+                        'DELETE',
+                        'OPTIONS',
+                        'TRACE',
+                        'CONNECT',
+                    ],
+                    default: 'GET',
+                },
+                timeout: {
+                    // 请求超时时间 (单位: ms)
+                    type: 'integer',
+                    description: 'timeout to request (ms)\n@defaultValue 7000',
+
+                    minimum: 0,
+                    default: 7000,
+                },
+                contentType: {
+                    // 请求体内容类型
+                    type: 'string',
+                    description: 'Content-Type for request body\n@defaultValue "application/json"',
+
+                    default: 'application/json',
+                },
+                headers: {
+                    // 请求头
+                    type: 'array',
+                    description: 'request headers list',
+                    items: {
+                        $ref: '#/$defs/headers',
+                    },
+                },
+                payload: {
+                    // 请求体
+                    type: [
+                        'object',
+                        'string',
+                    ],
+                    description: 'request body',
+                },
+                payloadEncoding: {
+                    // 请求体编码类型
+                    description: 'Encoding schema for request payload\n@defaultValue "text"',
+                    $ref: '#/$defs/encodeSchema',
+                },
+                responseEncoding: {
+                    // 响应体编码类型
+                    description: 'Encoding schema for response body\n@defaultValue "text"',
+                    $ref: '#/$defs/encodeSchema',
+                },
+            },
+        },
+        headers: {
+            title: 'IHeaders',
+            description: 'Request headers',
+            type: 'object',
+            additionalProperties: {
+                type: 'string',
+            },
+        },
+        encodeSchema: {
+            title: 'TEncodeSchema',
+            type: 'string',
+            default: 'text',
+            enum: [
+                'text',
+                'base64',
+                'base64-std',
+                'base64-url',
+                'base32',
+                'base32-std',
+                'base32-hex',
+                'hex',
+            ],
+        },
+    },
+}

@@ -1,0 +1,32 @@
+{
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "https://github.com/siyuan-community/siyuan-sdk/raw/main/schemas/kernel/api/system/exit/payload.schema.json",
+    "$comment": "v3.0.4",
+    "$ref": "#/$defs/root",
+    "$defs": {
+        "root": {
+            "title": "payload body",
+            "description": "Exit the kernel",
+            "type": "object",
+            "additionalProperties": false,
+            "required": [],
+            "properties": {
+                "execInstallPkg": {
+                    "type": "integer",
+                    "description": "Whether to automatically install the new version of the installation package",
+                    "enum": [
+                        0,
+                        1,
+                        2
+                    ],
+                    "default": 0
+                },
+                "force": {
+                    "type": "boolean",
+                    "description": "Whether to force quit the kernel",
+                    "default": false
+                }
+            }
+        }
+    }
+}

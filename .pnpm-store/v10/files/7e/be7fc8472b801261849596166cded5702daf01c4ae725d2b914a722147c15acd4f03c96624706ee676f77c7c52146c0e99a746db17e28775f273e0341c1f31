@@ -1,0 +1,32 @@
+{
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "https://github.com/siyuan-community/siyuan-sdk/raw/main/schemas/kernel/api/storage/setLocalStorageVal/response.schema.json",
+    "$comment": "v2.10.13",
+    "$ref": "#/$defs/root",
+    "$defs": {
+        "root": {
+            "title": "response body",
+            "description": "Persist a piece of local storage data",
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+                "code",
+                "msg",
+                "data"
+            ],
+            "properties": {
+                "code": {
+                    "type": "integer",
+                    "description": "status code"
+                },
+                "msg": {
+                    "type": "string",
+                    "description": "status message"
+                },
+                "data": {
+                    "type": "null"
+                }
+            }
+        }
+    }
+}

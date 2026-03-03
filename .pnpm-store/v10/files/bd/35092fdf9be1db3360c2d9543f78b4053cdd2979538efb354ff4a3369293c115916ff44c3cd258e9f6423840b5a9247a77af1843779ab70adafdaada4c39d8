@@ -1,0 +1,74 @@
+{
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "https://github.com/siyuan-community/siyuan-sdk/raw/main/schemas/kernel/api/snippet/setSnippet/payload.schema.json",
+    "$comment": "v2.9.7",
+    "$ref": "#/$defs/root",
+    "$defs": {
+        "root": {
+            "title": "payload body",
+            "description": "Set code snippet list",
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+                "snippets"
+            ],
+            "properties": {
+                "snippets": {
+                    "type": "array",
+                    "description": "snippet list",
+                    "items": {
+                        "$ref": "#/$defs/snippet"
+                    }
+                }
+            }
+        },
+        "snippet": {
+            "title": "ISnippet",
+            "description": "code snippet",
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+                "id",
+                "name",
+                "type",
+                "enabled",
+                "content"
+            ],
+            "properties": {
+                "id": {
+                    "type": "string",
+                    "description": "snippet ID",
+                    "oneOf": [
+                        {
+                            "const": ""
+                        },
+                        {
+                            "pattern": "^\\d{14}-[0-9a-z]{7}$"
+                        }
+                    ]
+                },
+                "name": {
+                    "type": "string",
+                    "description": "snippet name"
+                },
+                "type": {
+                    "title": "TSnippetType",
+                    "type": "string",
+                    "description": "snippet type",
+                    "enum": [
+                        "js",
+                        "css"
+                    ]
+                },
+                "enabled": {
+                    "type": "boolean",
+                    "description": "snippet enable status"
+                },
+                "content": {
+                    "type": "string",
+                    "description": "snippet content"
+                }
+            }
+        }
+    }
+}

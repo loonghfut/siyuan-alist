@@ -1,0 +1,104 @@
+{
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "https://github.com/siyuan-community/siyuan-sdk/raw/main/schemas/kernel/api/network/forwardProxy/response.schema.json",
+    "$comment": "v2.10.3",
+    "$ref": "#/$defs/root",
+    "$defs": {
+        "root": {
+            "title": "response body",
+            "description": "Forward proxy",
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+                "code",
+                "msg",
+                "data"
+            ],
+            "properties": {
+                "code": {
+                    "type": "integer",
+                    "description": "status code"
+                },
+                "msg": {
+                    "type": "string",
+                    "description": "status message"
+                },
+                "data": {
+                    "$ref": "#/$defs/data"
+                }
+            }
+        },
+        "data": {
+            "title": "IData",
+            "description": "Response information",
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+                "url",
+                "status",
+                "elapsed",
+                "contentType",
+                "headers",
+                "body",
+                "bodyEncoding"
+            ],
+            "properties": {
+                "url": {
+                    "type": "string",
+                    "description": "URL to request",
+                    "format": "uri"
+                },
+                "status": {
+                    "type": "integer",
+                    "description": "HTTP status code",
+                    "minimum": 100,
+                    "maximum": 599
+                },
+                "elapsed": {
+                    "type": "integer",
+                    "description": "response elapsed",
+                    "minimum": 0
+                },
+                "contentType": {
+                    "type": "string",
+                    "description": "response content-type"
+                },
+                "headers": {
+                    "description": "response headers",
+                    "$ref": "#/$defs/headers"
+                },
+                "body": {
+                    "type": "string",
+                    "description": "response body"
+                },
+                "bodyEncoding": {
+                    "title": "TEncodeSchema",
+                    "type": "string",
+                    "description": "response body encoding schema",
+                    "default": "text",
+                    "enum": [
+                        "text",
+                        "base64",
+                        "base64-std",
+                        "base64-url",
+                        "base32",
+                        "base32-std",
+                        "base32-hex",
+                        "hex"
+                    ]
+                }
+            }
+        },
+        "headers": {
+            "title": "IHeaders",
+            "description": "Response headers",
+            "type": "object",
+            "additionalProperties": {
+                "type": "array",
+                "items": {
+                    "type": "string"
+                }
+            }
+        }
+    }
+}

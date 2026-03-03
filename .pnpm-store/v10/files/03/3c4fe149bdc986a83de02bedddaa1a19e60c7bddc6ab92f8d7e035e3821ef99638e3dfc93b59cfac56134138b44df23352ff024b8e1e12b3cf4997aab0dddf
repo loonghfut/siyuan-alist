@@ -1,0 +1,27 @@
+{
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "https://github.com/siyuan-community/siyuan-sdk/raw/main/schemas/kernel/api/inbox/getShorthand/payload.schema.json",
+    "$comment": "v2.11.1",
+    "$ref": "#/$defs/root",
+    "$defs": {
+        "root": {
+            "title": "payload body",
+            "description": "Get the content of a shorthand",
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+                "id"
+            ],
+            "properties": {
+                "id": {
+                    "type": "string",
+                    "description": "shorthand id",
+                    "pattern": "^\\d{13}$",
+                    "examples": [
+                        "167325294279"
+                    ]
+                }
+            }
+        }
+    }
+}

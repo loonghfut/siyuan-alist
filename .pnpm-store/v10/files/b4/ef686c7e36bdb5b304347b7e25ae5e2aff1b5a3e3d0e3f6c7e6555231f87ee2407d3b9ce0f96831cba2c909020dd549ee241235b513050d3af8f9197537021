@@ -1,0 +1,120 @@
+/**
+ * schemas/kernel/api/block/updateBlock/response.schema.json5
+ * 更新块
+ * REF: https://github.com/siyuan-note/siyuan/blob/master/API.md#update-a-block
+ * REF: https://github.com/siyuan-note/siyuan/blob/v2.10.6/kernel/api/block_op.go#L222-L305
+ * @pathname: /api/block/updateBlock
+ * @version: 2.10.6
+ */
+{
+    $schema: 'https://json-schema.org/draft/2020-12/schema',
+    $id: 'https://github.com/siyuan-community/siyuan-sdk/raw/main/schemas/kernel/api/block/updateBlock/response.schema.json5',
+    $comment: 'v2.10.6',
+    $ref: '#/$defs/root',
+    $defs: {
+        root: {
+            title: 'response body',
+            description: 'Update a block',
+
+            type: 'object',
+            additionalProperties: false,
+            required: [
+                'code',
+                'msg',
+                'data',
+            ],
+            properties: {
+                code: {
+                    type: 'integer',
+                    description: 'status code',
+                },
+                msg: {
+                    type: 'string',
+                    description: 'status message',
+                },
+                data: {
+                    $ref: '#/$defs/data',
+                },
+            },
+        },
+        data: {
+            title: 'IData',
+            description: 'Update transactions',
+
+            type: 'array',
+            minItems: 1,
+            maxItems: 1,
+            items: {
+                $ref: '#/$defs/transaction',
+            },
+        },
+        transaction: {
+            title: 'ITransaction',
+            description: 'Update transaction',
+
+            type: 'object',
+            additionalProperties: false,
+            required: [
+                'timestamp',
+                'doOperations',
+                'undoOperations',
+            ],
+            properties: {
+                timestamp: {
+                    type: 'integer',
+                    description: 'timestamp',
+                },
+                doOperations: {
+                    $ref: '#/$defs/operations',
+                },
+                undoOperations: {
+                    type: 'null',
+                    description: 'undo operation list',
+                },
+            },
+        },
+        operations: {
+            title: 'IOperations',
+            description: 'Update operation list',
+
+            type: 'array',
+            minItems: 1,
+            maxItems: 1,
+            items: {
+                $ref: '#/$defs/operation',
+            },
+        },
+        operation: {
+            title: 'IOperation',
+            description: 'Update operation',
+
+            type: 'object',
+            additionalProperties: true,
+            required: [
+                'action',
+                'data',
+                'id',
+                'parentID',
+            ],
+            properties: {
+                action: {
+                    // 操作活动类型: 更新
+                    type: 'string',
+                    const: 'update',
+                    description: 'operation action type',
+                },
+                data: {
+                    // 所更新内容的 HTML DOM 文本
+                    type: 'string',
+                    description: 'HTML DOM of updating blocks',
+                },
+                id: {
+                    // 更新的块 ID
+                    type: 'string',
+                    description: 'ID of the block to be updated',
+                    pattern: '^\\d{14}-[0-9a-z]{7}$',
+                },
+            },
+        },
+    },
+}

@@ -1,0 +1,48 @@
+{
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "https://github.com/siyuan-community/siyuan-sdk/raw/main/schemas/kernel/api/filetree/createDailyNote/response.schema.json",
+    "$comment": "v2.11.3",
+    "$ref": "#/$defs/root",
+    "$defs": {
+        "root": {
+            "title": "response body",
+            "description": "",
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+                "code",
+                "msg",
+                "data"
+            ],
+            "properties": {
+                "code": {
+                    "type": "integer",
+                    "description": "status code"
+                },
+                "msg": {
+                    "type": "string",
+                    "description": "status message"
+                },
+                "data": {
+                    "$ref": "#/$defs/data"
+                }
+            }
+        },
+        "data": {
+            "title": "IData",
+            "description": "Response information",
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+                "id"
+            ],
+            "properties": {
+                "id": {
+                    "type": "string",
+                    "description": "The block ID of the document block where Today's Daily Note is located",
+                    "pattern": "^\\d{14}-[0-9a-z]{7}$"
+                }
+            }
+        }
+    }
+}

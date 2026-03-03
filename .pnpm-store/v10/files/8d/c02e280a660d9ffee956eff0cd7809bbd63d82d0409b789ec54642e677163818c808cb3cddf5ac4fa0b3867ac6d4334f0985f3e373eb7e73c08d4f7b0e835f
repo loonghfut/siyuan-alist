@@ -1,0 +1,56 @@
+/**
+ * schemas/kernel/api/attr/setBlockAttrs/payload.schema.json5
+ * 设置块属性
+ * REF: https://github.com/siyuan-note/siyuan/blob/master/API.md#set-block-attributes
+ * REF: https://github.com/siyuan-note/siyuan/blob/v2.9.3/kernel/api/attr.go#L53-L89
+ * @pathname: /api/attr/setBlockAttrs
+ * @version: 2.9.3
+ */
+{
+    $schema: 'https://json-schema.org/draft/2020-12/schema',
+    $id: 'https://github.com/siyuan-community/siyuan-sdk/raw/main/schemas/kernel/api/attr/setBlockAttrs/payload.schema.json5',
+    $comment: 'v2.9.3',
+    $ref: '#/$defs/root',
+    $defs: {
+        root: {
+            title: 'payload body',
+            description: 'Set block attributes',
+
+            type: 'object',
+            additionalProperties: false,
+            required: [
+                'id',
+                'attrs',
+            ],
+            properties: {
+                id: {
+                    type: 'string',
+                    description: 'block ID',
+                    pattern: '^\\d{14}-[0-9a-z]{7}$',
+                },
+                attrs: {
+                    $ref: '#/$defs/attrs',
+                },
+            },
+        },
+        attrs: {
+            title: 'IAttrs',
+            description: 'Inline Attribute List (IAL)',
+
+            type: 'object',
+            additionalProperties: {
+                type: [
+                    'string',
+                    'null',
+                ],
+            },
+            // REF: https://opis.io/json-schema/2.x/object.html#propertynames
+            propertyNames: {
+                type: 'string',
+                minLength: 1,
+                // REF: https://github.com/siyuan-note/siyuan/blob/v2.9.3/app/src/util/functions.ts#L74-L76
+                pattern: '^[_a-zA-Z][_.\\-0-9a-zA-Z]*$',
+            },
+        },
+    },
+}

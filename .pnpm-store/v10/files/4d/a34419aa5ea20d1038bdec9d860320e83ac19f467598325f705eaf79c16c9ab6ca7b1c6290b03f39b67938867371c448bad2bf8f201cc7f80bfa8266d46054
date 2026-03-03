@@ -1,0 +1,33 @@
+/**
+ * schemas/kernel/api/export/exportMdContent/payload.schema.json5
+ * 导出指定文档块为 Markdown
+ * REF: https://github.com/siyuan-note/siyuan/blob/master/API.md#export-markdown
+ * REF: https://github.com/siyuan-note/siyuan/blob/v2.9.2/kernel/api/export.go#L311-L330
+ * @pathname: /api/export/exportMdContent
+ * @version: 2.9.2
+ */
+{
+    $schema: 'https://json-schema.org/draft/2020-12/schema',
+    $id: 'https://github.com/siyuan-community/siyuan-sdk/raw/main/schemas/kernel/api/export/exportMdContent/payload.schema.json5',
+    $comment: 'v2.9.2',
+    $ref: '#/$defs/root',
+    $defs: {
+        root: {
+            title: 'payload body',
+            description: 'Exports the specified document block as Markdown',
+
+            type: 'object',
+            additionalProperties: false,
+            required: [
+                'id',
+            ],
+            properties: {
+                id: {
+                    type: 'string',
+                    description: 'doc block ID',
+                    pattern: '^\\d{14}-[0-9a-z]{7}$',
+                },
+            },
+        },
+    },
+}

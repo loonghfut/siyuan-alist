@@ -1,0 +1,193 @@
+/**
+ * schemas/kernel/api/block/getChildBlocks/response.schema.json5
+ * 获取下级块
+ * 如果为文档块, 则获取包含标题块的顶层块
+ * 如果为标题块, 则也可以获取包含下级标题块的所有下级块
+ * REF: https://github.com/siyuan-note/siyuan/blob/master/API.md#get-child-blocks
+ * REF: https://github.com/siyuan-note/siyuan/blob/v2.9.3/kernel/api/block.go#L492-L507
+ * @pathname: /api/block/getChildBlocks
+ * @version: 2.9.3
+ */
+{
+    $schema: 'https://json-schema.org/draft/2020-12/schema',
+    $id: 'https://github.com/siyuan-community/siyuan-sdk/raw/main/schemas/kernel/api/block/getChildBlocks/response.schema.json5',
+    $comment: 'v2.9.3',
+    $ref: '#/$defs/root',
+    $defs: {
+        root: {
+            title: 'response body',
+            description: 'Get child blocks',
+
+            type: 'object',
+            additionalProperties: false,
+            required: [
+                'code',
+                'msg',
+                'data',
+            ],
+            properties: {
+                code: {
+                    type: 'integer',
+                    description: 'status code',
+                },
+                msg: {
+                    type: 'string',
+                    description: 'status message',
+                },
+                data: {
+                    $ref: '#/$defs/data',
+                },
+            },
+        },
+        data: {
+            // 下级块列表
+            title: 'IData',
+            description: 'sub block list',
+
+            type: 'array',
+            items: {
+                $ref: '#/$defs/block',
+            },
+        },
+        block: {
+            // 块
+            title: 'IBlock',
+            description: 'sub block',
+
+            type: 'object',
+            additionalProperties: false,
+            properties: {
+                id: {
+                    // 块 ID
+                    type: 'string',
+                    description: 'block ID',
+                    pattern: '^\\d{14}-[0-9a-z]{7}$',
+                },
+                type: {
+                    // 块类型
+                    title: 'TBlockType',
+                    type: 'string',
+                    description: 'block type',
+                    enum: [
+                        /* 容器块 */
+                        'd', // 文档块
+                        's', // 超级块
+                        'b', // 引述块
+                        'l', // 列表块
+                        'i', // 列表项
+                        /* 叶子块 */
+                        'h', // 标题块
+                        'p', // 段落块
+                        'm', // 公式块
+                        't', // 表格块
+                        'c', // 代码块
+                        'html', // HTML 块
+                        'query_embed', // 嵌入块
+                        'tb', // 分隔线
+                        'audio', // 音频块
+                        'video', // 视频块
+                        'iframe', // iframe
+                        'widget', // 挂件块
+                    ],
+                },
+                subType: {
+                    // 块子类型
+                    title: 'TBlockSubType',
+                    type: 'string',
+                    description: 'block subtype',
+                    enum: [
+                        'h1', // 一级标题
+                        'h2', // 二级标题
+                        'h3', // 三级标题
+                        'h4', // 四级标题
+                        'h5', // 五级标题
+                        'h6', // 六级标题
+                        'u', // 无序列表
+                        'o', // 有序列表
+                        't', // 任务列表
+                    ],
+                },
+            },
+            // REF: https://blog.csdn.net/lxz352907839/article/details/127623957
+            oneOf: [
+                /* 标题块 */
+                {
+                    required: [
+                        'id',
+                        'type',
+                        'subType',
+                    ],
+                    properties: {
+                        type: {
+                            const: 'h',
+                        },
+                        // 标题块具有的子类型: 表示标题级别
+                        subType: {
+                            enum: [
+                                'h1', // 一级标题
+                                'h2', // 二级标题
+                                'h3', // 三级标题
+                                'h4', // 四级标题
+                                'h5', // 五级标题
+                                'h6', // 六级标题
+                            ],
+                        },
+                    },
+                },
+                /* 列表块与列表项 */
+                {
+                    required: [
+                        'id',
+                        'type',
+                        'subType',
+                    ],
+                    properties: {
+                        type: {
+                            enum: [
+                                'l', // 列表块
+                                'i', // 列表项
+                            ],
+                        },
+                        // 列表块与列表项的子类型: 表示列表类型
+                        subType: {
+                            enum: [
+                                'u', // 无序列表
+                                'o', // 有序列表
+                                't', // 任务列表
+                            ],
+                        },
+                    },
+                },
+                /* 其他块 */
+                {
+                    required: [
+                        'id',
+                        'type',
+                    ],
+                    properties: {
+                        type: {
+                            enum: [
+                                /* 容器块 */
+                                'd', // 文档块
+                                's', // 超级块
+                                'b', // 引述块
+                                /* 叶子块 */
+                                'p', // 段落块
+                                'm', // 公式块
+                                't', // 表格块
+                                'c', // 代码块
+                                'html', // HTML 块
+                                'query_embed', // 嵌入块
+                                'tb', // 分隔线
+                                'audio', // 音频块
+                                'video', // 视频块
+                                'iframe', // iframe
+                                'widget', // 挂件块
+                            ],
+                        },
+                    },
+                },
+            ],
+        },
+    },
+}

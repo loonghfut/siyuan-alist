@@ -1,0 +1,24 @@
+{
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "https://github.com/siyuan-community/siyuan-sdk/raw/main/schemas/kernel/api/repo/openRepoSnapshotDoc/payload.schema.json",
+    "$comment": "v2.9.7",
+    "$ref": "#/$defs/root",
+    "$defs": {
+        "root": {
+            "title": "payload body",
+            "description": "Open document in repository snapshot",
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+                "id"
+            ],
+            "properties": {
+                "id": {
+                    "type": "string",
+                    "description": "Snapshot file object ID",
+                    "pattern": "^[0-9a-f]{40}$"
+                }
+            }
+        }
+    }
+}

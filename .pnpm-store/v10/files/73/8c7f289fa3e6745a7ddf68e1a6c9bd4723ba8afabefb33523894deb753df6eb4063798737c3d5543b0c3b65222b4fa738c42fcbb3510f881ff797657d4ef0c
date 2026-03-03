@@ -1,0 +1,140 @@
+/**
+ * schemas/kernel/api/notebook/lsNotebooks/response.schema.json5
+ * 列出所有笔记本
+ * REF: https://github.com/siyuan-note/siyuan/blob/master/API.md#list-notebooks
+ * REF: https://github.com/siyuan-note/siyuan/blob/v2.9.3/kernel/api/notebook.go#L316-L344
+ * @pathname: /api/notebook/lsNotebooks
+ * @version: 2.9.3
+ */
+{
+    $schema: 'https://json-schema.org/draft/2020-12/schema',
+    $id: 'https://github.com/siyuan-community/siyuan-sdk/raw/main/schemas/kernel/api/notebook/lsNotebooks/response.schema.json5',
+    $comment: 'v2.9.3',
+    $ref: '#/$defs/root',
+    $defs: {
+        root: {
+            title: 'response body',
+            description: 'List notebooks',
+
+            type: 'object',
+            additionalProperties: false,
+            required: [
+                'code',
+                'msg',
+                'data',
+            ],
+            properties: {
+                code: {
+                    type: 'integer',
+                    description: 'status code',
+                },
+                msg: {
+                    type: 'string',
+                    description: 'status message',
+                },
+                data: {
+                    $ref: '#/$defs/data',
+                },
+            },
+        },
+        data: {
+            title: 'IData',
+            description: 'response data',
+
+            type: 'object',
+            additionalProperties: false,
+            required: [
+                'notebooks',
+            ],
+            properties: {
+                notebooks: {
+                    $ref: '#/$defs/notebooks',
+                },
+            },
+        },
+        notebooks: {
+            title: 'INotebooks',
+            description: 'notebook list',
+
+            type: 'array',
+            items: {
+                $ref: '#/$defs/notebook',
+            },
+        },
+        notebook: {
+            title: 'INotebook',
+            description: 'notebook object',
+
+            type: 'object',
+            additionalProperties: false,
+            required: [
+                'id',
+                'name',
+                'icon',
+                'sort',
+                'sortMode',
+                'closed',
+                'newFlashcardCount',
+                'dueFlashcardCount',
+                'flashcardCount',
+            ],
+            properties: {
+                id: {
+                    // 笔记本 ID
+                    type: 'string',
+                    description: 'notebook ID',
+                    pattern: '^\\d{14}-[0-9a-z]{7}$',
+                },
+                name: {
+                    // 名称
+                    type: 'string',
+                    description: 'notebook name',
+                },
+                icon: {
+                    // 图标
+                    type: 'string',
+                    description: 'notebook icon',
+                    examples: [
+                        '1f4d1',
+                        'material/folder-project.svg',
+                    ],
+                },
+                sort: {
+                    // 排序序号
+                    type: 'integer',
+                    description: 'sequence number',
+                    minimum: 0,
+                },
+                sortMode: {
+                    // 文档排序模式
+                    type: 'integer',
+                    description: 'document sorting mode',
+                    minimum: 0,
+                },
+                closed: {
+                    // 是否关闭
+                    type: 'boolean',
+                    description: 'notebook open state',
+                },
+                newFlashcardCount: {
+                    // 新闪卡的数量
+                    type: 'integer',
+                    description: 'the count of new flash card',
+                    minimum: 0,
+                },
+                dueFlashcardCount: {
+                    // 到期的闪卡数量
+                    type: 'integer',
+                    description: 'the count of due flash card',
+                    minimum: 0,
+                },
+                flashcardCount: {
+                    // 闪卡数量
+                    type: 'integer',
+                    description: 'the count of flash card',
+                    minimum: 0,
+                },
+            },
+        },
+    },
+}

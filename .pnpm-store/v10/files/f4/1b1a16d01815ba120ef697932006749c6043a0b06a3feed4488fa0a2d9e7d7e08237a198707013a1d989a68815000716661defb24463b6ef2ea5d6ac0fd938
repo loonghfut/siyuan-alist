@@ -1,0 +1,41 @@
+/**
+ * schemas/siyuan/api/file/putFile/response.schema.json5
+ * 获取思源内核版本号
+ * REF: https://github.com/siyuan-note/siyuan/blob/master/API.md#put-file
+ * REF: https://github.com/siyuan-note/siyuan/blob/v2.9.3/kernel/api/file.go#L251-L328
+ * @pathname: /api/file/putFile
+ * @version: 2.9.3
+ */
+{
+    $schema: 'https://json-schema.org/draft/2020-12/schema',
+    $id: 'https://github.com/siyuan-community/siyuan-sdk/raw/main/schemas/kernel/api/file/putFile/response.schema.json5',
+    $comment: 'v2.9.3',
+    $ref: '#/$defs/root',
+    $defs: {
+        root: {
+            title: 'response body',
+            description: 'put file under the workspace directory',
+
+            type: 'object',
+            additionalProperties: false,
+            required: [
+                'code',
+                'msg',
+                'data',
+            ],
+            properties: {
+                code: {
+                    type: 'integer',
+                    description: 'status code',
+                },
+                msg: {
+                    type: 'string',
+                    description: 'status message',
+                },
+                data: {
+                    type: 'null',
+                },
+            },
+        },
+    },
+}

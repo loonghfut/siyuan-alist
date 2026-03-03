@@ -1,0 +1,170 @@
+/**
+ * schemas/kernel/api/filetree/getDoc/response.schema.json5
+ * 获取块 DOM 与相关信息
+ * REF: https://github.com/siyuan-note/siyuan/blob/v2.9.5/kernel/api/filetree.go#L663-L752
+ * @pathname: /api/filetree/getDoc
+ * @version: 2.9.5
+ */
+{
+    $schema: 'https://json-schema.org/draft/2020-12/schema',
+    $id: 'https://github.com/siyuan-community/siyuan-sdk/raw/main/schemas/kernel/api/filetree/getDoc/response.schema.json5',
+    $comment: 'v2.9.5',
+    $ref: '#/$defs/root',
+    $defs: {
+        root: {
+            title: 'response body',
+            description: 'Get block HTML DOM and other information',
+
+            type: 'object',
+            additionalProperties: false,
+            required: [
+                'code',
+                'msg',
+                'data',
+            ],
+            properties: {
+                code: {
+                    type: 'integer',
+                    description: 'status code',
+                },
+                msg: {
+                    type: 'string',
+                    description: 'status message',
+                },
+                data: {
+                    $ref: '#/$defs/data',
+                },
+            },
+        },
+        data: {
+            title: 'IData',
+            description: 'Response information',
+
+            type: 'object',
+            additionalProperties: false,
+            required: [
+                'blockCount',
+                'box',
+                'content',
+                'eof',
+                'id',
+                'isBacklinkExpand',
+                'isSyncing',
+                'mode',
+                'parent2ID',
+                'parentID',
+                'path',
+                'rootID',
+                'scroll',
+                'type',
+            ],
+            properties: {
+                blockCount: {
+                    // 块数量
+                    type: 'integer',
+                    description: 'Block count',
+                },
+                box: {
+                    // 笔记本 ID
+                    type: 'string',
+                    description: 'Notebook ID',
+                    pattern: '^\\d{14}-[0-9a-z]{7}$',
+                },
+                content: {
+                    // HTML DOM 字符串
+                    type: 'string',
+                    description: 'HTML DOM string',
+                },
+                eof: {
+                    // 是否为文件末尾
+                    type: 'boolean',
+                    description: 'End Of File',
+                },
+                id: {
+                    // 块 ID
+                    type: 'string',
+                    description: 'Block ID',
+                    pattern: '^\\d{14}-[0-9a-z]{7}$',
+                },
+                isBacklinkExpand: {
+                    // 是否为反链详情
+                    type: 'boolean',
+                    description: 'is backlink detail?',
+                },
+                isSyncing: {
+                    // 是否正在同步
+                    type: 'boolean',
+                    description: 'is syncing?',
+                },
+                mode: {
+                    // 加载模式
+                    type: 'integer',
+                    description: 'Load mode',
+                },
+                parent2ID: {
+                    /**
+                     * 逻辑上级块 ID
+                     * 若其上方存在同级的子标题, 则为子标题块 ID
+                     * 否则与 parentID 一致
+                     */
+                    type: 'string',
+                    description: 'Logic parent block ID\nif heading exists, it is heading block ID\nelse equal parentID',
+                    pattern: '^\\d{14}-[0-9a-z]{7}$',
+                },
+                parentID: {
+                    // 上级块 ID
+                    type: 'string',
+                    description: 'Parent block ID',
+                    pattern: '^\\d{14}-[0-9a-z]{7}$',
+                },
+                path: {
+                    // 相对于笔记本目录的文档文件目录
+                    type: 'string',
+                    description: 'Document path, which needs to start with / and separate levels with /\npath here corresponds to the database path field',
+                    pattern: '^(/\\d{14}-[0-9a-z]{7})+\\.sy$',
+                    examples: [
+                        '/20200812220555-lj3enxa.sy',
+                        '/20200812220555-lj3enxa/20210808180320-fqgskfj.sy',
+                    ],
+                },
+                rootID: {
+                    // 文档块 ID
+                    type: 'string',
+                    description: 'Document block ID',
+                    pattern: '^\\d{14}-[0-9a-z]{7}$',
+                },
+                scroll: {
+                    // 是否为动态加载
+                    type: 'boolean',
+                    description: 'is dynamic loading?',
+                },
+                type: {
+                    // 目标对应的块类型
+                    title: 'TBlockType',
+                    type: 'string',
+                    description: 'Block type',
+                    enum: [
+                        'NodeDocument', // 文档块
+                        'NodeSuperBlock', // 超级块
+                        'NodeBlockquote', // 引述块
+                        'NodeList', // 列表块
+                        'NodeListItem', // 列表项
+                        'NodeHeading', // 标题块
+                        'NodeParagraph', // 段落块
+                        'NodeMathBlock', // 公式块
+                        'NodeTable', // 表格块
+                        'NodeCodeBlock', // 代码块
+                        'NodeHTMLBlock', // HTML 块
+                        'NodeThematicBreak', // 分割线
+                        'NodeAudio', // 音频快
+                        'NodeVideo', // 视频块
+                        'NodeIFrame', // iframe 块
+                        'NodeWidget', // 挂件块
+                        'NodeBlockQueryEmbed', // 嵌入块
+                        'NodeAttributeView', // 属性表
+                    ],
+                },
+            },
+        },
+    },
+}

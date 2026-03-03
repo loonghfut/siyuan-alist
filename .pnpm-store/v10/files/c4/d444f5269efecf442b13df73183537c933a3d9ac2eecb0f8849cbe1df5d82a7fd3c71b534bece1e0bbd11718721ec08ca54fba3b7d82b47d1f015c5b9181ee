@@ -1,0 +1,63 @@
+/**
+ * schemas/kernel/api/filetree/moveDocs/payload.schema.json5
+ * 重命名文档
+ * REF: https://github.com/siyuan-note/siyuan/blob/master/API.md#move-documents
+ * REF: https://github.com/siyuan-note/siyuan/blob/v2.9.3/kernel/api/filetree.go#L251-L280
+ * @pathname: /api/filetree/moveDocs
+ * @version: 2.9.3
+ */
+{
+    $schema: 'https://json-schema.org/draft/2020-12/schema',
+    $id: 'https://github.com/siyuan-community/siyuan-sdk/raw/main/schemas/kernel/api/filetree/moveDocs/payload.schema.json5',
+    $comment: 'v2.9.3',
+    $ref: '#/$defs/root',
+    $defs: {
+        root: {
+            title: 'payload body',
+            description: 'Move documents',
+
+            type: 'object',
+            additionalProperties: false,
+            required: [
+                'fromPaths',
+                'toNotebook',
+                'toPath',
+            ],
+            properties: {
+                fromPaths: {
+                    /**
+                     * 待移动的文档路径列表
+                     * 文档不能存在上级与下级的依赖关系
+                     */
+                    type: 'array',
+                    description: 'document paths list',
+                    items: {
+                        type: 'string',
+                        description: 'Document path, which needs to start with / and separate levels with /\npath here corresponds to the database path field',
+                        pattern: '^(/\\d{14}-[0-9a-z]{7})+\\.sy$',
+                        examples: [
+                            '/20200812220555-lj3enxa.sy',
+                            '/20200812220555-lj3enxa/20210808180320-fqgskfj.sy',
+                        ],
+                    },
+                },
+                toNotebook: {
+                    // 移动目标笔记本 ID
+                    type: 'string',
+                    description: 'target notebook ID',
+                    pattern: '^\\d{14}-[0-9a-z]{7}$',
+                },
+                toPath: {
+                    // 目标目录路径
+                    type: 'string',
+                    description: 'target path',
+                    pattern: '^(/\\d{14}-[0-9a-z]{7})*/$',
+                    examples: [
+                        '/',
+                        '/20200812220555-lj3enxa/',
+                    ],
+                },
+            },
+        },
+    },
+}

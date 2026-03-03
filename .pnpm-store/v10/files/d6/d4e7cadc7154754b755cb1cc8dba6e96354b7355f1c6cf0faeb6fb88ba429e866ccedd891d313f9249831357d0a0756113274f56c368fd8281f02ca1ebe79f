@@ -1,0 +1,32 @@
+/**
+ * schemas/kernel/api/file/removeFile/payload.schema.json5
+ * 移除工作区目录下指定的文件/目录
+ * REF: https://github.com/siyuan-note/siyuan/blob/master/API.md#remove-file
+ * REF: https://github.com/siyuan-note/siyuan/blob/v2.9.3/kernel/api/file.go#L219-L249
+ * @pathname: /api/file/removeFile
+ * @version: 2.9.3
+ */
+{
+    $schema: 'https://json-schema.org/draft/2020-12/schema',
+    $id: 'https://github.com/siyuan-community/siyuan-sdk/raw/main/schemas/kernel/api/file/removeFile/payload.schema.json5',
+    $comment: 'v2.9.3',
+    $ref: '#/$defs/root',
+    $defs: {
+        root: {
+            title: 'payload body',
+            description: 'remove file/directory under the workspace directory',
+            type: 'object',
+            additionalProperties: false,
+            required: [
+                'path',
+            ],
+            properties: {
+                path: {
+                    // 相对于思源工作空间目录的文件/目录路径
+                    type: 'string',
+                    description: 'the file/dir path under the workspace path',
+                },
+            },
+        },
+    },
+}

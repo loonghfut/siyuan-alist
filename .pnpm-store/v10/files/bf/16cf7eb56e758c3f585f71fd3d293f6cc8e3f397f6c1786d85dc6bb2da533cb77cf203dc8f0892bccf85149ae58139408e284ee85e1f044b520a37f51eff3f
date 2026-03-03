@@ -1,0 +1,84 @@
+/**
+ * schemas/kernel/api/broadcast/getChannels/response.schema.json5
+ * 获取当前所有广播频道
+ * REF: https://github.com/siyuan-note/siyuan/blob/v2.11.0/kernel/api/broadcast.go#L210-L226
+ * @pathname: /api/broadcast/getChannels
+ * @version: 2.11.0
+ */
+{
+    $schema: 'https://json-schema.org/draft/2020-12/schema',
+    $id: 'https://github.com/siyuan-community/siyuan-sdk/raw/main/schemas/kernel/api/broadcast/getChannels/response.schema.json5',
+    $comment: 'v2.11.0',
+    $ref: '#/$defs/root',
+    $defs: {
+        root: {
+            title: 'response body',
+            description: 'Get all broadcast channels',
+
+            type: 'object',
+            additionalProperties: false,
+            required: [
+                'code',
+                'msg',
+                'data',
+            ],
+            properties: {
+                code: {
+                    type: 'integer',
+                    description: 'status code',
+                },
+                msg: {
+                    type: 'string',
+                    description: 'status message',
+                },
+                data: {
+                    $ref: '#/$defs/data',
+                },
+            },
+        },
+        data: {
+            title: 'IData',
+            description: 'response data',
+
+            type: 'object',
+            additionalProperties: false,
+            required: [
+                'channels',
+            ],
+            properties: {
+                channels: {
+                    title: 'IChannels',
+                    description: 'channels list',
+                    type: 'array',
+                    items: {
+                        $ref: '#/$defs/channel',
+                    },
+                },
+            },
+        },
+        channel: {
+            title: 'IChannel',
+            description: 'channel object',
+
+            type: 'object',
+            additionalProperties: false,
+            required: [
+                'name',
+                'count',
+            ],
+            properties: {
+                name: {
+                    // 名称
+                    type: 'string',
+                    description: 'channel name',
+                },
+                count: {
+                    // 频道收听者数量
+                    type: 'integer',
+                    description: 'The count of broadcast channel listener',
+                    minimum: 0,
+                },
+            },
+        },
+    },
+}

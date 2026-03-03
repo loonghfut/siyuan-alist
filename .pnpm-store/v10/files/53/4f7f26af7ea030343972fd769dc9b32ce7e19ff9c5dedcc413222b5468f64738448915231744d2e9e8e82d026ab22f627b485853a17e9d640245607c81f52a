@@ -1,0 +1,67 @@
+{
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "https://github.com/siyuan-community/siyuan-sdk/raw/main/schemas/kernel/api/broadcast/getChannelInfo/response.schema.json",
+    "$comment": "v2.10.2",
+    "$ref": "#/$defs/root",
+    "$defs": {
+        "root": {
+            "title": "response body",
+            "description": "Get the information of specified broadcast channel",
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+                "code",
+                "msg",
+                "data"
+            ],
+            "properties": {
+                "code": {
+                    "type": "integer",
+                    "description": "status code"
+                },
+                "msg": {
+                    "type": "string",
+                    "description": "status message"
+                },
+                "data": {
+                    "$ref": "#/$defs/data"
+                }
+            }
+        },
+        "data": {
+            "title": "IData",
+            "description": "response data",
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+                "channel"
+            ],
+            "properties": {
+                "channel": {
+                    "$ref": "#/$defs/channel"
+                }
+            }
+        },
+        "channel": {
+            "title": "IChannel",
+            "description": "channel object",
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+                "name",
+                "count"
+            ],
+            "properties": {
+                "name": {
+                    "type": "string",
+                    "description": "channel name"
+                },
+                "count": {
+                    "type": "integer",
+                    "description": "The count of broadcast channel listener",
+                    "minimum": 0
+                }
+            }
+        }
+    }
+}

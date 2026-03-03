@@ -1,0 +1,33 @@
+/**
+ * schemas/kernel/api/query/sql/payload.schema.json5
+ * 使用 SQL 查询数据库
+ * REF: https://github.com/siyuan-note/siyuan/blob/master/API.md#execute-sql-query
+ * REF: https://github.com/siyuan-note/siyuan/blob/v2.9.3/kernel/api/sql.go#L29-L47
+ * @pathname: /api/query/sql
+ * @version: 2.9.3
+ */
+{
+    $schema: 'https://json-schema.org/draft/2020-12/schema',
+    $id: 'https://github.com/siyuan-community/siyuan-sdk/raw/main/schemas/kernel/api/query/sql/payload.schema.json5',
+    $comment: 'v2.9.3',
+    $ref: '#/$defs/root',
+    $defs: {
+        root: {
+            title: 'payload body',
+            description: 'query the database using SQL',
+
+            type: 'object',
+            additionalProperties: false,
+            required: [
+                'stmt',
+            ],
+            properties: {
+                stmt: {
+                    // SQL 查询语句
+                    type: 'string',
+                    description: 'SQL query statements',
+                },
+            },
+        },
+    },
+}

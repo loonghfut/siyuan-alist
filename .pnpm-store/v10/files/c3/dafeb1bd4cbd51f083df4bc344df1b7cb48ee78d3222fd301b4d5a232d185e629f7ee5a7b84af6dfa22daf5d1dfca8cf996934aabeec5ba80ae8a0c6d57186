@@ -1,0 +1,51 @@
+/**
+ * Copyright (C) 2023 SiYuan Community
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see {@link http://www.gnu.org/licenses/}.
+ */
+/**
+ * @see
+ * {@link https://fs.spec.whatwg.org/#api-filesystemwritablefilestream}
+ * REF:
+ * {@link https://github.com/jimmywarting/native-file-system-adapter/blob/master/src/FileSystemWritableFileStream.js | native-file-system-adapter/src/FileSystemWritableFileStream.js}
+ * {@link https://developer.mozilla.org/zh-CN/docs/Web/API/WritableStream | WritableStream - Web APIs - MDN}
+ */
+export declare class SiyuanFileSystemWritableFileStream<W extends FileSystemWriteChunkType = FileSystemWriteChunkType> extends WritableStream<W> implements FileSystemWritableFileStream {
+    protected _closed: boolean;
+    constructor(underlyingSink?: UnderlyingSink<W>, //
+    strategy?: QueuingStrategy<W>);
+    close(): Promise<void>;
+    /**
+     * 更新文件流的写入位置
+     * @see
+     * {@link https://fs.spec.whatwg.org/#api-filesystemwritablefilestream-write}
+     * @param data - 将要写入的数据
+     */
+    write(data: FileSystemWriteChunkType): Promise<void>;
+    /**
+     * 更新文件流的写入位置
+     * @see
+     * {@link https://fs.spec.whatwg.org/#dom-filesystemwritablefilestream-seek}
+     * @param position - 写入位置相对于文件首的偏移量
+     */
+    seek(position: number): Promise<void>;
+    /**
+     * 截断文件流
+     * @see
+     * {@link https://fs.spec.whatwg.org/#api-filesystemwritablefilestream-truncate}
+     * @param size - 截断位置相对于文件首的偏移量
+     */
+    truncate(size: number): Promise<void>;
+}
+export default SiyuanFileSystemWritableFileStream;

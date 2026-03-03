@@ -1,0 +1,38 @@
+{
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "https://github.com/siyuan-community/siyuan-sdk/raw/main/schemas/kernel/api/storage/setLocalStorage/payload.schema.json",
+    "$comment": "v2.10.12",
+    "$ref": "#/$defs/root",
+    "$defs": {
+        "root": {
+            "title": "payload body",
+            "description": "Persist local storage data",
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+                "val"
+            ],
+            "properties": {
+                "app": {
+                    "type": "string",
+                    "description": "App ID",
+                    "pattern": "^[0-9a-z]{5}$"
+                },
+                "val": {
+                    "$ref": "#/$defs/val"
+                }
+            }
+        },
+        "val": {
+            "title": "IVal",
+            "description": "Local storage key-value pairs",
+            "type": "object",
+            "additionalProperties": true,
+            "propertyNames": {
+                "type": "string"
+            },
+            "required": [],
+            "properties": {}
+        }
+    }
+}

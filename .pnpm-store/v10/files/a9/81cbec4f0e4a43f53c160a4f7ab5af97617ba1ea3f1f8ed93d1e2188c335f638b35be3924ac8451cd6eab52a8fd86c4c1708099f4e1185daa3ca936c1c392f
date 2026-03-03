@@ -1,0 +1,119 @@
+{
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "https://github.com/siyuan-community/siyuan-sdk/raw/main/schemas/kernel/api/notebook/lsNotebooks/response.schema.json",
+    "$comment": "v2.9.3",
+    "$ref": "#/$defs/root",
+    "$defs": {
+        "root": {
+            "title": "response body",
+            "description": "List notebooks",
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+                "code",
+                "msg",
+                "data"
+            ],
+            "properties": {
+                "code": {
+                    "type": "integer",
+                    "description": "status code"
+                },
+                "msg": {
+                    "type": "string",
+                    "description": "status message"
+                },
+                "data": {
+                    "$ref": "#/$defs/data"
+                }
+            }
+        },
+        "data": {
+            "title": "IData",
+            "description": "response data",
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+                "notebooks"
+            ],
+            "properties": {
+                "notebooks": {
+                    "$ref": "#/$defs/notebooks"
+                }
+            }
+        },
+        "notebooks": {
+            "title": "INotebooks",
+            "description": "notebook list",
+            "type": "array",
+            "items": {
+                "$ref": "#/$defs/notebook"
+            }
+        },
+        "notebook": {
+            "title": "INotebook",
+            "description": "notebook object",
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+                "id",
+                "name",
+                "icon",
+                "sort",
+                "sortMode",
+                "closed",
+                "newFlashcardCount",
+                "dueFlashcardCount",
+                "flashcardCount"
+            ],
+            "properties": {
+                "id": {
+                    "type": "string",
+                    "description": "notebook ID",
+                    "pattern": "^\\d{14}-[0-9a-z]{7}$"
+                },
+                "name": {
+                    "type": "string",
+                    "description": "notebook name"
+                },
+                "icon": {
+                    "type": "string",
+                    "description": "notebook icon",
+                    "examples": [
+                        "1f4d1",
+                        "material/folder-project.svg"
+                    ]
+                },
+                "sort": {
+                    "type": "integer",
+                    "description": "sequence number",
+                    "minimum": 0
+                },
+                "sortMode": {
+                    "type": "integer",
+                    "description": "document sorting mode",
+                    "minimum": 0
+                },
+                "closed": {
+                    "type": "boolean",
+                    "description": "notebook open state"
+                },
+                "newFlashcardCount": {
+                    "type": "integer",
+                    "description": "the count of new flash card",
+                    "minimum": 0
+                },
+                "dueFlashcardCount": {
+                    "type": "integer",
+                    "description": "the count of due flash card",
+                    "minimum": 0
+                },
+                "flashcardCount": {
+                    "type": "integer",
+                    "description": "the count of flash card",
+                    "minimum": 0
+                }
+            }
+        }
+    }
+}

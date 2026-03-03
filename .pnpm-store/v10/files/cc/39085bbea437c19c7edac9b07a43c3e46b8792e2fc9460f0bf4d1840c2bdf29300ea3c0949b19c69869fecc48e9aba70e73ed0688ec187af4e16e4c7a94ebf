@@ -1,0 +1,34 @@
+{
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "https://github.com/siyuan-community/siyuan-sdk/raw/main/schemas/kernel/api/filetree/getIDsByHPath/payload.schema.json",
+    "$comment": "v2.10.15",
+    "$ref": "#/$defs/root",
+    "$defs": {
+        "root": {
+            "title": "payload body",
+            "description": "Get document block ID list from human readable path",
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+                "notebook",
+                "path"
+            ],
+            "properties": {
+                "notebook": {
+                    "type": "string",
+                    "description": "notebook ID",
+                    "pattern": "^\\d{14}-[0-9a-z]{7}$"
+                },
+                "path": {
+                    "type": "string",
+                    "description": "Document path, which needs to start with / and separate levels with /\npath here corresponds to the database hpath field",
+                    "pattern": "^(/[^/\\t\\r\\n\\u2028\\u2029]+)+$",
+                    "examples": [
+                        "/doc-name",
+                        "/parent-doc-name/doc-name"
+                    ]
+                }
+            }
+        }
+    }
+}

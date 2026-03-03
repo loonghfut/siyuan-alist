@@ -1,0 +1,74 @@
+{
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "https://github.com/siyuan-community/siyuan-sdk/raw/main/schemas/kernel/api/filetree/listDocsByPath/payload.schema.json",
+    "$comment": "v2.9.8",
+    "$ref": "#/$defs/root",
+    "$defs": {
+        "root": {
+            "title": "payload body",
+            "description": "List sub docs by path",
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+                "notebook",
+                "path"
+            ],
+            "properties": {
+                "notebook": {
+                    "type": "string",
+                    "description": "notebook ID",
+                    "pattern": "^\\d{14}-[0-9a-z]{7}$"
+                },
+                "path": {
+                    "type": "string",
+                    "description": "document file/folder path",
+                    "examples": [
+                        "",
+                        "/",
+                        ".",
+                        "./",
+                        "20210117215840-jcl17fx",
+                        "/20210117215840-jcl17fx",
+                        "./20210117215840-jcl17fx",
+                        "20210117215840-jcl17fx.sy",
+                        "/20210117215840-jcl17fx.sy",
+                        "./20210117215840-jcl17fx.sy"
+                    ]
+                },
+                "sort": {
+                    "type": "integer",
+                    "description": "document sort rule\n0: Name Alphabet ASC\n1: Name Alphabet DESC\n2: Modified Time ASC\n3: Modified Time DESC\n4: Name Natural ASC\n5: Name Natural DESC\n6: Custom Sorting\n7: Ref Count ASC\n8: Ref Count DESC\n9: Created Time ASC\n10: Created Time DESC\n11: Document Size ASC\n12: Document Size DESC\n13: Sub-docs Count ASC \n14: Sub-docs Count DESC\n15: Use doc tree sorting rule\n256: (default) Use notebook sorting rule",
+                    "default": 256,
+                    "enum": [
+                        0,
+                        1,
+                        2,
+                        3,
+                        4,
+                        5,
+                        6,
+                        7,
+                        8,
+                        9,
+                        10,
+                        11,
+                        12,
+                        13,
+                        14,
+                        15,
+                        256
+                    ]
+                },
+                "maxListCount": {
+                    "type": "integer",
+                    "description": "max list count of docs\n`<= 0`: unlimited"
+                },
+                "flashcard": {
+                    "type": "boolean",
+                    "description": "whether to list flashcard count",
+                    "default": false
+                }
+            }
+        }
+    }
+}

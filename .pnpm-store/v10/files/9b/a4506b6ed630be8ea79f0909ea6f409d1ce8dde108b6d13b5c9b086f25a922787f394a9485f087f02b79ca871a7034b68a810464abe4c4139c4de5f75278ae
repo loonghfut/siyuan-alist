@@ -1,0 +1,63 @@
+{
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "https://github.com/siyuan-community/siyuan-sdk/raw/main/schemas/kernel/api/history/getHistoryItems/payload.schema.json",
+    "$comment": "v2.9.7",
+    "$ref": "#/$defs/root",
+    "$defs": {
+        "root": {
+            "title": "payload body",
+            "description": "Query the list of historical items",
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+                "query",
+                "created"
+            ],
+            "properties": {
+                "query": {
+                    "type": "string",
+                    "description": "Query keywords, which can be document block IDs"
+                },
+                "created": {
+                    "type": "string",
+                    "description": "The timestamp of history item creation",
+                    "pattern": "^\\d{10}$",
+                    "examples": [
+                        "1690304916"
+                    ]
+                },
+                "notebook": {
+                    "type": "string",
+                    "description": "The notebook ID of the query",
+                    "pattern": "^\\d{14}-[0-9a-z]{7}$"
+                },
+                "op": {
+                    "title": "TOperationType",
+                    "type": "string",
+                    "description": "Operation type\nFilter based on the reason established by the history",
+                    "default": "all",
+                    "enum": [
+                        "all",
+                        "clean",
+                        "update",
+                        "delete",
+                        "format",
+                        "sync",
+                        "replace"
+                    ]
+                },
+                "type": {
+                    "type": "integer",
+                    "description": "Query scheme\n0: Search docs by doc name\n1: Search docs by doc name and content\n2: Search assets\n3: Search docs by doc id",
+                    "default": 1,
+                    "enum": [
+                        0,
+                        1,
+                        2,
+                        3
+                    ]
+                }
+            }
+        }
+    }
+}

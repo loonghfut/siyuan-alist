@@ -1,0 +1,39 @@
+/**
+ * schemas/kernel/api/convert/pandoc/payload.schema.json5
+ * 调用 pandoc 转换文件
+ * REF: https://github.com/siyuan-note/siyuan/blob/master/API.md#pandoc
+ * REF: https://github.com/siyuan-note/siyuan/blob/v2.9.3/kernel/api/pandoc.go#L27-L59
+ * @pathname: /api/convert/pandoc
+ * @version: 2.9.3
+ */
+{
+    $schema: 'https://json-schema.org/draft/2020-12/schema',
+    $id: 'https://github.com/siyuan-community/siyuan-sdk/raw/main/schemas/kernel/api/convert/pandoc/payload.schema.json5',
+    $comment: 'v2.9.3',
+    $ref: '#/$defs/root',
+    $defs: {
+        root: {
+            title: 'payload body',
+            description: 'execute pandoc command to convert file',
+            type: 'object',
+            additionalProperties: false,
+            required: [
+                'args',
+            ],
+            properties: {
+                args: {
+                    type: 'array',
+                    description: 'pandoc command-line parameter list',
+                    items: {
+                        type: 'string',
+                    },
+                },
+                dir: {
+                    // 可选参数, 如果未设置则使用随机目录名称
+                    type: 'string',
+                    description: 'working directory name\nworkspace/temp/convert/pandoc/:dir\nIf not set, a random directory name is used',
+                },
+            },
+        },
+    },
+}

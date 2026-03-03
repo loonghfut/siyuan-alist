@@ -1,0 +1,28 @@
+{
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "https://github.com/siyuan-community/siyuan-sdk/raw/main/schemas/kernel/api/notification/pushMsg/payload.schema.json",
+    "$comment": "v2.9.2",
+    "$ref": "#/$defs/root",
+    "$defs": {
+        "root": {
+            "title": "payload body",
+            "description": "push alert information",
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+                "msg"
+            ],
+            "properties": {
+                "msg": {
+                    "type": "string",
+                    "description": "message content"
+                },
+                "timeout": {
+                    "type": "integer",
+                    "description": "message timeout (ms)",
+                    "default": 7000
+                }
+            }
+        }
+    }
+}

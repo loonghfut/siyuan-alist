@@ -1,0 +1,32 @@
+/**
+ * schemas/kernel/api/notebook/lsNotebooks/response.schema.json5
+ * 列出所有笔记本
+ * REF: https://github.com/siyuan-note/siyuan/blob/master/API.md#list-notebooks
+ * REF: https://github.com/siyuan-note/siyuan/blob/v2.9.3/kernel/api/notebook.go#L316-L344
+ * @pathname: /api/notebook/lsNotebooks
+ * @version: 2.9.3
+ */
+{
+    $schema: 'https://json-schema.org/draft/2020-12/schema',
+    $id: 'https://github.com/siyuan-community/siyuan-sdk/raw/main/schemas/kernel/api/notebook/lsNotebooks/payload.schema.json5',
+    $comment: 'v',
+    $ref: '#/$defs/root',
+    $defs: {
+        root: {
+            title: 'payload body',
+            description: 'List notebooks',
+
+            type: 'object',
+            additionalProperties: false,
+            required: [],
+            properties: {
+                flashcard: {
+                    // 是否返回闪卡相关信息
+                    type: 'boolean',
+                    description: 'Whether to return information about the flash card',
+                    default: false,
+                },
+            },
+        },
+    },
+}

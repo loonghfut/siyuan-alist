@@ -1,0 +1,426 @@
+/**
+ * schemas/kernel/api/search/fullTextSearchBlock/response.schema.json5
+ * 全文搜索
+ * REF:
+ * @pathname: /api/search/fullTextSearchBlock
+ * @version: 2.10.5
+ */
+{
+    $schema: 'https://json-schema.org/draft/2020-12/schema',
+    $id: 'https://github.com/siyuan-community/siyuan-sdk/raw/main/schemas/kernel/api/search/fullTextSearchBlock/response.schema.json5',
+    $comment: 'v2.10.5',
+    $ref: '#/$defs/root',
+    $defs: {
+        root: {
+            title: 'response body',
+            description: 'Full text search',
+
+            type: 'object',
+            additionalProperties: false,
+            required: [
+                'code',
+                'msg',
+                'data',
+            ],
+            properties: {
+                code: {
+                    type: 'integer',
+                    description: 'status code',
+                },
+                msg: {
+                    type: 'string',
+                    description: 'status message',
+                },
+                data: {
+                    $ref: '#/$defs/data',
+                },
+            },
+        },
+        data: {
+            title: 'IData',
+            description: 'Response information',
+
+            type: 'object',
+            additionalProperties: false,
+            required: [
+                'blocks',
+                'docMode',
+                'matchedBlockCount',
+                'matchedRootCount',
+                'pageCount',
+            ],
+            properties: {
+                blocks: {
+                    // 搜索结果列表
+                    type: 'array',
+                    description: 'Search results',
+                    items: {
+                        $ref: '#/$defs/block',
+                    },
+                },
+                docMode: {
+                    // 是否为当前文档内容搜索模式
+                    type: 'boolean',
+                    description: 'Whether it is the current document content search mode',
+                },
+                matchedBlockCount: {
+                    // 完整搜索结果中命中的块数量
+                    type: 'integer',
+                    description: 'The number of blocks in the full search results',
+                    minimum: 0,
+                },
+                matchedRootCount: {
+                    // 完整搜索结果中命中的文档数
+                    type: 'integer',
+                    description: 'The number of documents in the full search results',
+                    minimum: 0,
+                },
+                pageCount: {
+                    // 当前分页页码
+                    type: 'integer',
+                    description: 'Current page number',
+                    minimum: 0,
+                },
+            },
+        },
+        block: {
+            title: 'IBlock',
+            description: 'Search result item',
+
+            type: 'object',
+            additionalProperties: false,
+            required: [
+                'box',
+                'path',
+                'hPath',
+                'id',
+                'rootID',
+                'parentID',
+                'name',
+                'alias',
+                'memo',
+                'tag',
+                'content',
+                'fcontent',
+                'markdown',
+                'folded',
+                'type',
+                'subType',
+                'refText',
+                'refs',
+                'defID',
+                'defPath',
+                'ial',
+                'children',
+                'depth',
+                'count',
+                'sort',
+                'created',
+                'updated',
+                'riffCardID',
+                'riffCardReps',
+            ],
+            properties: {
+                box: {
+                    // 笔记本 ID
+                    type: 'string',
+                    description: 'notebook ID',
+                    pattern: '^\\d{14}-[0-9a-z]{7}$',
+                },
+                path: {
+                    // 所在文档路径
+                    type: 'string',
+                    description: 'The path of the document where it is located',
+                    pattern: '^(/\\d{14}-[0-9a-z]{7})+\\.sy$',
+                    examples: [
+                        '/20200812220555-lj3enxa.sy',
+                        '/20200812220555-lj3enxa/20210808180320-fqgskfj.sy',
+                    ],
+                },
+                hPath: {
+                    // 所在文档的可读路径
+                    type: 'string',
+                    description: 'The readable path of the document where it is located',
+                    pattern: '^(/[^/]+)+$',
+                },
+                id: {
+                    // 块 ID
+                    type: 'string',
+                    description: 'Block ID',
+                    pattern: '^\\d{14}-[0-9a-z]{7}$',
+                },
+                rootID: {
+                    // 文档块 ID
+                    type: 'string',
+                    description: 'Document block ID',
+                    pattern: '^\\d{14}-[0-9a-z]{7}$',
+                },
+                parentID: {
+                    // 上级块 ID
+                    type: 'string',
+                    description: 'Parent block ID',
+                    pattern: '^\\d{14}-[0-9a-z]{7}$',
+                },
+                name: {
+                    // 块名称
+                    type: 'string',
+                    description: 'Block name',
+                },
+                alias: {
+                    // 块别名
+                    type: 'string',
+                    description: 'Block alias',
+                },
+                memo: {
+                    // 块备注
+                    type: 'string',
+                    description: 'Block memo',
+                },
+                tag: {
+                    // 块标签
+                    type: 'string',
+                    description: 'Block tags',
+                    examples: [
+                        '',
+                        '#tag#',
+                        '#tag1# #tag2#',
+                        '#tag1# #tag2# #tag3/tag4/tag5#',
+                    ],
+                },
+                content: {
+                    // 块内容
+                    type: 'string',
+                    description: 'Block content',
+                },
+                fcontent: {
+                    // 容器块下级第一个块的块内容
+                    type: 'string',
+                    description: 'The first block content in the container block',
+                },
+                markdown: {
+                    // 块 Markdown 内容
+                    type: 'string',
+                    description: 'Block Markdown content',
+                },
+                folded: {
+                    // 是否折叠
+                    type: 'boolean',
+                    description: 'Whether to fold',
+                },
+                type: {
+                    // 块类型
+                    title: 'TBlockType',
+                    type: 'string',
+                    description: 'Block type',
+                },
+                subType: {
+                    // 块次级类型
+                    title: 'TBlockSubType',
+                    type: 'string',
+                    description: 'Block subtype',
+                },
+                refText: {
+                    // 块引用文本
+                    type: 'string',
+                    description: 'Block reference text',
+                },
+                refs: {
+                    // 块引用列表 (当前块被这些块引用)
+                    type: [
+                        'array',
+                        'null',
+                    ],
+                    description: 'The block ID list of the block reference (the current block is referenced by these blocks)',
+                    items: {
+                        type: 'string',
+                        pattern: '^\\d{14}-[0-9a-z]{7}$',
+                    },
+                },
+                defID: {
+                    type: 'string',
+                },
+                defPath: {
+                    type: 'string',
+                },
+                ial: {
+                    // 块内联属性表
+                    description: 'Inline Attribute List (IAL) of block',
+                    $ref: '#/$defs/ial',
+                },
+                children: {
+                    // 分组后的搜索结果列表
+                    type: [
+                        'array',
+                        'null',
+                    ],
+                    description: 'Grouped search results',
+                    items: {
+                        $ref: '#/$defs/block',
+                    },
+                },
+                depth: {
+                    type: 'integer',
+                },
+                count: {
+                    type: 'integer',
+                },
+                sort: {
+                    // 块排序优先级
+                    type: 'integer',
+                    description: 'Block sort priority',
+                    enum: [
+                        0, // 文档块
+                        5, // 标题块
+                        10, // 段落块 / 代码块 / 数学公式块 / 表格块 / HTML 块
+                        20, // 列表块 / 列表项 / 引述块
+                        30, // 超级块
+                    ],
+                },
+                created: {
+                    // 创建时间
+                    type: 'string',
+                    description: 'Creation time',
+                },
+                updated: {
+                    // 更新时间
+                    type: 'string',
+                    description: 'Update time',
+                },
+                riffCardID: {
+                    // 闪卡 ID
+                    type: 'string',
+                    description: 'Flash card ID',
+                },
+                riffCardReps: {
+                    // 闪卡复习次数
+                    type: 'integer',
+                    description: 'Flash card review count',
+                    minimum: 0,
+                },
+            },
+            oneOf: [
+                {
+                    properties: {
+                        type: {
+                            // 块类型
+                            enum: [
+                                'NodeDocument', // 文档块
+                                'NodeSuperBlock', // 超级块
+                                'NodeBlockquote', // 引述块
+                                'NodeHeading', // 标题块
+                                'NodeParagraph', // 段落块
+                                'NodeTable', // 表格块
+                                'NodeCodeBlock', // 代码块
+                                'NodeHTMLBlock', // HTML 块
+                                'NodeThematicBreak', // 分割线
+                                'NodeAudio', // 音频快
+                                'NodeVideo', // 视频块
+                                'NodeIFrame', // iframe 块
+                                'NodeWidget', // 挂件块
+                                'NodeBlockQueryEmbed', // 嵌入块
+                                'NodeAttributeView', // 属性表
+                            ],
+                        },
+                        subType: {
+                            // 块子类型
+                            enum: [
+                                '', // 其他块
+                            ],
+                        },
+                    },
+                },
+                {
+                    properties: {
+                        type: {
+                            // 块类型
+                            enum: [
+                                'NodeList', // 列表块
+                                'NodeListItem', // 列表项
+                            ],
+                        },
+                        subType: {
+                            // 块子类型
+                            enum: [
+                                'u', // 列表块/列表项
+                                'o', // 列表块/列表项
+                                't', // 列表块/列表项
+                            ],
+                        },
+                    },
+                },
+                {
+                    properties: {
+                        type: {
+                            // 块类型
+                            enum: [
+                                'NodeHeading', // 标题块
+                            ],
+                        },
+                        subType: {
+                            // 块子类型
+                            enum: [
+                                'h1', // 标题块
+                                'h2', // 标题块
+                                'h3', // 标题块
+                                'h4', // 标题块
+                                'h5', // 标题块
+                                'h6', // 标题块
+                            ],
+                        },
+                    },
+                },
+            ],
+        },
+        ial: {
+            // 块内联属性表
+            title: 'IAL',
+            description: 'Inline Attribute List (IAL) of block',
+
+            type: 'object',
+            propertyNames: {
+                type: 'string',
+                minLength: 1,
+                pattern: '^[_a-zA-Z][_.\\-0-9a-zA-Z]*$',
+            },
+            patternProperties: {
+                '^((?!id|title|update)[_a-zA-Z][_.\\-0-9a-zA-Z]*)': {
+                    type: 'string',
+                    minLength: 1,
+                },
+            },
+            additionalProperties: {
+                type: 'string',
+            },
+            required: [
+                'id',
+                'updated',
+            ],
+            properties: {
+                id: {
+                    // 文档块 ID
+                    type: 'string',
+                    description: 'document block ID',
+                    pattern: '^\\d{14}-[0-9a-z]{7}$',
+                    examples: [
+                        '20200812220555-lj3enxa',
+                    ],
+                },
+                updated: {
+                    // 块上次更新时间 YYYYMMDDhhmmss
+                    type: 'string',
+                    description: 'The last time the block was updated',
+                    pattern: '^((?:19|20)\\d{2})(0[1-9]|1[012])(0[1-9]|[12]\\d|3[01])([01]\\d|2[0-3])([0-5]\\d)([0-5]\\d)$',
+                    examples: [
+                        '20210714092948',
+                    ],
+                },
+                title: {
+                    // 文档标题
+                    type: 'string',
+                    description: 'document title',
+                    pattern: '^[^/]+$',
+                },
+            },
+        },
+    },
+}

@@ -1,0 +1,33 @@
+/**
+ * schemas/kernel/api/block/getDocInfo/payload.schema.json5
+ * 获取文档信息
+ * REF: https://github.com/siyuan-note/siyuan/blob/v3.0.5/kernel/api/block.go#L236-L253
+ * @pathname: /api/block/getDocInfo
+ * @version: 3.0.5
+ */
+{
+    $schema: 'https://json-schema.org/draft/2020-12/schema',
+    $id: 'https://github.com/siyuan-community/siyuan-sdk/raw/main/schemas/kernel/api/block/getDocInfo/payload.schema.json5',
+    $comment: 'v3.0.5',
+    $ref: '#/$defs/root',
+    $defs: {
+        root: {
+            title: 'payload body',
+            description: 'Get document information',
+
+            type: 'object',
+            additionalProperties: false,
+            required: [
+                'id',
+            ],
+            properties: {
+                id: {
+                    // 块 ID
+                    type: 'string',
+                    description: 'block ID',
+                    pattern: '^\\d{14}-[0-9a-z]{7}$',
+                },
+            },
+        },
+    },
+}

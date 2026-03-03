@@ -1,0 +1,187 @@
+{
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "https://github.com/siyuan-community/siyuan-sdk/raw/main/schemas/kernel/api/block/getDocInfo/response.schema.json",
+    "$comment": "v3.0.5",
+    "$ref": "#/$defs/root",
+    "$defs": {
+        "root": {
+            "title": "response body",
+            "description": "Get document information",
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+                "code",
+                "msg",
+                "data"
+            ],
+            "properties": {
+                "code": {
+                    "type": "integer",
+                    "description": "status code"
+                },
+                "msg": {
+                    "type": "string",
+                    "description": "status message"
+                },
+                "data": {
+                    "$ref": "#/$defs/data"
+                }
+            }
+        },
+        "data": {
+            "title": "IData",
+            "description": "document information",
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+                "attrViews",
+                "ial",
+                "icon",
+                "id",
+                "name",
+                "refCount",
+                "refIDs",
+                "rootID",
+                "subFileCount"
+            ],
+            "properties": {
+                "attrViews": {
+                    "type": "array",
+                    "description": "Attribute view reference list",
+                    "items": {
+                        "$ref": "#/$defs/attrView"
+                    }
+                },
+                "id": {
+                    "type": "string",
+                    "description": "block ID",
+                    "pattern": "^\\d{14}-[0-9a-z]{7}$"
+                },
+                "rootID": {
+                    "type": "string",
+                    "description": "document block ID",
+                    "pattern": "^\\d{14}-[0-9a-z]{7}$"
+                },
+                "name": {
+                    "type": "string",
+                    "description": "document name"
+                },
+                "refCount": {
+                    "type": "integer",
+                    "description": "The number of references to the document"
+                },
+                "subFileCount": {
+                    "type": "integer",
+                    "description": "The number of sub-documents"
+                },
+                "refIDs": {
+                    "type": "array",
+                    "description": "ID of the block referencing the document",
+                    "items": {
+                        "type": "string",
+                        "description": "block ID",
+                        "pattern": "^\\d{14}-[0-9a-z]{7}$"
+                    }
+                },
+                "icon": {
+                    "type": "string",
+                    "description": "document icon"
+                },
+                "ial": {
+                    "$ref": "#/$defs/ial"
+                }
+            }
+        },
+        "attrView": {
+            "title": "IAttrView",
+            "description": "Attribute view",
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+                "id",
+                "name"
+            ],
+            "properties": {
+                "id": {
+                    "type": "string",
+                    "description": "Attribute view ID"
+                },
+                "name": {
+                    "type": "string",
+                    "description": "Attribute view name"
+                }
+            },
+            "oneOf": [
+                {
+                    "properties": {
+                        "id": {
+                            "const": ""
+                        },
+                        "name": {
+                            "enum": [
+                                "Untitled",
+                                "Sin título",
+                                "Sans titre",
+                                "未命名"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "id": {
+                            "pattern": "^\\d{14}-[0-9a-z]{7}$"
+                        }
+                    }
+                }
+            ]
+        },
+        "ial": {
+            "title": "IAL",
+            "description": "Inline Attribute List (IAL) of document block",
+            "type": "object",
+            "propertyNames": {
+                "type": "string",
+                "minLength": 1,
+                "pattern": "^[_a-zA-Z][_.\\-0-9a-zA-Z]*$"
+            },
+            "patternProperties": {
+                "^((?!id|title|update)[_a-zA-Z][_.\\-0-9a-zA-Z]*)": {
+                    "type": "string",
+                    "minLength": 1
+                }
+            },
+            "additionalProperties": {
+                "type": "string"
+            },
+            "required": [
+                "id",
+                "title",
+                "updated"
+            ],
+            "properties": {
+                "id": {
+                    "type": "string",
+                    "description": "document block ID",
+                    "pattern": "^\\d{14}-[0-9a-z]{7}$",
+                    "examples": [
+                        "20200812220555-lj3enxa"
+                    ]
+                },
+                "title": {
+                    "type": "string",
+                    "description": "document title",
+                    "pattern": "^[^/]+$"
+                },
+                "updated": {
+                    "type": "string",
+                    "description": "The last time the block was updated",
+                    "pattern": "^((?:19|20)\\d{2})(0[1-9]|1[012])(0[1-9]|[12]\\d|3[01])([01]\\d|2[0-3])([0-5]\\d)([0-5]\\d)$",
+                    "examples": [
+                        "20210714092948"
+                    ]
+                }
+            }
+        }
+    }
+}

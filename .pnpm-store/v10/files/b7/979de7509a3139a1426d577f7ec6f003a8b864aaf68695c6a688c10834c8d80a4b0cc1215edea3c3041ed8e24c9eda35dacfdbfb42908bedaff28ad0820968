@@ -1,0 +1,43 @@
+/**
+ * schemas/kernel/api/template/render/payload.schema.json5
+ * 渲染模板文件
+ * REF: https://github.com/siyuan-note/siyuan/blob/master/API.md#render-a-template
+ * REF: https://github.com/siyuan-note/siyuan/blob/v2.9.3/kernel/api/template.go#L68-L94
+ * @pathname: /api/template/render
+ * @version: 2.9.3
+ */
+{
+    $schema: 'https://json-schema.org/draft/2020-12/schema',
+    $id: 'https://github.com/siyuan-community/siyuan-sdk/raw/main/schemas/kernel/api/template/render/payload.schema.json5',
+    $comment: 'v2.9.3',
+    $ref: '#/$defs/root',
+    $defs: {
+        root: {
+            title: 'payload body',
+            description: 'render template file',
+
+            type: 'object',
+            additionalProperties: false,
+            required: [
+                'id',
+                'path',
+            ],
+            properties: {
+                id: {
+                    /**
+                     * 文档块 ID, 用于渲染模板时调用一些文档相关的内置属性与方法
+                     * REF: siyuan://blocks/20210104091309-gjkg3u5
+                     */
+                    type: 'string',
+                    description: 'document block ID',
+                    pattern: '^\\d{14}-[0-9a-z]{7}$',
+                },
+                path: {
+                    // Kramdown 模板文件(*.md)的绝对路径
+                    type: 'string',
+                    description: 'the absolute path of Kramdown template file',
+                },
+            },
+        },
+    },
+}

@@ -1,0 +1,49 @@
+/**
+ * schemas/kernel/api/snippet/getSnippet/payload.schema.json5
+ * 获取代码片段列表
+ * REF: https://github.com/siyuan-note/siyuan/blob/v2.9.7/kernel/api/snippet.go#L58-L94
+ * @pathname: /api/snippet/getSnippet
+ * @version: 2.9.7
+ */
+{
+    $schema: 'https://json-schema.org/draft/2020-12/schema',
+    $id: 'https://github.com/siyuan-community/siyuan-sdk/raw/main/schemas/kernel/api/snippet/getSnippet/payload.schema.json5',
+    $comment: 'v2.9.7',
+    $ref: '#/$defs/root',
+    $defs: {
+        root: {
+            title: 'payload body',
+            description: 'Get code snippet list',
+
+            type: 'object',
+            additionalProperties: false,
+            required: [
+                'type',
+                'enabled',
+            ],
+            properties: {
+                type: {
+                    // 获取指定类型的代码片段
+                    title: 'TSnippetType',
+                    type: 'string',
+                    description: 'Get code snippets of a specified type',
+                    enum: [
+                        'js', // 获取 js 代码片段
+                        'css', // 获取 css 代码片段
+                        'all', // 获取所有类型的代码判断
+                    ],
+                },
+                enabled: {
+                    // 获取指定启用状态的代码片段
+                    type: 'integer',
+                    description: 'Get code snippets of a enabled state\n0: disabled\n1: enabled\n2: all',
+                    enum: [
+                        0, // 禁用的代码片段
+                        1, // 启用的代码片段
+                        2, // 所有状态的代码片段
+                    ],
+                },
+            },
+        },
+    },
+}

@@ -1,0 +1,42 @@
+/**
+ * schemas/kernel/api/system/exit/payload.schema.json5
+ * 退出内核
+ * REF: https://github.com/siyuan-note/siyuan/blob/v3.0.4/kernel/api/system.go#L475-L504
+ * @pathname: /api/system/exit
+ * @version: 3.0.4
+ */
+{
+    $schema: 'https://json-schema.org/draft/2020-12/schema',
+    $id: 'https://github.com/siyuan-community/siyuan-sdk/raw/main/schemas/kernel/api/system/exit/payload.schema.json5',
+    $comment: 'v3.0.4',
+    $ref: '#/$defs/root',
+    $defs: {
+        root: {
+            title: 'payload body',
+            description: 'Exit the kernel',
+
+            type: 'object',
+            additionalProperties: false,
+            required: [],
+            properties: {
+                execInstallPkg: {
+                    // 是否自动安装新版本安装包
+                    type: 'integer',
+                    description: 'Whether to automatically install the new version of the installation package',
+                    enum: [
+                        0, // (default) 按照设置项 System.DownloadInstallPkg 检查并推送提示
+                        1, // 不执行新版本安装
+                        2, // 执行新版本安装
+                    ],
+                    default: 0,
+                },
+                force: {
+                    // 是否强制退出内核
+                    type: 'boolean',
+                    description: 'Whether to force quit the kernel',
+                    default: false,
+                },
+            },
+        },
+    },
+}

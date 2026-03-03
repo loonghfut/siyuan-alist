@@ -1,0 +1,39 @@
+{
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "https://github.com/siyuan-community/siyuan-sdk/raw/main/schemas/kernel/api/export/exportResources/payload.schema.json",
+    "$comment": "v2.9.8",
+    "$ref": "#/$defs/root",
+    "$defs": {
+        "root": {
+            "title": "payload body",
+            "description": "Packages the specified files and folders as *.zip files and returns their download addresses",
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+                "paths"
+            ],
+            "properties": {
+                "paths": {
+                    "type": "array",
+                    "description": "path list of files and folders",
+                    "items": {
+                        "type": "string"
+                    },
+                    "examples": [
+                        [
+                            "/conf/appearance/boot",
+                            "conf/appearance/langs",
+                            "/conf/appearance/emojis/conf.json",
+                            "conf/appearance/icons/index.html"
+                        ]
+                    ]
+                },
+                "name": {
+                    "type": "string",
+                    "description": "main name of the zip file created",
+                    "default": "export-YYYY-MM-DD_hh-mm-ss"
+                }
+            }
+        }
+    }
+}

@@ -1,0 +1,36 @@
+import { Client } from '../../index';
+/**
+ * @see {@link https://fs.spec.whatwg.org/#api-filesystemhandle}
+ */
+export declare class SiyuanFileSystemHandle implements FileSystemHandle {
+    readonly kind: FileSystemHandleKind;
+    readonly name: string;
+    readonly root: string;
+    readonly path: string;
+    readonly directory: string;
+    readonly relativePath: string;
+    readonly relativeDirectory: string;
+    readonly isSymlink: boolean;
+    readonly lastModified: number;
+    protected readonly _client: InstanceType<typeof Client>;
+    /**
+     * @param kind - 资源类型 {@link https://fs.spec.whatwg.org/#dom-filesystemhandle-kind}
+     * @param name - 资源名称 {@link https://fs.spec.whatwg.org/#dom-filesystemhandle-name}
+     * @param root - 工作空间根目录
+     * @param path - 资源完整路径
+     * @param directory - 资源所在目录完整路径
+     * @param relativePath - 资源相对路径
+     * @param relativeDirectory - 目录相对路径
+     * @param isSymlink - 是否为软连接
+     * @param lastModified - 最后修改时间
+     * @param _client - 客户端实例
+     */
+    constructor(kind: FileSystemHandleKind, name: string, root: string, path: string, directory: string, relativePath: string, relativeDirectory: string, isSymlink: boolean, lastModified: number, _client: InstanceType<typeof Client>);
+    /**
+     * 判断节点是否为同一节点
+     * @see {@link https://fs.spec.whatwg.org/#api-filesystemhandle-issameentry}
+     * @param other - 另一个节点
+     * @returns 是否为同一节点
+     */
+    isSameEntry(other: SiyuanFileSystemHandle): Promise<boolean>;
+}

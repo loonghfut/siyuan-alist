@@ -1,0 +1,170 @@
+/**
+ * 模板资源属性
+ */
+{
+    $schema: 'https://json-schema.org/draft/2020-12/schema',
+    $id: 'https://github.com/siyuan-community/siyuan-sdk/raw/main/schemas/manifest/template.schema.json5',
+    $comment: 'v1.0.1',
+    $ref: '#/$defs/root',
+    $defs: {
+        root: {
+            // 模板资源清单文件定义
+            title: 'ITemplate',
+            description: 'Template resource manifest file definition',
+            $ref: '#/$defs/base',
+        },
+        base: {
+            type: 'object',
+            additionalProperties: true,
+            required: [
+                'author',
+                'name',
+                'url',
+                'version',
+            ],
+            properties: {
+                author: {
+                    // 作者名
+                    type: 'string',
+                    description: 'The name of the author',
+                },
+                description: {
+                    // 资源描述
+                    description: 'The description of the resource',
+                    $ref: '#/$defs/_localized_text_',
+                },
+                displayName: {
+                    // 显示名称
+                    description: 'The display name of the resource',
+                    $ref: '#/$defs/_localized_text_',
+                },
+                funding: {
+                    // 资助途径
+                    type: 'object',
+                    title: 'IFunding',
+                    description: 'The funding of the resource',
+
+                    additionalProperties: false,
+                    required: [],
+                    properties: {
+                        custom: {
+                            // 自定义捐助途径 URL
+                            type: 'array',
+                            description: 'The custom funding URLs',
+                            items: {
+                                type: 'string',
+                                description: 'The custom funding URL',
+                                format: 'uri',
+                                examples: [
+                                    'https://afdian.net/a/<username>', // 爱发电
+                                    'https://ko-fi.com/<username>', // Ko-fi
+                                    'https://tidelift.com/subscription/<platform-name>/<package-name>', // Tidelift
+                                    'https://funding.communitybridge.org/projects/<project-name>', // Community Bridge
+                                    'https://liberapay.com/<username>', // Liberapay
+                                    'https://issuehunt.io/r/<username>', // IssueHunt
+                                    'https://crowdfunding.lfx.linuxfoundation.org/projects/<project-name>', // LFX Crowdfunding
+                                ],
+                            },
+                        },
+                        github: {
+                            // GitHub sponsors 用户名
+                            type: 'string',
+                            description: 'The GitHub sponsors username, such as https://github.com/sponsors/<username>',
+                            examples: [
+                                '88250',
+                            ],
+                        },
+                        openCollective: {
+                            // Open Collective 用户名
+                            type: 'string',
+                            description: 'The Open Collective username, such as https://opencollective.com/<username>',
+                            examples: [
+                                'siyuan',
+                            ],
+                        },
+                        patreon: {
+                            // Patreon 用户名
+                            type: 'string',
+                            description: 'The Patreon username, such as https://www.patreon.com/<username>',
+                        },
+                    },
+                },
+                keywords: {
+                    // 用于搜索的关键词
+                    type: 'array',
+                    description: 'The keywords of the resource used for search',
+                    items: {
+                        type: 'string',
+                        description: 'The keyword used for search',
+                    },
+                },
+                minAppVersion: {
+                    // 兼容的最低思源版本
+                    type: 'string',
+                    description: 'The minimum version of SiYuan that the resource is compatible with',
+                    pattern: '^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)$',
+                },
+                name: {
+                    // 资源名称
+                    type: 'string',
+                    description: 'The name of the resource',
+                    pattern: '^[^\\\\/:*?"<>|. ][^\\\\/:*?"<>|]*[^\\\\/:*?"<>|. ]$',
+                },
+                readme: {
+                    // 资源说明文档名称
+                    description: 'The readme file name of the resource',
+                    $ref: '#/$defs/_localized_text_',
+                },
+                url: {
+                    // 资源仓库地址
+                    type: 'string',
+                    description: 'The GitHub repository URL of the resource',
+                    format: 'uri',
+                    examples: [
+                        'https://github.com/siyuan-note/template-sample',
+                    ],
+                },
+                version: {
+                    // 资源版本号
+                    type: 'string',
+                    description: 'The version of the resource',
+                    // REF: https://semver.org/#is-there-a-suggested-regular-expression-regex-to-check-a-semver-string
+                    pattern: '^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(?:-((?:0|[1-9]\\d*|\\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\\.(?:0|[1-9]\\d*|\\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\\+([0-9a-zA-Z-]+(?:\\.[0-9a-zA-Z-]+)*))?$',
+                },
+            },
+        },
+        _localized_text_: {
+            // 本地化文本
+            type: 'object',
+            title: 'ILocalizedText',
+            description: 'Localize text fields',
+
+            additionalProperties: true,
+            required: [
+                'default',
+            ],
+            properties: {
+                default: {
+                    // 默认文本
+                    type: 'string',
+                    description: 'The default text',
+                },
+                en_US: {
+                    // 英文文本
+                    type: 'string',
+                    description: 'The English text',
+                },
+                zh_CHT: {
+                    // 繁体中文文本
+                    type: 'string',
+                    description: 'The Traditional Chinese text',
+                },
+                zh_CN: {
+                    // 简体中文文本
+                    type: 'string',
+                    description: 'The Simplified Chinese text',
+                },
+            },
+        },
+    },
+}

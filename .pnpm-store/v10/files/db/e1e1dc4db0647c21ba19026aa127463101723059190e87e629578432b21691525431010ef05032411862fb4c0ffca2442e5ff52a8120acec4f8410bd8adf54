@@ -1,0 +1,28 @@
+{
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "https://github.com/siyuan-community/siyuan-sdk/raw/main/schemas/kernel/api/broadcast/postMessage/payload.schema.json",
+    "$comment": "v2.10.2",
+    "$ref": "#/$defs/root",
+    "$defs": {
+        "root": {
+            "title": "payload body",
+            "description": "Push broadcast messages to specified channel",
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+                "channel",
+                "message"
+            ],
+            "properties": {
+                "channel": {
+                    "type": "string",
+                    "description": "broadcast channel name"
+                },
+                "message": {
+                    "type": "string",
+                    "description": "broadcast message"
+                }
+            }
+        }
+    }
+}

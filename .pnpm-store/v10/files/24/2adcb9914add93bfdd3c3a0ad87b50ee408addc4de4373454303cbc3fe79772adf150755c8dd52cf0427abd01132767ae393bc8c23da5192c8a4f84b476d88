@@ -1,0 +1,24 @@
+{
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "https://github.com/siyuan-community/siyuan-sdk/raw/main/schemas/kernel/api/block/unfoldBlock/payload.schema.json",
+    "$comment": "v3.0.4",
+    "$ref": "#/$defs/root",
+    "$defs": {
+        "root": {
+            "title": "payload body",
+            "description": "Unfold a block",
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+                "id"
+            ],
+            "properties": {
+                "id": {
+                    "type": "string",
+                    "description": "ID of the block to be unfolded",
+                    "pattern": "^\\d{14}-[0-9a-z]{7}$"
+                }
+            }
+        }
+    }
+}

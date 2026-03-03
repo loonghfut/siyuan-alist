@@ -1,0 +1,56 @@
+import { SiyuanFileSystemFileHandle } from './SiyuanFileSystemFileHandle';
+import { SiyuanFileSystemHandle } from './SiyuanFileSystemHandle';
+import { Client, types } from '../../index';
+export type TEntry = types.kernel.api.file.readDir.IDatum;
+export type THandle = SiyuanFileSystemDirectoryHandle | SiyuanFileSystemFileHandle;
+export interface IEntries {
+    Initialized: boolean;
+    readonly list: TEntry[];
+    readonly files: Map<string, TEntry>;
+    readonly directories: Map<string, TEntry>;
+}
+export declare class SiyuanFileSystemDirectoryHandle extends SiyuanFileSystemHandle implements FileSystemDirectoryHandle {
+    readonly kind = "directory";
+    protected readonly _entries: IEntries;
+    constructor(name: string, // 节点名
+    root: string, // 工作空间根目录
+    path: string, // 节点完整路径
+    directory: string, // 节点目录完整路径
+    relativePath: string, // 节点相对路径
+    relativeDirectory: string, // 节点目录相对路径
+    isSymlink: boolean, // 是否为软连接
+    lastModified: number, // 最后修改时间
+    _client: InstanceType<typeof Client>);
+    init(): Promise<void>;
+    ls(refresh?: boolean): Promise<IEntries>;
+    get length(): number;
+    [Symbol.iterator](): IterableIterator<[string, THandle]>;
+    entries(): AsyncGenerator<[string, THandle]>;
+    keys(): AsyncGenerator<string>;
+    values(): AsyncGenerator<THandle>;
+    /**
+     * 获取指定下级目录节点
+     * @see
+     * {@link https://fs.spec.whatwg.org/#api-filesystemdirectoryhandle-getdirectoryhandle}
+     */
+    getDirectoryHandle(name: string, options?: FileSystemGetDirectoryOptions): Promise<SiyuanFileSystemDirectoryHandle>;
+    /**
+     * 获取指定下级文件节点
+     * @see
+     * {@link https://fs.spec.whatwg.org/#api-filesystemdirectoryhandle-getfilehandle}
+     */
+    getFileHandle(name: string, options?: FileSystemGetFileOptions): Promise<SiyuanFileSystemFileHandle>;
+    /**
+     * 移除指定下级节点
+     * @see
+     * {@link https://fs.spec.whatwg.org/#api-filesystemdirectoryhandle-removeentry}
+     */
+    removeEntry(name: string, options?: FileSystemRemoveOptions): Promise<void>;
+    /**
+     * 解析以获取相对路径
+     * @see
+     * {@link https://fs.spec.whatwg.org/#api-filesystemdirectoryhandle-resolve}
+     */
+    resolve(possibleDescendant: SiyuanFileSystemHandle): Promise<null | string[]>;
+    protected _entry2handle(entry: TEntry): THandle;
+}

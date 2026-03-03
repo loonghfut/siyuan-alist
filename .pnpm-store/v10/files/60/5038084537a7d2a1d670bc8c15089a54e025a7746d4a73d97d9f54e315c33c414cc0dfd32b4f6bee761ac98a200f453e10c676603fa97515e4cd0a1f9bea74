@@ -1,0 +1,45 @@
+import { SiyuanFileSystemHandle } from './SiyuanFileSystemHandle';
+import { SiyuanFileSystemWritableFileStream } from './SiyuanFileSystemWritableFileStream';
+import { Client } from '../../index';
+/**
+ * @see {@link https://fs.spec.whatwg.org/#api-filesystemfilehandle}
+ */
+export declare class SiyuanFileSystemFileHandle//
+ extends SiyuanFileSystemHandle implements FileSystemFileHandle {
+    readonly kind = "file";
+    constructor(name: string, // 节点名
+    root: string, // 工作空间根目录
+    path: string, // 节点完整路径
+    directory: string, // 节点目录完整路径
+    relativePath: string, // 节点相对路径
+    relativeDirectory: string, // 节点目录相对路径
+    isSymlink: boolean, // 是否为软连接
+    lastModified: number, // 最后修改时间
+    _client: InstanceType<typeof Client>);
+    /**
+     * 返回对应的文件
+     * @see
+     * {@link https://fs.spec.whatwg.org/#api-filesystemfilehandle-getfile}
+     */
+    getFile(): Promise<File>;
+    /**
+     * 创建一个可写文件流
+     * @see
+     * {@link https://fs.spec.whatwg.org/#api-filesystemfilehandle-createwritable}
+     */
+    createWritable(options?: FileSystemCreateWritableOptions): Promise<SiyuanFileSystemWritableFileStream>;
+}
+/**
+ * REF: https://github.com/jimmywarting/native-file-system-adapter/blob/master/src/adapters/memory.js
+ */
+export declare class Sink implements UnderlyingSink<FileSystemWriteChunkType> {
+    protected file: File;
+    protected readonly relativePath: string;
+    protected readonly _client: InstanceType<typeof Client>;
+    protected size: number;
+    protected position: number;
+    constructor(file: File, relativePath: string, _client: InstanceType<typeof Client>);
+    close(): Promise<void>;
+    write(chunk: FileSystemWriteChunkType, //
+    _controller: WritableStreamDefaultController): PromiseLike<void> | void;
+}

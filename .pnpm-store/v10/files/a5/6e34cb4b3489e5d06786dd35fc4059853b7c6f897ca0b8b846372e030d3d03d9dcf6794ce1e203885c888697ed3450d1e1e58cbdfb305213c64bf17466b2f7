@@ -1,0 +1,162 @@
+{
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "https://github.com/siyuan-community/siyuan-sdk/raw/main/schemas/kernel/api/search/fullTextSearchBlock/payload.schema.json",
+    "$comment": "v2.10.5",
+    "$ref": "#/$defs/root",
+    "$defs": {
+        "root": {
+            "title": "payload body",
+            "description": "Full text search",
+            "type": "object",
+            "additionalProperties": false,
+            "required": [],
+            "properties": {
+                "method": {
+                    "type": "integer",
+                    "description": "Search scheme\n- `0`: Keyword (default)\n- `1`: Query syntax\n- `2`: SQL\n- `3`: Regular expression\n@defaultValue 0",
+                    "enum": [
+                        0,
+                        1,
+                        2,
+                        3
+                    ],
+                    "default": 0
+                },
+                "groupBy": {
+                    "type": "integer",
+                    "description": "Search results grouping scheme\n- `0`: No grouping (default)\n- `1`: Group by document\n@defaultValue 0",
+                    "enum": [
+                        0,
+                        1
+                    ],
+                    "default": 0
+                },
+                "orderBy": {
+                    "type": "integer",
+                    "description": "Search result sorting scheme\n- `0`: Block type (default)\n- `1`: Ascending by creation time\n- `2`: Descending by creation time\n- `3`: Ascending by update time\n- `4`: Descending by update time\n- `5`: By content order (only valid when grouping by document)\n- `6`: Ascending by relevance\n- `7`: Descending by relevance\n@defaultValue 0",
+                    "enum": [
+                        0,
+                        1,
+                        2,
+                        3,
+                        4,
+                        5,
+                        6,
+                        7
+                    ],
+                    "default": 0
+                },
+                "page": {
+                    "type": "integer",
+                    "description": "Current page number\nStarts from `1`\n@defaultValue 1",
+                    "minimum": 1,
+                    "default": 1
+                },
+                "pageSize": {
+                    "type": "integer",
+                    "description": "Number of search results per page\nminimum: 32\n@defaultValue 32",
+                    "minimum": 32,
+                    "default": 32
+                },
+                "paths": {
+                    "type": "array",
+                    "description": "Search range (document path list)\n@defaultValue []",
+                    "items": {
+                        "type": "string",
+                        "description": "Document path",
+                        "pattern": "^(\\d{14}-[0-9a-z]{7})((/\\d{14}-[0-9a-z]{7})+(?:\\.sy)?)?$",
+                        "examples": [
+                            "20210808180117-czj9bvb",
+                            "20210808180117-czj9bvb/20200812220555-lj3enxa",
+                            "20210808180117-czj9bvb/20200812220555-lj3enxa.sy"
+                        ]
+                    },
+                    "default": []
+                },
+                "query": {
+                    "type": "string",
+                    "description": "Query statement",
+                    "default": ""
+                },
+                "types": {
+                    "description": "The type of block that the search results contain",
+                    "$ref": "#/$defs/types"
+                }
+            }
+        },
+        "types": {
+            "title": "ITypes",
+            "description": "Block type filter",
+            "type": "object",
+            "additionalProperties": false,
+            "required": [],
+            "properties": {
+                "blockquote": {
+                    "type": "boolean",
+                    "description": "Search results contain blockquote blocks\n@defaultValue false",
+                    "default": false
+                },
+                "codeBlock": {
+                    "type": "boolean",
+                    "description": "Search results contain code blocks\n@defaultValue false",
+                    "default": false
+                },
+                "databaseBlock": {
+                    "type": "boolean",
+                    "description": "Search results contain database blocks\n@defaultValue false",
+                    "default": false
+                },
+                "document": {
+                    "type": "boolean",
+                    "description": "Search results contain document blocks\n@defaultValue false",
+                    "default": false
+                },
+                "embedBlock": {
+                    "type": "boolean",
+                    "description": "Search results contain embed blocks\n@defaultValue false",
+                    "default": false
+                },
+                "heading": {
+                    "type": "boolean",
+                    "description": "Search results contain heading blocks\n@defaultValue false",
+                    "default": false
+                },
+                "htmlBlock": {
+                    "type": "boolean",
+                    "description": "Search results contain html blocks\n@defaultValue false",
+                    "default": false
+                },
+                "list": {
+                    "type": "boolean",
+                    "description": "Search results contain list blocks\n@defaultValue false",
+                    "default": false
+                },
+                "listItem": {
+                    "type": "boolean",
+                    "description": "Search results contain list item blocks\n@defaultValue false",
+                    "default": false
+                },
+                "mathBlock": {
+                    "type": "boolean",
+                    "description": "Search results contain math blocks\n@defaultValue false",
+                    "default": false
+                },
+                "paragraph": {
+                    "type": "boolean",
+                    "description": "Search results contain paragraph blocks\n@defaultValue false",
+                    "default": false
+                },
+                "superBlock": {
+                    "type": "boolean",
+                    "description": "Search results contain super blocks\n@defaultValue false",
+                    "default": false
+                },
+                "table": {
+                    "type": "boolean",
+                    "description": "Search results contain table blocks\n@defaultValue false",
+                    "default": false
+                }
+            }
+        }
+    }
+}

@@ -1,0 +1,159 @@
+/**
+ * schemas/kernel/api/block/getBlockBreadcrumb/response.schema.json5
+ * 获取块面包屑
+ * REF: https://github.com/siyuan-note/siyuan/blob/v2.9.5/kernel/api/block.go#L355-L381
+ * @pathname: /api/block/getBlockBreadcrumb
+ * @version: 2.9.5
+ */
+{
+    $schema: 'https://json-schema.org/draft/2020-12/schema',
+    $id: 'https://github.com/siyuan-community/siyuan-sdk/raw/main/schemas/kernel/api/block/getBlockBreadcrumb/response.schema.json5',
+    $comment: 'v2.9.5',
+    $ref: '#/$defs/root',
+    $defs: {
+        root: {
+            title: 'response body',
+            description: 'Get block breadcrumb',
+
+            type: 'object',
+            additionalProperties: false,
+            required: [
+                'code',
+                'msg',
+                'data',
+            ],
+            properties: {
+                code: {
+                    type: 'integer',
+                    description: 'status code',
+                },
+                msg: {
+                    type: 'string',
+                    description: 'status message',
+                },
+                data: {
+                    type: 'array',
+                    description: 'breadcrumb item list',
+
+                    items: {
+                        $ref: '#/$defs/datum',
+                    },
+                },
+            },
+        },
+        datum: {
+            title: 'IBreadcrumbItem',
+            type: 'object',
+            additionalProperties: false,
+            required: [
+                'id',
+                'name',
+                'type',
+                'subType',
+                'children',
+            ],
+            properties: {
+                id: {
+                    // 块 ID
+                    type: 'string',
+                    description: 'Block ID',
+                    pattern: '^\\d{14}-[0-9a-z]{7}$',
+                },
+                name: {
+                    // 块文本内容
+                    type: 'string',
+                    description: 'Block text content',
+                },
+                type: {
+                    // 块类型
+                    title: 'TBlockType',
+                    type: 'string',
+                    description: 'Block type',
+                },
+                subType: {
+                    // 块子类型
+                    title: 'TBlockSubType',
+                    type: 'string',
+                    description: 'Block subtype',
+                },
+                children: {
+                    // 下级块
+                    type: 'null',
+                    description: 'Block children',
+                },
+            },
+            oneOf: [
+                {
+                    properties: {
+                        type: {
+                            // 块类型
+                            enum: [
+                                'NodeDocument', // 文档块
+                                'NodeSuperBlock', // 超级块
+                                'NodeBlockquote', // 引述块
+                                'NodeHeading', // 标题块
+                                'NodeParagraph', // 段落块
+                                'NodeTable', // 表格块
+                                'NodeCodeBlock', // 代码块
+                                'NodeHTMLBlock', // HTML 块
+                                'NodeThematicBreak', // 分割线
+                                'NodeAudio', // 音频快
+                                'NodeVideo', // 视频块
+                                'NodeIFrame', // iframe 块
+                                'NodeWidget', // 挂件块
+                                'NodeBlockQueryEmbed', // 嵌入块
+                                'NodeAttributeView', // 属性表
+                            ],
+                        },
+                        subType: {
+                            // 块子类型
+                            enum: [
+                                '', // 其他块
+                            ],
+                        },
+                    },
+                },
+                {
+                    properties: {
+                        type: {
+                            // 块类型
+                            enum: [
+                                'NodeList', // 列表块
+                                'NodeListItem', // 列表项
+                            ],
+                        },
+                        subType: {
+                            // 块子类型
+                            enum: [
+                                'u', // 列表块/列表项
+                                'o', // 列表块/列表项
+                                't', // 列表块/列表项
+                            ],
+                        },
+                    },
+                },
+                {
+                    properties: {
+                        type: {
+                            // 块类型
+                            enum: [
+                                'NodeHeading', // 标题块
+                            ],
+                        },
+                        subType: {
+                            // 块子类型
+                            enum: [
+                                'h1', // 标题块
+                                'h2', // 标题块
+                                'h3', // 标题块
+                                'h4', // 标题块
+                                'h5', // 标题块
+                                'h6', // 标题块
+                            ],
+                        },
+                    },
+                },
+            ],
+        },
+    },
+}

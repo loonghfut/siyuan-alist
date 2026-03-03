@@ -1,0 +1,29 @@
+{
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "https://github.com/siyuan-community/siyuan-sdk/raw/main/schemas/kernel/api/filetree/searchDocs/payload.schema.json",
+    "$comment": "v2.10.0",
+    "$ref": "#/$defs/root",
+    "$defs": {
+        "root": {
+            "title": "payload body",
+            "description": "Search Document by Keyword",
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+                "k"
+            ],
+            "properties": {
+                "k": {
+                    "type": "string",
+                    "minLength": 1,
+                    "description": "keyword"
+                },
+                "flashcard": {
+                    "type": "boolean",
+                    "description": "whether is flashcard",
+                    "default": false
+                }
+            }
+        }
+    }
+}

@@ -1,0 +1,38 @@
+/**
+ * schemas/kernel/api/history/getDocHistoryContent/payload.schema.json5
+ * 从历史文档文件绝对路径获取文档历史
+ * REF: https://github.com/siyuan-note/siyuan/blob/v2.9.7/kernel/api/history.go#L135-L163
+ * @pathname: /api/history/getDocHistoryContent
+ * @version: 2.9.7
+ */
+{
+    $schema: 'https://json-schema.org/draft/2020-12/schema',
+    $id: 'https://github.com/siyuan-community/siyuan-sdk/raw/main/schemas/kernel/api/history/getDocHistoryContent/payload.schema.json5',
+    $comment: 'v2.9.7',
+    $ref: '#/$defs/root',
+    $defs: {
+        root: {
+            title: 'payload body',
+            description: 'Get document history content from history document file absolute path',
+
+            type: 'object',
+            additionalProperties: false,
+            required: [
+                'historyPath',
+            ],
+            properties: {
+                historyPath: {
+                    // 历史文档文件的绝对路径
+                    type: 'string',
+                    description: 'Absolute path of history document file',
+                },
+                k: {
+                    // 高亮的关键词
+                    type: 'string',
+                    description: 'Highlight keyword',
+                    default: '',
+                },
+            },
+        },
+    },
+}

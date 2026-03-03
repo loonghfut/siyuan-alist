@@ -1,0 +1,254 @@
+/**
+ * schemas/kernel/api/filetree/listDocsByPath/response.schema.json5
+ * 根据文档文件路径列出文档
+ * REF: https://github.com/siyuan-note/siyuan/blob/v2.10.4/kernel/api/filetree.go#L627-L675
+ * @pathname: /api/filetree/listDocsByPath
+ * @version: 2.10.4
+ */
+{
+    $schema: 'https://json-schema.org/draft/2020-12/schema',
+    $id: 'https://github.com/siyuan-community/siyuan-sdk/raw/main/schemas/kernel/api/filetree/listDocsByPath/response.schema.json5',
+    $comment: 'v2.10.4',
+    $ref: '#/$defs/root',
+    $defs: {
+        root: {
+            title: 'response body',
+            description: 'List sub docs by path',
+
+            type: 'object',
+            additionalProperties: false,
+            required: [
+                'code',
+                'msg',
+                'data',
+            ],
+            properties: {
+                code: {
+                    type: 'integer',
+                    description: 'status code',
+                },
+                msg: {
+                    type: 'string',
+                    description: 'status message',
+                },
+                data: {
+                    $ref: '#/$defs/data',
+                },
+            },
+        },
+        data: {
+            title: 'IData',
+            description: 'response data',
+
+            type: 'object',
+            additionalProperties: false,
+            required: [
+                'box',
+                'path',
+                'files',
+            ],
+            properties: {
+                box: {
+                    // 笔记本 ID
+                    type: 'string',
+                    description: 'notebook ID',
+                    pattern: '^\\d{14}-[0-9a-z]{7}$',
+                },
+                path: {
+                    // 文档文件/文件夹路径
+                    type: 'string',
+                    description: 'document file/folder path',
+                },
+                files: {
+                    type: 'array',
+                    items: {
+                        $ref: '#/$defs/file',
+                    },
+                },
+            },
+        },
+        file: {
+            title: 'IFile',
+            description: 'Document information',
+
+            type: 'object',
+            additionalProperties: false,
+            required: [
+                'path',
+                'name',
+                'icon',
+                'name1',
+                'alias',
+                'memo',
+                'bookmark',
+                'id',
+                'count',
+                'size',
+                'hSize',
+                'mtime',
+                'ctime',
+                'hMtime',
+                'hCtime',
+                'sort',
+                'subFileCount',
+                'hidden',
+                'newFlashcardCount',
+                'dueFlashcardCount',
+                'flashcardCount',
+            ],
+            properties: {
+                path: {
+                    // 文档文件路径
+                    type: 'string',
+                    description: 'file path of document',
+                },
+                name: {
+                    // 文档标题
+                    type: 'string',
+                    description: 'document title',
+                    examples: [
+                        'title.sy',
+                    ],
+                },
+                icon: {
+                    // 文海图标
+                    type: 'string',
+                    description: 'document icon',
+                },
+                name1: {
+                    // 文档命名
+                    type: 'string',
+                    description: 'document name',
+                },
+                alias: {
+                    // 文档别名
+                    type: 'string',
+                    description: 'document alias',
+                },
+                memo: {
+                    // 文档备注
+                    type: 'string',
+                    description: 'document memo',
+                },
+                bookmark: {
+                    // 文档书签
+                    type: 'string',
+                    description: 'document bookmark',
+                },
+                id: {
+                    // 文档 ID
+                    type: 'string',
+                    description: 'document ID',
+                    pattern: '^\\d{14}-[0-9a-z]{7}$',
+                },
+                count: {
+                    // 文档被引用数
+                    type: 'integer',
+                    description: 'document reference count',
+                },
+                size: {
+                    // 文档大小 (单位: 字节)
+                    type: 'integer',
+                    description: 'document size (unit: Byte)',
+                },
+                hSize: {
+                    // 人类可读的文档大小
+                    type: 'string',
+                    description: 'human readable document size',
+                    examples: [
+                        '1 B',
+                        '1 kB',
+                        '1 MB',
+                        '1 GB',
+                        '1 TB',
+                        '1 PB',
+                        '1 EB',
+                    ],
+                },
+                mtime: {
+                    // 文档修改时间 (Unix 时间戳, 单位: ms)
+                    type: 'integer',
+                    description: 'document modified time (Unix timestamp, unit: s)',
+                    examples: [
+                        1690511805,
+                    ],
+                },
+                ctime: {
+                    // 文档创建时间 (Unix 时间戳, 单位: ms)
+                    type: 'integer',
+                    description: 'document created time (Unix timestamp, unit: s)',
+                    examples: [
+                        1597241155,
+                    ],
+                },
+                hMtime: {
+                    // 人类可读的文档修改时间
+                    type: 'string',
+                    description: 'human readable document modified time',
+                    examples: [
+                        '1 week ago',
+                    ],
+                },
+                hCtime: {
+                    // 人类可读的文档创建时间
+                    type: 'string',
+                    description: 'human readable document created time',
+                    examples: [
+                        '1 week ago',
+                    ],
+                },
+                sort: {
+                    // 文档排序规则
+                    type: 'integer',
+                    description: 'document sort rule\n0: Name Alphabet ASC\n1: Name Alphabet DESC\n2: Modified Time ASC\n3: Modified Time DESC\n4: Name Natural ASC\n5: Name Natural DESC\n6: Custom Sorting\n7: Ref Count ASC\n8: Ref Count DESC\n9: Created Time ASC\n10: Created Time DESC\n11: Document Size ASC\n12: Document Size DESC\n13: Sub-docs Count ASC \n14: Sub-docs Count DESC\n15: Use doc tree sorting rule\n256: (default) Use notebook sorting rule',
+                    default: 256, // 默认使用笔记本排序规则
+                    enum: [
+                        // REF: https://github.com/siyuan-note/siyuan/blob/v2.10.4/kernel/util/sort.go#L60-L79
+                        0, //文件名字母升序
+                        1, //文件名字母降序
+                        2, //文件更新时间升序
+                        3, //文件更新时间降序
+                        4, //文件名自然数升序
+                        5, //文件名自然数降序
+                        6, //自定义排序
+                        7, //引用数升序
+                        8, //引用数降序
+                        9, //文件创建时间升序
+                        10, //文件创建时间降序
+                        11, //文件大小升序
+                        12, //文件大小降序
+                        13, //子文档数升序
+                        14, //子文档数降序
+                        15, //使用文档树排序规则
+                        256, //未指定排序规则，按照笔记本优先于文档树获取排序规则
+                    ],
+                },
+                subFileCount: {
+                    // 下级文件数
+                    type: 'integer',
+                    description: 'sub file count',
+                },
+                hidden: {
+                    // 是否隐藏
+                    type: 'boolean',
+                    description: 'is hidden',
+                },
+                newFlashcardCount: {
+                    // 新闪卡数
+                    type: 'integer',
+                    description: 'new flashcard count',
+                },
+                dueFlashcardCount: {
+                    // 到期闪卡数
+                    type: 'integer',
+                    description: 'due flashcard count',
+                },
+                flashcardCount: {
+                    // 闪卡总数
+                    type: 'integer',
+                    description: 'flashcard count',
+                },
+            },
+        },
+    },
+}

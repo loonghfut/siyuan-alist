@@ -1,0 +1,51 @@
+{
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "https://github.com/siyuan-community/siyuan-sdk/raw/main/schemas/kernel/api/export/exportResources/response.schema.json",
+    "$comment": "v2.9.8",
+    "$ref": "#/$defs/root",
+    "$defs": {
+        "root": {
+            "title": "payload body",
+            "description": "Packages the specified files and folders as *.zip files and returns their download addresses",
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+                "code",
+                "msg",
+                "data"
+            ],
+            "properties": {
+                "code": {
+                    "type": "integer",
+                    "description": "status code"
+                },
+                "msg": {
+                    "type": "string",
+                    "description": "status message"
+                },
+                "data": {
+                    "$ref": "#/$defs/data"
+                }
+            }
+        },
+        "data": {
+            "title": "IData",
+            "description": "response data",
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+                "path"
+            ],
+            "properties": {
+                "path": {
+                    "type": "string",
+                    "description": "the path of *.zip exported under the workspace",
+                    "examples": [
+                        "temp/export/custom-file-name.zip",
+                        "temp/export/export-2023-07-28_15-05-49.zip"
+                    ]
+                }
+            }
+        }
+    }
+}

@@ -1,0 +1,116 @@
+/**
+ * schemas/kernel/api/notebook/setNotebookConf/payload.schema.json5
+ * 设置笔记本配置
+ * REF: https://github.com/siyuan-note/siyuan/blob/master/API.md#save-notebook-configuration
+ * REF: https://github.com/siyuan-note/siyuan/blob/v3.0.12/kernel/api/notebook.go#L264-L332
+ * @pathname: /api/notebook/setNotebookConf
+ * @version: 3.0.12
+ */
+{
+    $schema: 'https://json-schema.org/draft/2020-12/schema',
+    $id: 'https://github.com/siyuan-community/siyuan-sdk/raw/main/schemas/kernel/api/notebook/setNotebookConf/payload.schema.json5',
+    $comment: 'v3.0.12',
+    $ref: '#/$defs/root',
+    $defs: {
+        root: {
+            title: 'payload body',
+            description: 'Set notebook configuration',
+
+            type: 'object',
+            additionalProperties: false,
+            required: [
+                'notebook',
+                'conf',
+            ],
+            properties: {
+                notebook: {
+                    type: 'string',
+                    description: 'notebook ID',
+                    pattern: '^\\d{14}-[0-9a-z]{7}$',
+                },
+                conf: {
+                    $ref: '#/$defs/conf',
+                },
+            },
+        },
+        conf: {
+            title: 'IConf',
+            description: 'notebook configuration',
+
+            type: 'object',
+            additionalProperties: false,
+            required: [
+                'closed',
+                'dailyNoteSavePath',
+                'dailyNoteTemplatePath',
+                'docCreateSaveBox',
+                'docCreateSavePath',
+                'icon',
+                'name',
+                'refCreateSaveBox',
+                'refCreateSavePath',
+                'sort',
+                'sortMode',
+            ],
+            properties: {
+                closed: {
+                    // 笔记本是否关闭
+                    type: 'boolean',
+                    description: 'notebook open state',
+                },
+                dailyNoteSavePath: {
+                    // 新建日记时的存放路径
+                    type: 'string',
+                    description: 'the path of new daily note',
+                },
+                dailyNoteTemplatePath: {
+                    // 新建日记的模板位置
+                    type: 'string',
+                    description: 'the template file path of new daily note',
+                },
+                docCreateSaveBox: {
+                    // 新建文档存放笔记本
+                    type: 'string',
+                    description: 'New document save notebook',
+                },
+                docCreateSavePath: {
+                    // 新建文档存放位置
+                    type: 'string',
+                    description: 'New document save location',
+                },
+                icon: {
+                    // 笔记本图标
+                    type: 'string',
+                    description: 'notebook icon',
+                },
+                name: {
+                    // 笔记本名称
+                    type: 'string',
+                    description: 'notebook name',
+                },
+                refCreateSaveBox: {
+                    // 块引用新建文档时存放的笔记本
+                    type: 'string',
+                    description: 'The notebook that was stored when a new document was created using block references',
+                },
+                refCreateSavePath: {
+                    // 块引用新建文档时存放的位置
+                    type: 'string',
+                    description: 'The document path that was stored when a new document was created using block references',
+                },
+                sort: {
+                    // 排序序号
+                    type: 'integer',
+                    description: 'sequence number',
+                    minimum: 0,
+                },
+                sortMode: {
+                    // 文档排序模式
+                    type: 'integer',
+                    description: 'document sorting mode',
+                    minimum: 0,
+                },
+            },
+        },
+    },
+}

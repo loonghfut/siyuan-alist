@@ -1,0 +1,32 @@
+/**
+ * schemas/kernel/api/broadcast/getChannelInfo/payload.schema.json5
+ * 获取指定频道的信息
+ * REF: https://github.com/siyuan-note/siyuan/blob/v2.10.2/kernel/api/broadcast.go#L169-L198
+ * @pathname: /api/broadcast/getChannelInfo
+ * @version: 2.10.2
+ */
+{
+    $schema: 'https://json-schema.org/draft/2020-12/schema',
+    $id: 'https://github.com/siyuan-community/siyuan-sdk/raw/main/schemas/kernel/api/broadcast/getChannelInfo/payload.schema.json5',
+    $comment: 'v2.10.2',
+    $ref: '#/$defs/root',
+    $defs: {
+        root: {
+            title: 'payload body',
+            description: 'Get the information of specified broadcast channel',
+
+            type: 'object',
+            additionalProperties: false,
+            required: [
+                'name',
+            ],
+            properties: {
+                name: {
+                    // 广播通道名称
+                    type: 'string',
+                    description: 'broadcast channel name',
+                },
+            },
+        },
+    },
+}

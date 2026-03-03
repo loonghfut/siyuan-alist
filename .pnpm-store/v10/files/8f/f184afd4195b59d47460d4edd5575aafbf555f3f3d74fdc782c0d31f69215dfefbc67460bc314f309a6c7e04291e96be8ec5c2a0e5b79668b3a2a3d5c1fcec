@@ -1,0 +1,33 @@
+/**
+ * schemas/kernel/api/outline/getDocOutline/payload.schema.json5
+ * 获取文档大纲
+ * REF: https://github.com/siyuan-note/siyuan/blob/v2.12.3/kernel/api/outline.go#L28-L49
+ * @pathname: /api/outline/getDocOutline
+ * @version: 2.12.3
+ */
+{
+    $schema: 'https://json-schema.org/draft/2020-12/schema',
+    $id: 'https://github.com/siyuan-community/siyuan-sdk/raw/main/schemas/kernel/api/outline/getDocOutline/payload.schema.json5',
+    $comment: 'v2.12.3',
+    $ref: '#/$defs/root',
+    $defs: {
+        root: {
+            title: 'payload body',
+            description: 'Gets the document outline',
+
+            type: 'object',
+            additionalProperties: false,
+            required: [
+                'id',
+            ],
+            properties: {
+                id: {
+                    // 块 ID
+                    type: 'string',
+                    description: 'Block ID',
+                    pattern: '^\\d{14}-[0-9a-z]{7}$',
+                },
+            },
+        },
+    },
+}

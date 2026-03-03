@@ -1,0 +1,90 @@
+/**
+ * schemas/kernel/api/snippet/setSnippet/payload.schema.json5
+ * 设置代码片段列表
+ * REF: https://github.com/siyuan-note/siyuan/blob/v2.9.7/kernel/api/snippet.go#L96-L128
+ * @pathname: /api/snippet/setSnippet
+ * @version: 2.9.7
+ */
+{
+    $schema: 'https://json-schema.org/draft/2020-12/schema',
+    $id: 'https://github.com/siyuan-community/siyuan-sdk/raw/main/schemas/kernel/api/snippet/setSnippet/payload.schema.json5',
+    $comment: 'v2.9.7',
+    $ref: '#/$defs/root',
+    $defs: {
+        root: {
+            title: 'payload body',
+            description: 'Set code snippet list',
+
+            type: 'object',
+            additionalProperties: false,
+            required: [
+                'snippets',
+            ],
+            properties: {
+                snippets: {
+                    // 代码片段列表
+                    type: 'array',
+                    description: 'snippet list',
+                    items: {
+                        $ref: '#/$defs/snippet',
+                    },
+                },
+            },
+        },
+        snippet: {
+            // 一个代码片段
+            title: 'ISnippet',
+            description: 'code snippet',
+
+            type: 'object',
+            additionalProperties: false,
+            required: [
+                'id',
+                'name',
+                'type',
+                'enabled',
+                'content',
+            ],
+            properties: {
+                id: {
+                    // 代码片段 ID
+                    type: 'string',
+                    description: 'snippet ID',
+                    oneOf: [
+                        {
+                            const: '', // 新的代码片段, ID 应设置为空 (内核自动生成)
+                        },
+                        {
+                            pattern: '^\\d{14}-[0-9a-z]{7}$',
+                        },
+                    ],
+                },
+                name: {
+                    // 代码片段名称
+                    type: 'string',
+                    description: 'snippet name',
+                },
+                type: {
+                    // 代码片段类型
+                    title: 'TSnippetType',
+                    type: 'string',
+                    description: 'snippet type',
+                    enum: [
+                        'js', // JavaScript 片段
+                        'css', // CSS 片段
+                    ],
+                },
+                enabled: {
+                    // 代码片段是否启用
+                    type: 'boolean',
+                    description: 'snippet enable status',
+                },
+                content: {
+                    // 代码片段内容
+                    type: 'string',
+                    description: 'snippet content',
+                },
+            },
+        },
+    },
+}

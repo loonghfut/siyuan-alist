@@ -1,0 +1,723 @@
+{
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "https://github.com/siyuan-community/siyuan-sdk/raw/main/schemas/kernel/api/network/echo/response.schema.json",
+    "$comment": "v2.11.0",
+    "$ref": "#/$defs/root",
+    "$defs": {
+        "root": {
+            "title": "response body",
+            "description": "Echo the content of the request",
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+                "code",
+                "msg",
+                "data"
+            ],
+            "properties": {
+                "code": {
+                    "type": "integer",
+                    "description": "status code"
+                },
+                "msg": {
+                    "type": "string",
+                    "description": "status message"
+                },
+                "data": {
+                    "$ref": "#/$defs/data"
+                }
+            }
+        },
+        "data": {
+            "title": "IData",
+            "description": "Response information",
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+                "Context",
+                "Request",
+                "URL",
+                "User"
+            ],
+            "properties": {
+                "Context": {
+                    "$ref": "#/$defs/Context"
+                },
+                "Request": {
+                    "$ref": "#/$defs/Request"
+                },
+                "URL": {
+                    "$ref": "#/$defs/URL"
+                },
+                "User": {
+                    "$ref": "#/$defs/User"
+                }
+            }
+        },
+        "Context": {
+            "title": "IContext",
+            "description": "Request context",
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+                "ClientIP",
+                "ContentType",
+                "FullPath",
+                "HandlerNames",
+                "IsWebsocket",
+                "Params",
+                "RawData",
+                "RemoteIP"
+            ],
+            "properties": {
+                "ClientIP": {
+                    "type": "string",
+                    "description": "{@link https://pkg.go.dev/github.com/gin-gonic/gin@v1.9.1#Context.ClientIP}\n\nClientIP implements one best effort algorithm to return the real client IP.\n\nIt calls c.RemoteIP() under the hood, to check if the remote IP is a trusted proxy or not.\n\nIf it is it will then try to parse the headers defined in Engine.RemoteIPHeaders (defaulting to [X-Forwarded-For, X-Real-Ip]).\n\nIf the headers are not syntactically valid OR the remote IP does not correspond to a trusted proxy, the remote IP (coming from Request.RemoteAddr) is returned."
+                },
+                "ContentType": {
+                    "type": "string",
+                    "description": "{@link https://pkg.go.dev/github.com/gin-gonic/gin@v1.9.1#Context.ContentType}\n\nContentType returns the Content-Type header of the request."
+                },
+                "FullPath": {
+                    "type": "string",
+                    "description": "{@link https://pkg.go.dev/github.com/gin-gonic/gin@v1.9.1#Context.FullPath}\n\nFullPath returns a matched route full path.\n\nFor not found routes returns an empty string."
+                },
+                "HandlerNames": {
+                    "type": "array",
+                    "description": "{@link https://pkg.go.dev/github.com/gin-gonic/gin@v1.9.1#Context.HandlerNames}\n\nHandlerNames returns a list of all registered handlers for this context in descending order, following the semantics of HandlerName()",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "IsWebsocket": {
+                    "type": "boolean",
+                    "description": "{@link https://pkg.go.dev/github.com/gin-gonic/gin@v1.9.1#Context.IsWebsocket}\n\nIsWebsocket returns true if the request headers indicate that a websocket handshake is being initiated by the client."
+                },
+                "Params": {
+                    "type": [
+                        "array",
+                        "null"
+                    ],
+                    "description": "{@link https://pkg.go.dev/github.com/gin-gonic/gin@v1.9.1#Params}\n\nParams is a Param-slice, as returned by the router.\n\nThe slice is ordered, the first URL parameter is also the first slice value.\n\nIt is therefore safe to read values by the index.",
+                    "items": {
+                        "$ref": "#/$defs/Param"
+                    }
+                },
+                "RawData": {
+                    "type": "string",
+                    "description": "{@link https://pkg.go.dev/github.com/gin-gonic/gin@v1.9.1#Context.GetRawData}\n\nGetRawData returns stream data.\n\nUse base64 encoding."
+                },
+                "RemoteIP": {
+                    "type": "string",
+                    "description": "{@link https://pkg.go.dev/github.com/gin-gonic/gin@v1.9.1#Context.RemoteIP}\n\nRemoteIP parses the IP from Request.RemoteAddr, normalizes and returns the IP (without the port)."
+                }
+            }
+        },
+        "Request": {
+            "title": "IRequest",
+            "description": "Request content",
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+                "Close",
+                "ContentLength",
+                "Cookies",
+                "Form",
+                "Header",
+                "Host",
+                "Method",
+                "MultipartForm",
+                "PostForm",
+                "Proto",
+                "ProtoMajor",
+                "ProtoMinor",
+                "Referer",
+                "RemoteAddr",
+                "TLS",
+                "Trailer",
+                "TransferEncoding",
+                "URL",
+                "UserAgent"
+            ],
+            "properties": {
+                "Close": {
+                    "type": "boolean",
+                    "description": "{@link https://pkg.go.dev/net/http#Request.Close}Close indicates whether to close the connection after replying to this request (for servers) or after sending this request and reading its response (for clients).\n\nFor server requests, the HTTP server handles this automatically and this field is not needed by Handlers.\n\nFor client requests, setting this field prevents re-use of TCP connections between requests to the same hosts, as if Transport.DisableKeepAlives were set."
+                },
+                "ContentLength": {
+                    "type": "integer",
+                    "description": "{@link https://pkg.go.dev/net/http#Request.ContentLength}\n\nContentLength records the length of the associated content.\n\nThe value -1 indicates that the length is unknown.\n\nValues `>=` 0 indicate that the given number of bytes may be read from Body.\n\nFor client requests, a value of 0 with a non-nil Body is also treated as unknown."
+                },
+                "Cookies": {
+                    "type": "array",
+                    "description": "{@link https://pkg.go.dev/net/http#Request.CookiesP}\n\nCookies parses and returns the HTTP cookies sent with the request.",
+                    "items": {
+                        "$ref": "#/$defs/Cookie"
+                    }
+                },
+                "Form": {
+                    "description": "{@link https://pkg.go.dev/net/http#Request.Form}\n\nForm contains the parsed form data, including both the URL field's query parameters and the PATCH, POST, or PUT form data.\n\nThis field is only available after ParseForm is called.\n\nThe HTTP client ignores Form and uses Body instead.",
+                    "$ref": "#/$defs/Values"
+                },
+                "Header": {
+                    "description": "{@link https://pkg.go.dev/net/http#Request.Header}\n\nA Header represents the key-value pairs in an HTTP header.\n\nThe keys should be in canonical form, as returned by CanonicalHeaderKey.",
+                    "$ref": "#/$defs/Header"
+                },
+                "Host": {
+                    "type": "string",
+                    "description": "{@link https://pkg.go.dev/net/http#Request.Host}\n\nFor server requests, Host specifies the host on which the URL is sought. For HTTP/1 (per RFC 7230, section 5.4), this is either the value of the \"Host\" header or the host name given in the URL itself. For HTTP/2, it is the value of the \":authority\" pseudo-header field.\n\nIt may be of the form \"host:port\". For international domain names, Host may be in Punycode or Unicode form. Use golang.org/x/net/idna to convert it to either format if needed.\n\nTo prevent DNS rebinding attacks, server Handlers should validate that the Host header has a value for which the Handler considers itself authoritative. The included\n\nServeMux supports patterns registered to particular host names and thus protects its registered Handlers.\n\nFor client requests, Host optionally overrides the Host header to send. If empty, the Request.Write method uses the value of URL.Host. Host may contain an international domain name."
+                },
+                "Method": {
+                    "type": "string",
+                    "description": "{@link https://pkg.go.dev/net/http#Request.Method}\n\nMethod specifies the HTTP method (GET, POST, PUT, etc.).\n\nFor client requests, an empty string means GET.\n\nGo's HTTP client does not support sending a request with the CONNECT method. See the documentation on Transport for details."
+                },
+                "MultipartForm": {
+                    "description": "{@link https://pkg.go.dev/mime/multipart#Form}\n\nForm is a parsed multipart form.\n\nIts File parts are stored either in memory or on disk,\n\nand are accessible via the *FileHeader's Open method.\n\nIts Value parts are stored as strings.\n\nBoth are keyed by field name.",
+                    "oneOf": [
+                        {
+                            "$ref": "#/$defs/MultipartForm"
+                        },
+                        {
+                            "type": "null"
+                        }
+                    ]
+                },
+                "PostForm": {
+                    "description": "{@link https://pkg.go.dev/net/http#Request.PostForm}\n\nPostForm contains the parsed form data from PATCH, POST or PUT body parameters.\n\nThis field is only available after ParseForm is called.\n\nThe HTTP client ignores PostForm and uses Body instead.",
+                    "$ref": "#/$defs/Values"
+                },
+                "Proto": {
+                    "type": "string",
+                    "description": "{@link https://pkg.go.dev/net/http#Request.Proto}\n\nThe protocol version for incoming server requests.\n\nFor client requests, these fields are ignored. The HTTP client code always uses either HTTP/1.1 or HTTP/2.\n\nSee the docs on Transport for details."
+                },
+                "ProtoMajor": {
+                    "type": "integer",
+                    "description": "{@link https://pkg.go.dev/net/http#Request.ProtoMajor}"
+                },
+                "ProtoMinor": {
+                    "type": "integer",
+                    "description": "{@link https://pkg.go.dev/net/http#Request.ProtoMinor}"
+                },
+                "Referer": {
+                    "type": "string",
+                    "description": "{@link https://pkg.go.dev/net/http#Request.RemoteAddr}\n\nReferer returns the referring URL, if sent in the request.\n\nReferer is misspelled as in the request itself, a mistake from the earliest days of HTTP.  This value can also be fetched from the Header map as Header[\"Referer\"]; the benefit of making it available as a method is that the compiler can diagnose programs that use the alternate (correct English) spelling req.Referrer() but cannot diagnose programs that use Header[\"Referrer\"]."
+                },
+                "RemoteAddr": {
+                    "type": "string",
+                    "description": "{@link https://pkg.go.dev/net/http#Request.RemoteAddr}\n\nRemoteAddr allows HTTP servers and other software to record the network address that sent the request, usually for logging. This field is not filled in by ReadRequest and has no defined format. The HTTP server in this package sets RemoteAddr to an \"IP:port\" address before invoking a handler.\n\nThis field is ignored by the HTTP client."
+                },
+                "TLS": {
+                    "description": "{@link https://pkg.go.dev/net/http#Request.TLS}\n\nTLS allows HTTP servers and other software to record information about the TLS connection on which the request was received. This field is not filled in by ReadRequest.\n\nThe HTTP server in this package sets the field for TLS-enabled connections before invoking a handler; otherwise it leaves the field nil.\n\nThis field is ignored by the HTTP client.",
+                    "oneOf": [
+                        {
+                            "$ref": "#/$defs/TLS"
+                        },
+                        {
+                            "type": "null"
+                        }
+                    ]
+                },
+                "Trailer": {
+                    "description": "{@link https://pkg.go.dev/net/http#Request.Trailer}\n\nTrailer specifies additional headers that are sent after the request body.\n\nFor server requests, the Trailer map initially contains only the tailer keys, with nil values. (The client declares which trailers it will later send.)  While the handler is reading from Body, it must not reference Trailer. After reading from Body returns EOF, Trailer can be read again and will contain non-nil values, if they were sent by the client.\n\nFor client requests, Trailer must be initialized to a map containing the trailer keys to later send. The values may be nil or their final values. The ContentLength must be 0 or -1, to send a chunked request.\n\nAfter the HTTP request is sent the map values can be updated while the request body is read. Once the body returns EOF, the caller must not mutate Trailer.\n\nFew HTTP clients, servers, or proxies support HTTP trailers.",
+                    "oneOf": [
+                        {
+                            "$ref": "#/$defs/Header"
+                        },
+                        {
+                            "type": "null"
+                        }
+                    ]
+                },
+                "TransferEncoding": {
+                    "type": [
+                        "array",
+                        "null"
+                    ],
+                    "description": "{@link https://pkg.go.dev/net/http#Request.TransferEncoding}\n\nTransferEncoding lists the transfer encodings from outermost to innermost. An empty list denotes the \"identity\" encoding.\n\nTransferEncoding can usually be ignored; chunked encoding is automatically added and removed as necessary when sending and receiving requests.",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "URL": {
+                    "description": "{@link https://pkg.go.dev/net/http#Request.URL}\n\nURL specifies either the URI being requested (for server requests) or the URL to access (for client requests).\n\nFor server requests, the URL is parsed from the URI supplied on the Request-Line as stored in RequestURI.  For most requests, fields other than Path and RawQuery will be empty. (See RFC 7230, Section 5.3)\n\nFor client requests, the URL's Host specifies the server to connect to, while the Request's Host field optionally specifies the Host header value to send in the HTTP request.",
+                    "$ref": "#/$defs/RequestURL"
+                },
+                "UserAgent": {
+                    "type": "string",
+                    "description": "{@link https://pkg.go.dev/net/http#Request.UserAgent}\n\nUserAgent returns the client's User-Agent, if sent in the request."
+                }
+            }
+        },
+        "URL": {
+            "title": "IUrl",
+            "description": "{@link https://pkg.go.dev/net/http#Request.URL}\n\nURL specifies either the URI being requested (for server requests) or the URL to access (for client requests).\n\nFor server requests, the URL is parsed from the URI supplied on the Request-Line as stored in RequestURI.  For most requests, fields other than Path and RawQuery will be empty. (See RFC 7230, Section 5.3)\n\nFor client requests, the URL's Host specifies the server to connect to, while the Request's Host field optionally specifies the Host header value to send in the HTTP request.",
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+                "EscapedFragment",
+                "EscapedPath",
+                "Hostname",
+                "IsAbs",
+                "Port",
+                "Query",
+                "Redacted",
+                "RequestURI",
+                "String"
+            ],
+            "properties": {
+                "EscapedFragment": {
+                    "type": "string",
+                    "description": "{@link https://pkg.go.dev/net/url#URL.EscapedFragment}\n\nEscapedFragment returns the escaped form of u.Fragment.\n\nIn general there are multiple possible escaped forms of any fragment.\n\nEscapedFragment returns u.RawFragment when it is a valid escaping of u.Fragment.\n\nOtherwise EscapedFragment ignores u.RawFragment and computes an escaped form on its own.\n\nThe String method uses EscapedFragment to construct its result.\n\nIn general, code should call EscapedFragment instead of reading u.RawFragment directly."
+                },
+                "EscapedPath": {
+                    "type": "string",
+                    "description": "{@link https://pkg.go.dev/net/url#URL.EscapedPath}\n\nEscapedPath returns the escaped form of u.Path.\n\nIn general there are multiple possible escaped forms of any path.\n\nEscapedPath returns u.RawPath when it is a valid escaping of u.Path.\n\nOtherwise EscapedPath ignores u.RawPath and computes an escaped form on its own.\n\nThe String and RequestURI methods use EscapedPath to construct their results.\n\nIn general, code should call EscapedPath instead of reading u.RawPath directly."
+                },
+                "Hostname": {
+                    "type": "string",
+                    "description": "{@link https://pkg.go.dev/net/url#URL.Hostname}\n\nHostname returns u.Host, stripping any valid port number if present.\n\nIf the result is enclosed in square brackets, as literal IPv6 addresses are, the square brackets are removed from the result."
+                },
+                "IsAbs": {
+                    "type": "boolean",
+                    "description": "{@link https://pkg.go.dev/net/url#URL.IsAbs}\n\nIsAbs reports whether the URL is absolute.\n\nAbsolute means that it has a non-empty scheme."
+                },
+                "Port": {
+                    "type": "string",
+                    "description": "{@link https://pkg.go.dev/net/url#URL.Port}\n\nPort returns the port part of u.Host, without the leading colon.\n\nIf u.Host doesn't contain a valid numeric port, Port returns an empty string."
+                },
+                "Query": {
+                    "description": "{@link https://pkg.go.dev/net/url#URL.Query}\n\nQuery parses RawQuery and returns the corresponding values.\n\nIt silently discards malformed value pairs.\n\nTo check errors use ParseQuery.",
+                    "$ref": "#/$defs/Values"
+                },
+                "Redacted": {
+                    "type": "string",
+                    "description": "{@link https://pkg.go.dev/net/url#URL.Redacted}\n\nRedacted is like String but replaces any password with \"xxxxx\".\n\nOnly the password in u.User is redacted."
+                },
+                "RequestURI": {
+                    "type": "string",
+                    "description": "{@link https://pkg.go.dev/net/url#URL.RequestURI}\n\nRequestURI returns the encoded path?query or opaque?query string that would be used in an HTTP request for u."
+                },
+                "String": {
+                    "type": "string",
+                    "description": "{@link https://pkg.go.dev/net/url#URL.String}\n\nString reassembles the URL into a valid URL string.\n\nThe general form of the result is one of:\n- `scheme:opaque?query#fragment`\n- `scheme://userinfo@host/path?query#fragment`\n\nIf u.Opaque is non-empty, String uses the first form; otherwise it uses the second form.\n\nAny non-ASCII characters in host are escaped.\n\nTo obtain the path, String uses u.EscapedPath().\n\nIn the second form, the following rules apply:\n- if u.Scheme is empty, `scheme:` is omitted.\n- if u.User is nil, `userinfo@` is omitted.\n- if u.Host is empty, `host/` is omitted.\n- if u.Scheme and u.Host are empty and u.User is nil, the entire `scheme://userinfo@host/` is omitted.\n- if u.Host is non-empty and u.Path begins with a /, the form `host/path` does not add its own /.\n- if u.RawQuery is empty, `?query` is omitted.\n- if u.Fragment is empty, `#fragment` is omitted."
+                }
+            }
+        },
+        "User": {
+            "title": "IUser",
+            "description": "Request user",
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+                "Password",
+                "PasswordSet",
+                "String",
+                "Username"
+            ],
+            "properties": {
+                "Password": {
+                    "type": "string",
+                    "description": "{@link https://pkg.go.dev/net/url#Userinfo.Password}\n\nPassword returns the password in case it is set."
+                },
+                "PasswordSet": {
+                    "type": "boolean",
+                    "description": "{@link https://pkg.go.dev/net/url#Userinfo.Password}\n\nPassword returns the password whether it is set."
+                },
+                "String": {
+                    "type": "string",
+                    "description": "{@link https://pkg.go.dev/net/url#Userinfo.String}\n\nString returns the encoded userinfo information in the standard form of \"username[:password]\"."
+                },
+                "Username": {
+                    "type": "string",
+                    "description": "{@link https://pkg.go.dev/net/url#Userinfo.Username}\n\nUsername returns the username."
+                }
+            }
+        },
+        "Param": {
+            "title": "IParam",
+            "description": "Param is a single URL parameter, consisting of a key and a value.",
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+                "Key",
+                "Value"
+            ],
+            "properties": {
+                "Key": {
+                    "type": "string",
+                    "description": "key name"
+                },
+                "Value": {
+                    "type": "string",
+                    "description": "key value"
+                }
+            }
+        },
+        "Cookie": {
+            "title": "ICookie",
+            "description": "{@link https://pkg.go.dev/net/http#Cookie}\n\nA Cookie represents an HTTP cookie as sent in the Set-Cookie header of an HTTP response or the Cookie header of an HTTP request.\n\nSee https://tools.ietf.org/html/rfc6265 for details.",
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+                "Name",
+                "Value",
+                "Path",
+                "Domain",
+                "Expires",
+                "RawExpires",
+                "MaxAge",
+                "Secure",
+                "HttpOnly",
+                "SameSite",
+                "Raw",
+                "Unparsed"
+            ],
+            "properties": {
+                "Name": {
+                    "type": "string",
+                    "description": "{@link https://pkg.go.dev/net/http#Cookie.Name}\n\nCookie name"
+                },
+                "Value": {
+                    "type": "string",
+                    "description": "{@link https://pkg.go.dev/net/http#Cookie.Value}\n\nCookie value"
+                },
+                "Path": {
+                    "type": "string",
+                    "description": "{@link https://pkg.go.dev/net/http#Cookie.Path}\n\nCookie efficient URL path"
+                },
+                "Domain": {
+                    "type": "string",
+                    "description": "{@link https://pkg.go.dev/net/http#Cookie.Domain}\n\nCookie efficient URL hostname"
+                },
+                "Expires": {
+                    "type": "string",
+                    "description": "{@link https://pkg.go.dev/net/http#Cookie.Expires}\n\nCookie expiration time (ISO 8601)",
+                    "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-6][0-9]:[0-6][0-9](\\.[0-9]+)?Z$"
+                },
+                "RawExpires": {
+                    "type": "string",
+                    "description": "{@link https://pkg.go.dev/net/http#Cookie.RawExpires}\n\nfor reading cookies only"
+                },
+                "MaxAge": {
+                    "type": "integer",
+                    "description": "{@link https://pkg.go.dev/net/http#Cookie.MaxAge}\n\n- `MaxAge=0` means no 'Max-Age' attribute specified.\n- `MaxAge<0` means delete cookie now, equivalently 'Max-Age: 0'\n- `MaxAge>0` means 'Max-Age' attribute present and given in seconds"
+                },
+                "Secure": {
+                    "type": "boolean",
+                    "description": "{@link https://pkg.go.dev/net/http#Cookie.Secure}\n\nCookie Secure flag"
+                },
+                "HttpOnly": {
+                    "type": "boolean",
+                    "description": "{@link https://pkg.go.dev/net/http#Cookie.HttpOnly}\n\nCookie HttpOnly flag"
+                },
+                "SameSite": {
+                    "type": "integer",
+                    "description": "{@link https://pkg.go.dev/net/http#Cookie.SameSite}\n\nCookie SameSite flag\n\n- `1`: Default mode\n- `2`: Lax mode\n- `3`: Strict mode\n- `4`: None mode",
+                    "enum": [
+                        1,
+                        2,
+                        3,
+                        4
+                    ]
+                },
+                "Raw": {
+                    "type": "string",
+                    "description": "{@link https://pkg.go.dev/net/http#Cookie.Raw}\n\nRaw text of this cookie"
+                },
+                "Unparsed": {
+                    "type": [
+                        "array",
+                        "null"
+                    ],
+                    "description": "{@link https://pkg.go.dev/net/http#Cookie.Unparsed}\n\nRaw text of unparsed attribute-value pairs",
+                    "items": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
+        "Values": {
+            "title": "IValues",
+            "description": "{@link https://pkg.go.dev/net/url#Values}\n\nValues maps a string key to a list of values.\n\nIt is typically used for query parameters and form values.\n\nUnlike in the http.Header map, the keys in a Values map are case-sensitive.",
+            "type": "object",
+            "propertyNames": {
+                "type": "string"
+            },
+            "additionalProperties": {
+                "type": "array",
+                "items": {
+                    "type": "string"
+                }
+            }
+        },
+        "Header": {
+            "title": "IHeader",
+            "description": "{@link https://pkg.go.dev/net/http#Request.Header}\n\nHeader contains the request header fields either received by the server or to be sent by the client.\n\nIf a server received a request with header lines,\n```http\nHost: example.com\naccept-encoding: gzip, deflate\nAccept-Language: en-us\nfOO: Bar\nfoo: two\n```\nthen\n```json\n{\n    \"Accept-Encoding\": [\"gzip, deflate\"],\n    \"Accept-Language\": [\"en-us\"],\n    \"Foo\": [\"Bar\", \"two\"],\n}\n```For incoming requests, the Host header is promoted to the Request.Host field and removed from the Header map.\n\nHTTP defines that header names are case-insensitive. The request parser implements this by using CanonicalHeaderKey, making the first character and any characters following a hyphen uppercase and the rest lowercase.\n\nFor client requests, certain headers such as Content-Length and Connection are automatically written when needed and values in Header may be ignored. See the documentation for the Request.Write method.",
+            "type": "object",
+            "propertyNames": {
+                "type": "string"
+            },
+            "additionalProperties": {
+                "type": "array",
+                "items": {
+                    "type": "string"
+                }
+            }
+        },
+        "MultipartForm": {
+            "title": "IMultipartForm",
+            "description": "multipart form data",
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+                "Value",
+                "File"
+            ],
+            "properties": {
+                "Value": {
+                    "$ref": "#/$defs/Values"
+                },
+                "File": {
+                    "$ref": "#/$defs/MultipartFormFile"
+                }
+            }
+        },
+        "MultipartFormFile": {
+            "title": "IMultipartFormFile",
+            "description": "multipart form file data",
+            "type": "object",
+            "propertyNames": {
+                "type": "string"
+            },
+            "additionalProperties": {
+                "type": "array",
+                "items": {
+                    "$ref": "#/$defs/File"
+                }
+            }
+        },
+        "File": {
+            "title": "IFile",
+            "description": "multipart form file part",
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+                "Content",
+                "Filename",
+                "Header",
+                "Size"
+            ],
+            "properties": {
+                "Content": {
+                    "type": "string",
+                    "description": "File data encoded using base64"
+                },
+                "Filename": {
+                    "type": "string",
+                    "description": "File name"
+                },
+                "Header": {
+                    "description": "{@link https://pkg.go.dev/net/http#Header}\n\nA MIMEHeader represents a MIME-style header mapping keys to sets of values.",
+                    "$ref": "#/$defs/Header"
+                },
+                "Size": {
+                    "type": "integer",
+                    "description": "File size (unit: byte)",
+                    "minimum": 0
+                }
+            }
+        },
+        "RequestURL": {
+            "title": "IRequestURL",
+            "description": "{@link https://pkg.go.dev/net/http#Request.URL}\n\nA URL represents a parsed URL (technically, a URI reference).\n\nThe general form represented is:\n\n`[scheme:][//[userinfo@]host][/]path[?query][#fragment]`\n\nURLs that do not start with a slash after the scheme are interpreted as:\n\n`scheme:opaque[?query][#fragment]`\n\nNote that the Path field is stored in decoded form: /%47%6f%2f becomes /Go/.\n\nA consequence is that it is impossible to tell which slashes in the Path were slashes in the raw URL and which were %2f. This distinction is rarely important, but when it is, the code should use the EscapedPath method, which preserves the original encoding of Path.\n\nThe RawPath field is an optional field which is only set when the default encoding of Path is different from the escaped path. See the EscapedPath method for more details.\n\nURL's String method uses the EscapedPath method to obtain the path.",
+            "type": "object",
+            "required": [
+                "Scheme",
+                "Opaque",
+                "User",
+                "Host",
+                "Path",
+                "RawPath",
+                "OmitHost",
+                "ForceQuery",
+                "RawQuery",
+                "Fragment",
+                "RawFragment"
+            ],
+            "properties": {
+                "Scheme": {
+                    "type": "string",
+                    "description": "{@link https://pkg.go.dev/net/url#URL.Scheme}\n\nURL schema"
+                },
+                "Opaque": {
+                    "type": "string",
+                    "description": "{@link https://pkg.go.dev/net/url#URL.Opaque}\n\nencoded opaque data"
+                },
+                "User": {
+                    "type": "null",
+                    "description": "{@link https://pkg.go.dev/net/url#URL.User}\n\nusername and password information"
+                },
+                "Host": {
+                    "type": "string",
+                    "description": "{@link https://pkg.go.dev/net/url#URL.Host}\n\nhost or host:port"
+                },
+                "Path": {
+                    "type": "string",
+                    "description": "{@link https://pkg.go.dev/net/url#URL.Path}\n\npath (relative paths may omit leading slash)"
+                },
+                "RawPath": {
+                    "type": "string",
+                    "description": "{@link https://pkg.go.dev/net/url#URL.RawPath}\n\nencoded path hint (see EscapedPath method)"
+                },
+                "OmitHost": {
+                    "type": "boolean",
+                    "description": "{@link https://pkg.go.dev/net/url#URL.OmitHost}\n\ndo not emit empty host (authority)"
+                },
+                "ForceQuery": {
+                    "type": "boolean",
+                    "description": "{@link https://pkg.go.dev/net/url#URL.ForceQuery}\n\nappend a query ('?') even if RawQuery is empty"
+                },
+                "RawQuery": {
+                    "type": "string",
+                    "description": "{@link https://pkg.go.dev/net/url#URL.RawQuery}\n\nencoded query values, without '?'"
+                },
+                "Fragment": {
+                    "type": "string",
+                    "description": "{@link https://pkg.go.dev/net/url#URL.Fragment}\n\nfragment for references, without '#'"
+                },
+                "RawFragment": {
+                    "type": "string",
+                    "description": "{@link https://pkg.go.dev/net/url#URL.RawFragment}\n\nencoded fragment hint (see EscapedFragment method)"
+                }
+            }
+        },
+        "TLS": {
+            "title": "ITLS",
+            "description": "{@link https://pkg.go.dev/crypto/tls#ConnectionState}\n\nConnectionState records basic TLS details about the connection.",
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+                "Version",
+                "HandshakeComplete",
+                "DidResume",
+                "CipherSuite",
+                "NegotiatedProtocol",
+                "NegotiatedProtocolIsMutual",
+                "ServerName",
+                "PeerCertificates",
+                "VerifiedChains",
+                "SignedCertificateTimestamps",
+                "OCSPResponse",
+                "TLSUnique"
+            ],
+            "properties": {
+                "Version": {
+                    "type": "integer",
+                    "description": "{@link https://pkg.go.dev/crypto/tls#ConnectionState.Version}\n\nVersion is the TLS version used by the connection (e.g. VersionTLS12).",
+                    "minimum": 0
+                },
+                "HandshakeComplete": {
+                    "type": "boolean",
+                    "description": "{@link https://pkg.go.dev/crypto/tls#ConnectionState.HandshakeComplete}\n\nHandshakeComplete is true if the handshake has concluded."
+                },
+                "DidResume": {
+                    "type": "boolean",
+                    "description": "{@link https://pkg.go.dev/crypto/tls#ConnectionState.DidResume}\n\nDidResume is true if this connection was successfully resumed from a previous session with a session ticket or similar mechanism."
+                },
+                "CipherSuite": {
+                    "type": "integer",
+                    "description": "{@link https://pkg.go.dev/crypto/tls#ConnectionState.CipherSuite}\n\nCipherSuite is the cipher suite negotiated for the connection (e.g. TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256, TLS_AES_128_GCM_SHA256).",
+                    "minimum": 0
+                },
+                "NegotiatedProtocol": {
+                    "type": "string",
+                    "description": "{@link https://pkg.go.dev/crypto/tls#ConnectionState.NegotiatedProtocol}\n\nNegotiatedProtocol is the application protocol negotiated with ALPN."
+                },
+                "NegotiatedProtocolIsMutual": {
+                    "type": "boolean",
+                    "description": "{@link https://pkg.go.dev/crypto/tls#ConnectionState.NegotiatedProtocolIsMutual}\n\nNegotiatedProtocolIsMutual used to indicate a mutual NPN negotiation.\n\nDeprecated: this value is always true."
+                },
+                "ServerName": {
+                    "type": "string",
+                    "description": "{@link https://pkg.go.dev/crypto/tls#ConnectionState.NegotiatedProtocolIsMutual}\n\nServerName is the value of the Server Name Indication extension sent by the client. It's available both on the server and on the client side."
+                },
+                "PeerCertificates": {
+                    "type": "array",
+                    "description": "{@link https://pkg.go.dev/crypto/tls#ConnectionState.PeerCertificates}\n\nPeerCertificates are the parsed certificates sent by the peer, in the order in which they were sent. The first element is the leaf certificate that the connection is verified against.\n\nOn the client side, it can't be empty. On the server side, it can be empty if Config.ClientAuth is not RequireAnyClientCert or RequireAndVerifyClientCert.\n\nPeerCertificates and its contents should not be modified.",
+                    "items": {
+                        "$ref": "#/$defs/Certificate"
+                    }
+                },
+                "VerifiedChains": {
+                    "type": "array",
+                    "description": "{@link https://pkg.go.dev/crypto/tls#ConnectionState.VerifiedChains}\n\nVerifiedChains is a list of one or more chains where the first element is PeerCertificates[0] and the last element is from Config.RootCAs (on the client side) or Config.ClientCAs (on the server side).\n\nOn the client side, it's set if Config.InsecureSkipVerify is false. On the server side, it's set if Config.ClientAuth is VerifyClientCertIfGiven (and the peer provided a certificate) or RequireAndVerifyClientCert.\n\nVerifiedChains and its contents should not be modified.",
+                    "items": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/$defs/Certificate"
+                        }
+                    }
+                },
+                "SignedCertificateTimestamps": {
+                    "description": "{@link https://pkg.go.dev/crypto/tls#ConnectionState.SignedCertificateTimestamps}\n\nSignedCertificateTimestamps is a list of SCTs provided by the peer through the TLS handshake for the leaf certificate, if any."
+                },
+                "OCSPResponse": {
+                    "description": "{@link https://pkg.go.dev/crypto/tls#ConnectionState.OCSPResponse}\n\nOCSPResponse is a stapled Online Certificate Status Protocol (OCSP) response provided by the peer for the leaf certificate, if any."
+                },
+                "TLSUnique": {
+                    "description": "{@link https://pkg.go.dev/crypto/tls#ConnectionState.TLSUnique}\n\nTLSUnique contains the \"tls-unique\" channel binding value (see RFC 5929, Section 3).\nThis value will be nil for TLS 1.3 connections and for resumed connections that don't support Extended Master Secret (RFC 7627)."
+                }
+            }
+        },
+        "Certificate": {
+            "title": "ICertificate",
+            "description": "{@link https://pkg.go.dev/crypto/x509#Certificate}\n\nA Certificate represents an X.509 certificate.",
+            "type": "object",
+            "required": [
+                "Raw",
+                "RawTBSCertificate",
+                "RawSubjectPublicKeyInfo",
+                "RawSubject",
+                "RawIssuer",
+                "Signature",
+                "SignatureAlgorithm",
+                "PublicKeyAlgorithm",
+                "PublicKey",
+                "Version",
+                "SerialNumber",
+                "Issuer",
+                "Subject",
+                "NotBefore",
+                "KeyUsage",
+                "Extensions",
+                "ExtraExtensions",
+                "UnhandledCriticalExtensions",
+                "ExtKeyUsage",
+                "UnknownExtKeyUsage",
+                "BasicConstraintsValid",
+                "IsCA",
+                "MaxPathLen",
+                "MaxPathLenZero",
+                "SubjectKeyId",
+                "AuthorityKeyId",
+                "OCSPServer",
+                "IssuingCertificateURL",
+                "DNSNames",
+                "EmailAddresses",
+                "IPAddresses",
+                "URIs",
+                "PermittedDNSDomainsCritical",
+                "PermittedDNSDomains",
+                "ExcludedDNSDomains",
+                "PermittedIPRanges",
+                "ExcludedIPRanges",
+                "PermittedEmailAddresses",
+                "ExcludedEmailAddresses",
+                "PermittedURIDomains",
+                "ExcludedURIDomains",
+                "CRLDistributionPoints",
+                "PolicyIdentifiers"
+            ]
+        }
+    }
+}

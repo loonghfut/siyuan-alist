@@ -1,0 +1,34 @@
+/**
+ * schemas/kernel/api/block/deleteBlock/payload.schema.json5
+ * 删除块
+ * REF: https://github.com/siyuan-note/siyuan/blob/master/API.md#delete-a-block
+ * REF: https://github.com/siyuan-note/siyuan/blob/v2.9.3/kernel/api/block_op.go#L307-L336
+ * @pathname: /api/block/deleteBlock
+ * @version: 2.9.3
+ */
+{
+    $schema: 'https://json-schema.org/draft/2020-12/schema',
+    $id: 'https://github.com/siyuan-community/siyuan-sdk/raw/main/schemas/kernel/api/block/deleteBlock/payload.schema.json5',
+    $comment: 'v2.9.3',
+    $ref: '#/$defs/root',
+    $defs: {
+        root: {
+            title: 'payload body',
+            description: 'Delete a block',
+
+            type: 'object',
+            additionalProperties: false,
+            required: [
+                'id',
+            ],
+            properties: {
+                id: {
+                    // 待删除的块 ID
+                    type: 'string',
+                    description: 'ID of the block to be deleted',
+                    pattern: '^\\d{14}-[0-9a-z]{7}$',
+                },
+            },
+        },
+    },
+}

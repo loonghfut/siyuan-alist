@@ -1,0 +1,22 @@
+{
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "https://github.com/siyuan-community/siyuan-sdk/raw/main/schemas/kernel/api/notebook/lsNotebooks/payload.schema.json",
+    "$comment": "v",
+    "$ref": "#/$defs/root",
+    "$defs": {
+        "root": {
+            "title": "payload body",
+            "description": "List notebooks",
+            "type": "object",
+            "additionalProperties": false,
+            "required": [],
+            "properties": {
+                "flashcard": {
+                    "type": "boolean",
+                    "description": "Whether to return information about the flash card",
+                    "default": false
+                }
+            }
+        }
+    }
+}

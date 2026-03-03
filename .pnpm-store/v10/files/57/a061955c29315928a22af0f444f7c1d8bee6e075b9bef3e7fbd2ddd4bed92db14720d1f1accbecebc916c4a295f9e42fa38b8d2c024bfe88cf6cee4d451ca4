@@ -1,0 +1,142 @@
+{
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "https://github.com/siyuan-community/siyuan-sdk/raw/main/schemas/kernel/api/block/insertBlock/response.schema.json",
+    "$comment": "v2.10.6",
+    "$ref": "#/$defs/root",
+    "$defs": {
+        "root": {
+            "title": "response body",
+            "description": "Insert blocks",
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+                "code",
+                "msg",
+                "data"
+            ],
+            "properties": {
+                "code": {
+                    "type": "integer",
+                    "description": "status code"
+                },
+                "msg": {
+                    "type": "string",
+                    "description": "status message"
+                },
+                "data": {
+                    "$ref": "#/$defs/data"
+                }
+            }
+        },
+        "data": {
+            "title": "IData",
+            "description": "Insert transactions",
+            "type": "array",
+            "minItems": 1,
+            "maxItems": 1,
+            "items": {
+                "$ref": "#/$defs/transaction"
+            }
+        },
+        "transaction": {
+            "title": "ITransaction",
+            "description": "Insert transaction",
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+                "timestamp",
+                "doOperations",
+                "undoOperations"
+            ],
+            "properties": {
+                "timestamp": {
+                    "type": "integer",
+                    "description": "timestamp"
+                },
+                "doOperations": {
+                    "$ref": "#/$defs/operations"
+                },
+                "undoOperations": {
+                    "type": "null",
+                    "description": "undo operation list"
+                }
+            }
+        },
+        "operations": {
+            "title": "IOperations",
+            "description": "insert operation list",
+            "type": "array",
+            "minItems": 1,
+            "maxItems": 1,
+            "items": {
+                "$ref": "#/$defs/operation"
+            }
+        },
+        "operation": {
+            "title": "IOperation",
+            "description": "insert operation",
+            "type": "object",
+            "additionalProperties": true,
+            "required": [
+                "action",
+                "data",
+                "id",
+                "nextID",
+                "previousID",
+                "parentID"
+            ],
+            "properties": {
+                "action": {
+                    "type": "string",
+                    "const": "insert",
+                    "description": "operation action type"
+                },
+                "data": {
+                    "type": "string",
+                    "description": "HTML DOM of inserting blocks"
+                },
+                "id": {
+                    "type": "string",
+                    "description": "block ID: the first inserting block",
+                    "pattern": "^\\d{14}-[0-9a-z]{7}$"
+                },
+                "nextID": {
+                    "type": "string",
+                    "description": "block ID: insert before this block",
+                    "oneOf": [
+                        {
+                            "const": ""
+                        },
+                        {
+                            "pattern": "^\\d{14}-[0-9a-z]{7}$"
+                        }
+                    ]
+                },
+                "previousID": {
+                    "type": "string",
+                    "description": "block ID: insert after this block",
+                    "oneOf": [
+                        {
+                            "const": ""
+                        },
+                        {
+                            "pattern": "^\\d{14}-[0-9a-z]{7}$"
+                        }
+                    ]
+                },
+                "parentID": {
+                    "type": "string",
+                    "description": "block ID: insert into this block",
+                    "oneOf": [
+                        {
+                            "const": ""
+                        },
+                        {
+                            "pattern": "^\\d{14}-[0-9a-z]{7}$"
+                        }
+                    ]
+                }
+            }
+        }
+    }
+}

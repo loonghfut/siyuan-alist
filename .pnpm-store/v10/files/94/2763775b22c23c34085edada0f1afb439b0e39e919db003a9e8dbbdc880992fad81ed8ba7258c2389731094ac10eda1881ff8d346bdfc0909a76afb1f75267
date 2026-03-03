@@ -1,0 +1,34 @@
+/**
+ * schemas/kernel/api/block/foldBlock/payload.schema.json5
+ * 折叠块
+ * REF: https://github.com/siyuan-note/siyuan/blob/master/API.md#fold-a-block
+ * REF: https://github.com/siyuan-note/siyuan/blob/v3.0.4/kernel/api/block_op.go#L148-L206
+ * @pathname: /api/block/foldBlock
+ * @version: 3.0.4
+ */
+{
+    $schema: 'https://json-schema.org/draft/2020-12/schema',
+    $id: 'https://github.com/siyuan-community/siyuan-sdk/raw/main/schemas/kernel/api/block/foldBlock/payload.schema.json5',
+    $comment: 'v3.0.4',
+    $ref: '#/$defs/root',
+    $defs: {
+        root: {
+            title: 'payload body',
+            description: 'Fold a block',
+
+            type: 'object',
+            additionalProperties: false,
+            required: [
+                'id',
+            ],
+            properties: {
+                id: {
+                    // 待折叠的块 ID
+                    type: 'string',
+                    description: 'ID of the block to be folded',
+                    pattern: '^\\d{14}-[0-9a-z]{7}$',
+                },
+            },
+        },
+    },
+}

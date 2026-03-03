@@ -1,0 +1,44 @@
+{
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "https://github.com/siyuan-community/siyuan-sdk/raw/main/schemas/kernel/api/attr/setBlockAttrs/payload.schema.json",
+    "$comment": "v2.9.3",
+    "$ref": "#/$defs/root",
+    "$defs": {
+        "root": {
+            "title": "payload body",
+            "description": "Set block attributes",
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+                "id",
+                "attrs"
+            ],
+            "properties": {
+                "id": {
+                    "type": "string",
+                    "description": "block ID",
+                    "pattern": "^\\d{14}-[0-9a-z]{7}$"
+                },
+                "attrs": {
+                    "$ref": "#/$defs/attrs"
+                }
+            }
+        },
+        "attrs": {
+            "title": "IAttrs",
+            "description": "Inline Attribute List (IAL)",
+            "type": "object",
+            "additionalProperties": {
+                "type": [
+                    "string",
+                    "null"
+                ]
+            },
+            "propertyNames": {
+                "type": "string",
+                "minLength": 1,
+                "pattern": "^[_a-zA-Z][_.\\-0-9a-zA-Z]*$"
+            }
+        }
+    }
+}

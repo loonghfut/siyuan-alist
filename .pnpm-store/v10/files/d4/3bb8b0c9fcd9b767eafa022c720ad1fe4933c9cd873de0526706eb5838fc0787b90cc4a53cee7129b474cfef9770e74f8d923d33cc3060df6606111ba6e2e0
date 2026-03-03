@@ -1,0 +1,220 @@
+{
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "https://github.com/siyuan-community/siyuan-sdk/raw/main/schemas/kernel/api/filetree/listDocsByPath/response.schema.json",
+    "$comment": "v2.10.4",
+    "$ref": "#/$defs/root",
+    "$defs": {
+        "root": {
+            "title": "response body",
+            "description": "List sub docs by path",
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+                "code",
+                "msg",
+                "data"
+            ],
+            "properties": {
+                "code": {
+                    "type": "integer",
+                    "description": "status code"
+                },
+                "msg": {
+                    "type": "string",
+                    "description": "status message"
+                },
+                "data": {
+                    "$ref": "#/$defs/data"
+                }
+            }
+        },
+        "data": {
+            "title": "IData",
+            "description": "response data",
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+                "box",
+                "path",
+                "files"
+            ],
+            "properties": {
+                "box": {
+                    "type": "string",
+                    "description": "notebook ID",
+                    "pattern": "^\\d{14}-[0-9a-z]{7}$"
+                },
+                "path": {
+                    "type": "string",
+                    "description": "document file/folder path"
+                },
+                "files": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/$defs/file"
+                    }
+                }
+            }
+        },
+        "file": {
+            "title": "IFile",
+            "description": "Document information",
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+                "path",
+                "name",
+                "icon",
+                "name1",
+                "alias",
+                "memo",
+                "bookmark",
+                "id",
+                "count",
+                "size",
+                "hSize",
+                "mtime",
+                "ctime",
+                "hMtime",
+                "hCtime",
+                "sort",
+                "subFileCount",
+                "hidden",
+                "newFlashcardCount",
+                "dueFlashcardCount",
+                "flashcardCount"
+            ],
+            "properties": {
+                "path": {
+                    "type": "string",
+                    "description": "file path of document"
+                },
+                "name": {
+                    "type": "string",
+                    "description": "document title",
+                    "examples": [
+                        "title.sy"
+                    ]
+                },
+                "icon": {
+                    "type": "string",
+                    "description": "document icon"
+                },
+                "name1": {
+                    "type": "string",
+                    "description": "document name"
+                },
+                "alias": {
+                    "type": "string",
+                    "description": "document alias"
+                },
+                "memo": {
+                    "type": "string",
+                    "description": "document memo"
+                },
+                "bookmark": {
+                    "type": "string",
+                    "description": "document bookmark"
+                },
+                "id": {
+                    "type": "string",
+                    "description": "document ID",
+                    "pattern": "^\\d{14}-[0-9a-z]{7}$"
+                },
+                "count": {
+                    "type": "integer",
+                    "description": "document reference count"
+                },
+                "size": {
+                    "type": "integer",
+                    "description": "document size (unit: Byte)"
+                },
+                "hSize": {
+                    "type": "string",
+                    "description": "human readable document size",
+                    "examples": [
+                        "1 B",
+                        "1 kB",
+                        "1 MB",
+                        "1 GB",
+                        "1 TB",
+                        "1 PB",
+                        "1 EB"
+                    ]
+                },
+                "mtime": {
+                    "type": "integer",
+                    "description": "document modified time (Unix timestamp, unit: s)",
+                    "examples": [
+                        1690511805
+                    ]
+                },
+                "ctime": {
+                    "type": "integer",
+                    "description": "document created time (Unix timestamp, unit: s)",
+                    "examples": [
+                        1597241155
+                    ]
+                },
+                "hMtime": {
+                    "type": "string",
+                    "description": "human readable document modified time",
+                    "examples": [
+                        "1 week ago"
+                    ]
+                },
+                "hCtime": {
+                    "type": "string",
+                    "description": "human readable document created time",
+                    "examples": [
+                        "1 week ago"
+                    ]
+                },
+                "sort": {
+                    "type": "integer",
+                    "description": "document sort rule\n0: Name Alphabet ASC\n1: Name Alphabet DESC\n2: Modified Time ASC\n3: Modified Time DESC\n4: Name Natural ASC\n5: Name Natural DESC\n6: Custom Sorting\n7: Ref Count ASC\n8: Ref Count DESC\n9: Created Time ASC\n10: Created Time DESC\n11: Document Size ASC\n12: Document Size DESC\n13: Sub-docs Count ASC \n14: Sub-docs Count DESC\n15: Use doc tree sorting rule\n256: (default) Use notebook sorting rule",
+                    "default": 256,
+                    "enum": [
+                        0,
+                        1,
+                        2,
+                        3,
+                        4,
+                        5,
+                        6,
+                        7,
+                        8,
+                        9,
+                        10,
+                        11,
+                        12,
+                        13,
+                        14,
+                        15,
+                        256
+                    ]
+                },
+                "subFileCount": {
+                    "type": "integer",
+                    "description": "sub file count"
+                },
+                "hidden": {
+                    "type": "boolean",
+                    "description": "is hidden"
+                },
+                "newFlashcardCount": {
+                    "type": "integer",
+                    "description": "new flashcard count"
+                },
+                "dueFlashcardCount": {
+                    "type": "integer",
+                    "description": "due flashcard count"
+                },
+                "flashcardCount": {
+                    "type": "integer",
+                    "description": "flashcard count"
+                }
+            }
+        }
+    }
+}

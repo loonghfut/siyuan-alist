@@ -1,0 +1,32 @@
+/**
+ * schemas/kernel/api/file/readDir/payload.schema.json5
+ * 列出指定文件目录下的内容
+ * REF: https://github.com/siyuan-note/siyuan/blob/master/API.md#list-files
+ * REF: https://github.com/siyuan-note/siyuan/blob/v2.9.2/kernel/api/file.go#L135-L182
+ * @pathname: /api/file/readDir
+ * @version: 2.9.2
+ */
+{
+    $schema: 'https://json-schema.org/draft/2020-12/schema',
+    $id: 'https://github.com/siyuan-community/siyuan-sdk/raw/main/schemas/kernel/api/file/readDir/payload.schema.json5',
+    $comment: 'v2.9.2',
+    $ref: '#/$defs/root',
+    $defs: {
+        root: {
+            title: 'payload body',
+            description: 'list the contents of the specified file directory',
+            type: 'object',
+            additionalProperties: false,
+            required: [
+                'path',
+            ],
+            properties: {
+                path: {
+                    // 相对于思源工作空间目录的文件/目录路径
+                    type: 'string',
+                    description: 'file/directory path relative to the SiYuan workspace directory',
+                },
+            },
+        },
+    },
+}

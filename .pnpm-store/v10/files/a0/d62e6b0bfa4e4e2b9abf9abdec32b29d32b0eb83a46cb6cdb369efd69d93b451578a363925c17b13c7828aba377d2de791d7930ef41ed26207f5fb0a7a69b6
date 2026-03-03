@@ -1,0 +1,29 @@
+{
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "https://github.com/siyuan-community/siyuan-sdk/raw/main/schemas/kernel/api/filetree/createDailyNote/payload.schema.json",
+    "$comment": "v2.11.3",
+    "$ref": "#/$defs/root",
+    "$defs": {
+        "root": {
+            "title": "payload body",
+            "description": "Create daily note document",
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+                "notebook"
+            ],
+            "properties": {
+                "app": {
+                    "type": "string",
+                    "description": "App ID",
+                    "pattern": "^[0-9a-z]{5}$"
+                },
+                "notebook": {
+                    "type": "string",
+                    "description": "notebook ID",
+                    "pattern": "^\\d{14}-[0-9a-z]{7}$"
+                }
+            }
+        }
+    }
+}

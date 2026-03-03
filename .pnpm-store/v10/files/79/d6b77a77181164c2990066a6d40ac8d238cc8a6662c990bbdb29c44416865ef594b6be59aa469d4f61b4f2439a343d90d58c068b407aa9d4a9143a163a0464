@@ -1,0 +1,28 @@
+{
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "https://github.com/siyuan-community/siyuan-sdk/raw/main/schemas/kernel/api/history/getDocHistoryContent/payload.schema.json",
+    "$comment": "v2.9.7",
+    "$ref": "#/$defs/root",
+    "$defs": {
+        "root": {
+            "title": "payload body",
+            "description": "Get document history content from history document file absolute path",
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+                "historyPath"
+            ],
+            "properties": {
+                "historyPath": {
+                    "type": "string",
+                    "description": "Absolute path of history document file"
+                },
+                "k": {
+                    "type": "string",
+                    "description": "Highlight keyword",
+                    "default": ""
+                }
+            }
+        }
+    }
+}

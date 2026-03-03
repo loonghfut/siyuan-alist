@@ -1,0 +1,32 @@
+/**
+ * schemas/kernel/api/template/renderSprig/payload.schema.json5
+ * 渲染 Sprig 模板
+ * REF: https://github.com/siyuan-note/siyuan/blob/master/API.md#render-sprig
+ * REF: https://github.com/siyuan-note/siyuan/blob/v2.9.3/kernel/api/template.go#L28-L45
+ * @pathname: /api/template/renderSprig
+ * @version: 2.9.3
+ */
+{
+    $schema: 'https://json-schema.org/draft/2020-12/schema',
+    $id: 'https://github.com/siyuan-community/siyuan-sdk/raw/main/schemas/kernel/api/template/renderSprig/payload.schema.json5',
+    $comment: 'v2.9.3',
+    $ref: '#/$defs/root',
+    $defs: {
+        root: {
+            title: 'payload body',
+            description: 'render Sprig template',
+
+            type: 'object',
+            additionalProperties: false,
+            required: [
+                'template',
+            ],
+            properties: {
+                template: {
+                    type: 'string',
+                    description: 'sprig template',
+                },
+            },
+        },
+    },
+}

@@ -1,0 +1,198 @@
+{
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "https://github.com/siyuan-community/siyuan-sdk/raw/main/schemas/kernel/api/outline/getDocOutline/payload.schema.json",
+    "$comment": "v2.12.3",
+    "$ref": "#/$defs/root",
+    "$defs": {
+        "root": {
+            "title": "payload body",
+            "description": "Gets the document outline",
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+                "code",
+                "msg",
+                "data"
+            ],
+            "properties": {
+                "code": {
+                    "type": "integer",
+                    "description": "status code"
+                },
+                "msg": {
+                    "type": "string",
+                    "description": "status message"
+                },
+                "data": {
+                    "type": "array",
+                    "description": "Outline item list",
+                    "items": {
+                        "$ref": "#/$defs/datum"
+                    }
+                }
+            }
+        },
+        "datum": {
+            "title": "IOutlineTopNode",
+            "description": "Outline top node",
+            "type": "object",
+            "additionalProperties": true,
+            "required": [
+                "id",
+                "box",
+                "name",
+                "type",
+                "nodeType",
+                "subType",
+                "depth",
+                "count"
+            ],
+            "properties": {
+                "id": {
+                    "type": "string",
+                    "description": "Block ID",
+                    "pattern": "^\\d{14}-[0-9a-z]{7}$"
+                },
+                "box": {
+                    "type": "string",
+                    "description": "Notebook ID",
+                    "pattern": "^\\d{14}-[0-9a-z]{7}$"
+                },
+                "name": {
+                    "type": "string",
+                    "description": "The HTML content of Heading block"
+                },
+                "type": {
+                    "type": "string",
+                    "description": "Outline item type",
+                    "enum": [
+                        "outline"
+                    ]
+                },
+                "nodeType": {
+                    "type": "string",
+                    "description": "Block type",
+                    "enum": [
+                        "NodeHeading"
+                    ]
+                },
+                "subType": {
+                    "type": "string",
+                    "description": "Block sub-type",
+                    "enum": [
+                        "h1",
+                        "h2",
+                        "h3",
+                        "h4",
+                        "h5",
+                        "h6"
+                    ]
+                },
+                "depth": {
+                    "type": "integer",
+                    "description": "Outline depth",
+                    "minimum": 0
+                },
+                "count": {
+                    "type": "integer",
+                    "description": "Number of child nodes",
+                    "minimum": 0
+                },
+                "blocks": {
+                    "type": "array",
+                    "description": "Outline Lover node list",
+                    "items": {
+                        "$ref": "#/$defs/block"
+                    }
+                }
+            }
+        },
+        "block": {
+            "title": "IOutlineLowerNode",
+            "description": "Outline Lower node",
+            "type": "object",
+            "additionalProperties": true,
+            "required": [
+                "id",
+                "box",
+                "rootID",
+                "path",
+                "content",
+                "type",
+                "subType",
+                "depth",
+                "count",
+                "children"
+            ],
+            "properties": {
+                "id": {
+                    "type": "string",
+                    "description": "Block ID",
+                    "pattern": "^\\d{14}-[0-9a-z]{7}$"
+                },
+                "box": {
+                    "type": "string",
+                    "description": "Notebook ID",
+                    "pattern": "^\\d{14}-[0-9a-z]{7}$"
+                },
+                "rootID": {
+                    "type": "string",
+                    "description": "Document block ID",
+                    "pattern": "^\\d{14}-[0-9a-z]{7}$"
+                },
+                "path": {
+                    "type": "string",
+                    "description": "Document path, which needs to start with / and separate levels with /\npath here corresponds to the database path field",
+                    "pattern": "^(/\\d{14}-[0-9a-z]{7})+\\.sy$",
+                    "examples": [
+                        "/20200812220555-lj3enxa.sy",
+                        "/20200812220555-lj3enxa/20210808180320-fqgskfj.sy"
+                    ]
+                },
+                "content": {
+                    "type": "string",
+                    "description": "The HTML content of Heading block"
+                },
+                "type": {
+                    "type": "string",
+                    "description": "Block type",
+                    "enum": [
+                        "NodeHeading"
+                    ]
+                },
+                "subType": {
+                    "type": "string",
+                    "description": "Block sub-type",
+                    "enum": [
+                        "h1",
+                        "h2",
+                        "h3",
+                        "h4",
+                        "h5",
+                        "h6"
+                    ]
+                },
+                "depth": {
+                    "type": "integer",
+                    "description": "Outline depth",
+                    "minimum": 0
+                },
+                "count": {
+                    "type": "integer",
+                    "description": "Number of child nodes",
+                    "minimum": 0
+                },
+                "children": {
+                    "type": [
+                        "array",
+                        "null"
+                    ],
+                    "description": "Outline Lover node list",
+                    "items": {
+                        "$ref": "#/$defs/block"
+                    }
+                }
+            }
+        }
+    }
+}

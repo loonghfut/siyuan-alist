@@ -1,0 +1,375 @@
+{
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "https://github.com/siyuan-community/siyuan-sdk/raw/main/schemas/kernel/api/search/fullTextSearchBlock/response.schema.json",
+    "$comment": "v2.10.5",
+    "$ref": "#/$defs/root",
+    "$defs": {
+        "root": {
+            "title": "response body",
+            "description": "Full text search",
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+                "code",
+                "msg",
+                "data"
+            ],
+            "properties": {
+                "code": {
+                    "type": "integer",
+                    "description": "status code"
+                },
+                "msg": {
+                    "type": "string",
+                    "description": "status message"
+                },
+                "data": {
+                    "$ref": "#/$defs/data"
+                }
+            }
+        },
+        "data": {
+            "title": "IData",
+            "description": "Response information",
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+                "blocks",
+                "docMode",
+                "matchedBlockCount",
+                "matchedRootCount",
+                "pageCount"
+            ],
+            "properties": {
+                "blocks": {
+                    "type": "array",
+                    "description": "Search results",
+                    "items": {
+                        "$ref": "#/$defs/block"
+                    }
+                },
+                "docMode": {
+                    "type": "boolean",
+                    "description": "Whether it is the current document content search mode"
+                },
+                "matchedBlockCount": {
+                    "type": "integer",
+                    "description": "The number of blocks in the full search results",
+                    "minimum": 0
+                },
+                "matchedRootCount": {
+                    "type": "integer",
+                    "description": "The number of documents in the full search results",
+                    "minimum": 0
+                },
+                "pageCount": {
+                    "type": "integer",
+                    "description": "Current page number",
+                    "minimum": 0
+                }
+            }
+        },
+        "block": {
+            "title": "IBlock",
+            "description": "Search result item",
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+                "box",
+                "path",
+                "hPath",
+                "id",
+                "rootID",
+                "parentID",
+                "name",
+                "alias",
+                "memo",
+                "tag",
+                "content",
+                "fcontent",
+                "markdown",
+                "folded",
+                "type",
+                "subType",
+                "refText",
+                "refs",
+                "defID",
+                "defPath",
+                "ial",
+                "children",
+                "depth",
+                "count",
+                "sort",
+                "created",
+                "updated",
+                "riffCardID",
+                "riffCardReps"
+            ],
+            "properties": {
+                "box": {
+                    "type": "string",
+                    "description": "notebook ID",
+                    "pattern": "^\\d{14}-[0-9a-z]{7}$"
+                },
+                "path": {
+                    "type": "string",
+                    "description": "The path of the document where it is located",
+                    "pattern": "^(/\\d{14}-[0-9a-z]{7})+\\.sy$",
+                    "examples": [
+                        "/20200812220555-lj3enxa.sy",
+                        "/20200812220555-lj3enxa/20210808180320-fqgskfj.sy"
+                    ]
+                },
+                "hPath": {
+                    "type": "string",
+                    "description": "The readable path of the document where it is located",
+                    "pattern": "^(/[^/]+)+$"
+                },
+                "id": {
+                    "type": "string",
+                    "description": "Block ID",
+                    "pattern": "^\\d{14}-[0-9a-z]{7}$"
+                },
+                "rootID": {
+                    "type": "string",
+                    "description": "Document block ID",
+                    "pattern": "^\\d{14}-[0-9a-z]{7}$"
+                },
+                "parentID": {
+                    "type": "string",
+                    "description": "Parent block ID",
+                    "pattern": "^\\d{14}-[0-9a-z]{7}$"
+                },
+                "name": {
+                    "type": "string",
+                    "description": "Block name"
+                },
+                "alias": {
+                    "type": "string",
+                    "description": "Block alias"
+                },
+                "memo": {
+                    "type": "string",
+                    "description": "Block memo"
+                },
+                "tag": {
+                    "type": "string",
+                    "description": "Block tags",
+                    "examples": [
+                        "",
+                        "#tag#",
+                        "#tag1# #tag2#",
+                        "#tag1# #tag2# #tag3/tag4/tag5#"
+                    ]
+                },
+                "content": {
+                    "type": "string",
+                    "description": "Block content"
+                },
+                "fcontent": {
+                    "type": "string",
+                    "description": "The first block content in the container block"
+                },
+                "markdown": {
+                    "type": "string",
+                    "description": "Block Markdown content"
+                },
+                "folded": {
+                    "type": "boolean",
+                    "description": "Whether to fold"
+                },
+                "type": {
+                    "title": "TBlockType",
+                    "type": "string",
+                    "description": "Block type"
+                },
+                "subType": {
+                    "title": "TBlockSubType",
+                    "type": "string",
+                    "description": "Block subtype"
+                },
+                "refText": {
+                    "type": "string",
+                    "description": "Block reference text"
+                },
+                "refs": {
+                    "type": [
+                        "array",
+                        "null"
+                    ],
+                    "description": "The block ID list of the block reference (the current block is referenced by these blocks)",
+                    "items": {
+                        "type": "string",
+                        "pattern": "^\\d{14}-[0-9a-z]{7}$"
+                    }
+                },
+                "defID": {
+                    "type": "string"
+                },
+                "defPath": {
+                    "type": "string"
+                },
+                "ial": {
+                    "description": "Inline Attribute List (IAL) of block",
+                    "$ref": "#/$defs/ial"
+                },
+                "children": {
+                    "type": [
+                        "array",
+                        "null"
+                    ],
+                    "description": "Grouped search results",
+                    "items": {
+                        "$ref": "#/$defs/block"
+                    }
+                },
+                "depth": {
+                    "type": "integer"
+                },
+                "count": {
+                    "type": "integer"
+                },
+                "sort": {
+                    "type": "integer",
+                    "description": "Block sort priority",
+                    "enum": [
+                        0,
+                        5,
+                        10,
+                        20,
+                        30
+                    ]
+                },
+                "created": {
+                    "type": "string",
+                    "description": "Creation time"
+                },
+                "updated": {
+                    "type": "string",
+                    "description": "Update time"
+                },
+                "riffCardID": {
+                    "type": "string",
+                    "description": "Flash card ID"
+                },
+                "riffCardReps": {
+                    "type": "integer",
+                    "description": "Flash card review count",
+                    "minimum": 0
+                }
+            },
+            "oneOf": [
+                {
+                    "properties": {
+                        "type": {
+                            "enum": [
+                                "NodeDocument",
+                                "NodeSuperBlock",
+                                "NodeBlockquote",
+                                "NodeHeading",
+                                "NodeParagraph",
+                                "NodeTable",
+                                "NodeCodeBlock",
+                                "NodeHTMLBlock",
+                                "NodeThematicBreak",
+                                "NodeAudio",
+                                "NodeVideo",
+                                "NodeIFrame",
+                                "NodeWidget",
+                                "NodeBlockQueryEmbed",
+                                "NodeAttributeView"
+                            ]
+                        },
+                        "subType": {
+                            "enum": [
+                                ""
+                            ]
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "type": {
+                            "enum": [
+                                "NodeList",
+                                "NodeListItem"
+                            ]
+                        },
+                        "subType": {
+                            "enum": [
+                                "u",
+                                "o",
+                                "t"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "type": {
+                            "enum": [
+                                "NodeHeading"
+                            ]
+                        },
+                        "subType": {
+                            "enum": [
+                                "h1",
+                                "h2",
+                                "h3",
+                                "h4",
+                                "h5",
+                                "h6"
+                            ]
+                        }
+                    }
+                }
+            ]
+        },
+        "ial": {
+            "title": "IAL",
+            "description": "Inline Attribute List (IAL) of block",
+            "type": "object",
+            "propertyNames": {
+                "type": "string",
+                "minLength": 1,
+                "pattern": "^[_a-zA-Z][_.\\-0-9a-zA-Z]*$"
+            },
+            "patternProperties": {
+                "^((?!id|title|update)[_a-zA-Z][_.\\-0-9a-zA-Z]*)": {
+                    "type": "string",
+                    "minLength": 1
+                }
+            },
+            "additionalProperties": {
+                "type": "string"
+            },
+            "required": [
+                "id",
+                "updated"
+            ],
+            "properties": {
+                "id": {
+                    "type": "string",
+                    "description": "document block ID",
+                    "pattern": "^\\d{14}-[0-9a-z]{7}$",
+                    "examples": [
+                        "20200812220555-lj3enxa"
+                    ]
+                },
+                "updated": {
+                    "type": "string",
+                    "description": "The last time the block was updated",
+                    "pattern": "^((?:19|20)\\d{2})(0[1-9]|1[012])(0[1-9]|[12]\\d|3[01])([01]\\d|2[0-3])([0-5]\\d)([0-5]\\d)$",
+                    "examples": [
+                        "20210714092948"
+                    ]
+                },
+                "title": {
+                    "type": "string",
+                    "description": "document title",
+                    "pattern": "^[^/]+$"
+                }
+            }
+        }
+    }
+}

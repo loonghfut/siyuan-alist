@@ -1,0 +1,52 @@
+/**
+ * schemas/kernel/api/filetree/createDocWithMd/payload.schema.json5
+ * 通过 Markdown 创建文档
+ * REF: https://github.com/siyuan-note/siyuan/blob/master/API.md#create-a-document-with-markdown
+ * REF: https://github.com/siyuan-note/siyuan/blob/v2.9.3/kernel/api/filetree.go#L464-L511
+ * @pathname: /api/filetree/createDocWithMd
+ * @version: 2.9.3
+ */
+{
+    $schema: 'https://json-schema.org/draft/2020-12/schema',
+    $id: 'https://github.com/siyuan-community/siyuan-sdk/raw/main/schemas/kernel/api/filetree/createDocWithMd/payload.schema.json5',
+    $comment: 'v2.9.3',
+    $ref: '#/$defs/root',
+    $defs: {
+        root: {
+            title: 'payload body',
+            description: 'Create a document with Markdown',
+
+            type: 'object',
+            additionalProperties: false,
+            required: [
+                'notebook',
+                'path',
+                'markdown',
+            ],
+            properties: {
+                notebook: {
+                    // 笔记本 ID
+                    type: 'string',
+                    description: 'notebook ID',
+                    pattern: '^\\d{14}-[0-9a-z]{7}$',
+                },
+                path: {
+                    // 想要新建文档的人类可读路径, 以 / 开始, 使用 / 分割层级
+                    type: 'string',
+                    description: 'Document path, which needs to start with / and separate levels with /\npath here corresponds to the database hpath field',
+                    pattern: '^(/[^/\\t\\r\\n\\u2028\\u2029]+)+$',
+                    examples: [
+                        '/doc-name',
+                        '/parent-doc-name/doc-name',
+                    ],
+                },
+                markdown: {
+                    // Markdown (GitLab Flavored Markdown, GFM) 文本
+                    // REF: https://github.github.com/gfm/
+                    type: 'string',
+                    description: 'Markdown text (GitLab Flavored Markdown, GFM)\nREF: https://github.github.com/gfm/',
+                },
+            },
+        },
+    },
+}

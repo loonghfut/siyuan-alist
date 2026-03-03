@@ -1,0 +1,232 @@
+/**
+ * schemas/kernel/api/outline/getDocOutline/payload.schema.json5
+ * 获取文档大纲
+ * REF: https://github.com/siyuan-note/siyuan/blob/v2.12.3/kernel/api/outline.go#L28-L49
+ * @pathname: /api/outline/getDocOutline
+ * @version: 2.12.3
+ */
+{
+    $schema: 'https://json-schema.org/draft/2020-12/schema',
+    $id: 'https://github.com/siyuan-community/siyuan-sdk/raw/main/schemas/kernel/api/outline/getDocOutline/payload.schema.json5',
+    $comment: 'v2.12.3',
+    $ref: '#/$defs/root',
+    $defs: {
+        root: {
+            title: 'payload body',
+            description: 'Gets the document outline',
+
+            type: 'object',
+            additionalProperties: false,
+            required: [
+                'code',
+                'msg',
+                'data',
+            ],
+            properties: {
+                code: {
+                    type: 'integer',
+                    description: 'status code',
+                },
+                msg: {
+                    type: 'string',
+                    description: 'status message',
+                },
+                data: {
+                    type: 'array',
+                    description: 'Outline item list',
+
+                    items: {
+                        $ref: '#/$defs/datum',
+                    },
+                },
+            },
+        },
+        datum: {
+            // 顶层大纲节点
+            title: 'IOutlineTopNode',
+            description: 'Outline top node',
+
+            type: 'object',
+            additionalProperties: true,
+            required: [
+                'id',
+                'box',
+                'name',
+                'type',
+                'nodeType',
+                'subType',
+                'depth',
+                'count',
+            ],
+            properties: {
+                id: {
+                    // 块 ID
+                    type: 'string',
+                    description: 'Block ID',
+                    pattern: '^\\d{14}-[0-9a-z]{7}$',
+                },
+                box: {
+                    // 笔记本 ID
+                    type: 'string',
+                    description: 'Notebook ID',
+                    pattern: '^\\d{14}-[0-9a-z]{7}$',
+                },
+                name: {
+                    // 标题块 HTML 内容
+                    type: 'string',
+                    description: 'The HTML content of Heading block',
+                },
+                type: {
+                    // 大纲项类型
+                    type: 'string',
+                    description: 'Outline item type',
+                    enum: [
+                        'outline',
+                    ],
+                },
+                nodeType: {
+                    // 块主类型
+                    type: 'string',
+                    description: 'Block type',
+                    enum: [
+                        'NodeHeading',
+                    ],
+                },
+                subType: {
+                    // 块子类型
+                    type: 'string',
+                    description: 'Block sub-type',
+                    enum: [
+                        'h1',
+                        'h2',
+                        'h3',
+                        'h4',
+                        'h5',
+                        'h6',
+                    ],
+                },
+                depth: {
+                    // 大纲层级深度
+                    type: 'integer',
+                    description: 'Outline depth',
+                    minimum: 0,
+                },
+                count: {
+                    // 大纲下层节点数量
+                    type: 'integer',
+                    description: 'Number of child nodes',
+                    minimum: 0,
+                },
+                blocks: {
+                    // 下层节点列表
+                    type: 'array',
+                    description: 'Outline Lover node list',
+
+                    items: {
+                        $ref: '#/$defs/block',
+                    },
+                },
+            },
+        },
+        block: {
+            // 大纲下层节点项
+            title: 'IOutlineLowerNode',
+            description: 'Outline Lower node',
+
+            type: 'object',
+            additionalProperties: true,
+            required: [
+                'id',
+                'box',
+                'rootID',
+                'path',
+                'content',
+                'type',
+                'subType',
+                'depth',
+                'count',
+                'children',
+            ],
+            properties: {
+                id: {
+                    // 块 ID
+                    type: 'string',
+                    description: 'Block ID',
+                    pattern: '^\\d{14}-[0-9a-z]{7}$',
+                },
+                box: {
+                    // 笔记本 ID
+                    type: 'string',
+                    description: 'Notebook ID',
+                    pattern: '^\\d{14}-[0-9a-z]{7}$',
+                },
+                rootID: {
+                    // 文档块 ID
+                    type: 'string',
+                    description: 'Document block ID',
+                    pattern: '^\\d{14}-[0-9a-z]{7}$',
+                },
+                path: {
+                    // 相对于笔记本目录的文档文件目录
+                    type: 'string',
+                    description: 'Document path, which needs to start with / and separate levels with /\npath here corresponds to the database path field',
+                    pattern: '^(/\\d{14}-[0-9a-z]{7})+\\.sy$',
+                    examples: [
+                        '/20200812220555-lj3enxa.sy',
+                        '/20200812220555-lj3enxa/20210808180320-fqgskfj.sy',
+                    ],
+                },
+                content: {
+                    // 标题块 HTML 内容
+                    type: 'string',
+                    description: 'The HTML content of Heading block',
+                },
+                type: {
+                    // 块主类型
+                    type: 'string',
+                    description: 'Block type',
+                    enum: [
+                        'NodeHeading',
+                    ],
+                },
+                subType: {
+                    // 块子类型
+                    type: 'string',
+                    description: 'Block sub-type',
+                    enum: [
+                        'h1',
+                        'h2',
+                        'h3',
+                        'h4',
+                        'h5',
+                        'h6',
+                    ],
+                },
+                depth: {
+                    // 大纲层级深度
+                    type: 'integer',
+                    description: 'Outline depth',
+                    minimum: 0,
+                },
+                count: {
+                    // 大纲下层节点数量
+                    type: 'integer',
+                    description: 'Number of child nodes',
+                    minimum: 0,
+                },
+                children: {
+                    // 下层节点列表
+                    type: [
+                        'array',
+                        'null',
+                    ],
+                    description: 'Outline Lover node list',
+
+                    items: {
+                        $ref: '#/$defs/block',
+                    },
+                },
+            },
+        },
+    },
+}
