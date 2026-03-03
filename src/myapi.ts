@@ -1,5 +1,5 @@
 // import { AlistUploader } from '@/libs/alist-uploader';  //废案
-import { url, token, alistname, alistmima, alistUrl, beta, alistToPath2 } from '@/index';
+import { url, token, alistname, alistmima, alistUrl, beta, alistToPath2, getDisplayUrl } from '@/index';
 import "@/index.scss";
 // import exp from 'constants';
 import { showMessage } from 'siyuan';
@@ -1044,7 +1044,7 @@ export async function uploadToAList(blob, filePath, insertlink: Function = async
                     showMessage('备份到alist成功', 6000, 'info', '备份到AList');
                     await insertlink();
                     // 9/16 2024 更新：返回文件路径到剪切板
-                    var markdownLink = `[${FileName}](${alistUrl}${filePath})`;
+                    var markdownLink = `[${FileName}](${getDisplayUrl()}${filePath})`;
                     if (navigator.clipboard && navigator.clipboard.writeText) {
                         navigator.clipboard.writeText(markdownLink).then(function () {
                             outLog('Markdown链接已复制到剪贴板', 'uploadToAList');

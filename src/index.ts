@@ -61,6 +61,11 @@ export let isCtrl: boolean = false;
 export let isdrag: boolean = true;
 export let selectTOP: string | null = null;
 export let alistPIC: string | null = null;
+export let alistExternalUrl: string | null = null;
+
+export function getDisplayUrl(): string {
+    return alistExternalUrl || alistUrl || '';
+}
 
 export let today: string | null = null;
 export let timeNow: string | null = null;
@@ -305,6 +310,19 @@ export default class SiYuanAlist extends Plugin {
             }
         });
         this.settingUtils.addItem({
+            key: "alistExternalUrl",
+            value: "",
+            type: "textinput",
+            title: "alist外网展示地址（可选）",
+            description: "用于笔记中展示文件的外网地址，留空则使用上方的服务地址",
+            action: {
+                callback: async () => {
+                    let value = await this.settingUtils.takeAndSave("alistExternalUrl");
+                    alistExternalUrl = value || null;
+                }
+            }
+        });
+        this.settingUtils.addItem({
             key: "alistname",
             value: "",
             type: "textinput",
@@ -489,9 +507,9 @@ export default class SiYuanAlist extends Plugin {
                 } catch (err) {
                     console.error("请求失败，重试一次：", err);
                     if (clickId) {
-                        api.appendBlock('markdown', `📄[${file.name}](${alistUrl}${alistToPath2}/${today}/${file.name})`, clickId);
+                        api.appendBlock('markdown', `📄[${file.name}](${getDisplayUrl()}${alistToPath2}/${today}/${file.name})`, clickId);
                     } else {
-                        api.appendBlock('markdown', `📄[${file.name}](${alistUrl}${alistToPath2}/${today}/${file.name})`, currentDocId);
+                        api.appendBlock('markdown', `📄[${file.name}](${getDisplayUrl()}${alistToPath2}/${today}/${file.name})`, currentDocId);
                     }
                 }
                 let SIGN = '';
@@ -501,18 +519,18 @@ export default class SiYuanAlist extends Plugin {
                 if (clickId) {
                     console.log("clickId");
                     api.appendBlock('markdown',
-                        `<video controls="controls" src="${alistUrl}/d${alistToPath2}/${today}/${file.name}${SIGN}"></video>`,
+                        `<video controls="controls" src="${getDisplayUrl()}/d${alistToPath2}/${today}/${file.name}${SIGN}"></video>`,
                         clickId);
                 } else {
                     api.appendBlock('dom',
-                        `<video controls="controls" src="${alistUrl}/d${alistToPath2}/${today}/${file.name}${SIGN}"></video>`,
+                        `<video controls="controls" src="${getDisplayUrl()}/d${alistToPath2}/${today}/${file.name}${SIGN}"></video>`,
                         currentDocId);
                 }
             } else {
                 if (clickId) {
-                    api.appendBlock('markdown', `📄[${file.name}](${alistUrl}${alistToPath2}/${today}/${file.name})`, clickId);
+                    api.appendBlock('markdown', `📄[${file.name}](${getDisplayUrl()}${alistToPath2}/${today}/${file.name})`, clickId);
                 } else {
-                    api.appendBlock('markdown', `📄[${file.name}](${alistUrl}${alistToPath2}/${today}/${file.name})`, currentDocId);
+                    api.appendBlock('markdown', `📄[${file.name}](${getDisplayUrl()}${alistToPath2}/${today}/${file.name})`, currentDocId);
                 }
             }
         });
@@ -531,9 +549,9 @@ export default class SiYuanAlist extends Plugin {
                 SIGN = "?sign=" + filesign.data.sign;
             }
             if (clickId) {
-                api.appendBlock('markdown', `![${file.name}](${alistUrl}/d${alistPIC}/${today}/${file.name}${SIGN})`, clickId);
+                api.appendBlock('markdown', `![${file.name}](${getDisplayUrl()}/d${alistPIC}/${today}/${file.name}${SIGN})`, clickId);
             } else {
-                api.appendBlock('markdown', `![${file.name}](${alistUrl}/d${alistPIC}/${today}/${file.name}${SIGN})`, currentDocId);
+                api.appendBlock('markdown', `![${file.name}](${getDisplayUrl()}/d${alistPIC}/${today}/${file.name}${SIGN})`, currentDocId);
             }
         });
     }
@@ -604,6 +622,7 @@ export default class SiYuanAlist extends Plugin {
         alistmima = this.settingUtils.get("alistToken");//TODO:后面改到前面去
         alistname = this.settingUtils.get("alistname");
         alistUrl = this.settingUtils.get("alistUrl");
+        alistExternalUrl = this.settingUtils.get("alistExternalUrl") || null;
         alistToPath = this.settingUtils.get("alistToPath");
         alistToPath2 = this.settingUtils.get("alistToPath2");
         alistFilename = this.settingUtils.get("alistFilename");
