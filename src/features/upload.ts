@@ -37,13 +37,13 @@ export async function handleFileUpload(file: File, blockId?: string) {
                     sign = '?sign=' + signData.data.sign;
                 }
             } catch {
-                api.appendBlock('markdown', `📄[${file.name}](${state.displayUrl}${filePath})`, parentId);
+                api.smartInsertBlock('markdown', `📄[${file.name}](${state.displayUrl}${filePath})`, parentId);
                 return;
             }
             const videoHtml = `<video controls="controls" src="${state.displayUrl}/d${filePath}${sign}"></video>`;
-            api.appendBlock(targetId ? 'markdown' : 'dom', videoHtml, parentId);
+            api.smartInsertBlock(targetId ? 'markdown' : 'dom', videoHtml, parentId);
         } else {
-            api.appendBlock('markdown', `📄[${file.name}](${state.displayUrl}${filePath})`, parentId);
+            api.smartInsertBlock('markdown', `📄[${file.name}](${state.displayUrl}${filePath})`, parentId);
         }
     });
 }
@@ -60,7 +60,7 @@ export async function handleImageUpload(file: File, blockId?: string) {
         if (signData?.data?.sign) {
             sign = '?sign=' + signData.data.sign;
         }
-        api.appendBlock('markdown', `![${file.name}](${state.displayUrl}/d${filePath}${sign})`, parentId);
+        api.smartInsertBlock('markdown', `![${file.name}](${state.displayUrl}/d${filePath}${sign})`, parentId);
     });
 }
 
